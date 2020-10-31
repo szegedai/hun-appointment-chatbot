@@ -1,0 +1,39 @@
+version: "2.0"
+
+nlu:
+- intent: greet
+  examples: |
+    - szia
+    - hali
+    - hello
+
+- intent: bot_challenge
+  examples: |
+    - te egy bot vagy?
+    - ez egy robot?
+    - egy robottal beszélek?
+    - te élő ember vagy?
+    
+- intent: your_name
+  examples: |
+     - mi a neved?
+     - hogy hívnak?
+
+- intent: idopontfoglalas
+  examples: |
+    - Szeretnék időpontot foglalni.
+    - Időpontot akarok foglalni.
+    - Mikor tudnánk konzultálni?
+    - Esetleg tudnánk valamikor találkozni?
+
+- intent: megerosit
+  examples: |
+    - Rendben, ott leszek.
+    - Okés.
+    - Tökéletes.
+
+- intent: elutasit
+  examples: |
+    - Sajnos nem jó.
+    - Nem megfelelő az időpont.
+    - Akkor sajnos nem jó.

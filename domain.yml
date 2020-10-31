@@ -1,0 +1,32 @@
+version: "2.0"
+
+intents:
+  - greet
+  - bot_challenge
+  - your_name
+  - idopontfoglalas
+  - megerosit
+  - elutasit
+
+responses:
+  utter_greet:
+  - text: "Szia! Hogy vagy?"
+
+  utter_iamabot:
+  - text: "Én egy Rasa robot vagyok."
+  
+  utter_myname:
+  - text: "Rasa-nak hívnak."
+
+  utter_idopontfoglalas:
+  - text: "Holnap delben megfelel?"
+
+  utter_megerosit:
+  - text: "Okes."
+
+  utter_elutasit:
+  - text: "Hat ez nagy kar."
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true

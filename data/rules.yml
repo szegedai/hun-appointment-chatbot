@@ -1,0 +1,23 @@
+version: "2.0"
+
+rules:
+
+- rule: Say 'I am a bot' anytime the user challenges
+  steps:
+  - intent: bot_challenge
+  - action: utter_iamabot
+
+- rule: rule 2
+  steps:
+  - intent: idopontfoglalas
+  - action: utter_idopontfoglalas
+
+- rule: rule 3
+  steps:
+  - intent: megerosit
+  - action: utter_megerosit
+
+- rule: rule 4
+  steps:
+  - intent: elutasit
+  - action: utter_elutasit

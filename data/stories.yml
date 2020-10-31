@@ -1,0 +1,24 @@
+version: "2.0"
+
+stories:
+
+- story: happy path
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: bot_challenge
+  - action: utter_iamabot
+  
+- story: happy path 2
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: your_name
+  - action: utter_myname
+
+- story: foglal path
+  steps:
+  - intent: greet
+  - action: utter_greet
+  - intent: idopontfoglalas
+  - action: utter_idopontfoglalas
