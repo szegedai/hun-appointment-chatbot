@@ -2,24 +2,23 @@ version: "2.0"
 
 intents:
   - greet
-  - bot_challenge
-  - your_name
   - idopontfoglalas
+  - idopontfoglalas_datummal
   - megerosit
   - elutasit
 
+entities:
+  - date
+
 responses:
   utter_greet:
-  - text: "Szia! Hogy vagy?"
-
-  utter_iamabot:
-  - text: "Én egy Rasa robot vagyok."
-  
-  utter_myname:
-  - text: "Rasa-nak hívnak."
+  - text: "Szia!"
 
   utter_idopontfoglalas:
   - text: "Holnap delben megfelel?"
+
+  utter_idopontfoglalas_datummal:
+  - text: "Nekem megfelel az időpont."
 
   utter_megerosit:
   - text: "Okes."

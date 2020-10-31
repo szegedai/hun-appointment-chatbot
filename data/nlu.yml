@@ -6,18 +6,7 @@ nlu:
     - szia
     - hali
     - hello
-
-- intent: bot_challenge
-  examples: |
-    - te egy bot vagy?
-    - ez egy robot?
-    - egy robottal beszélek?
-    - te élő ember vagy?
-    
-- intent: your_name
-  examples: |
-     - mi a neved?
-     - hogy hívnak?
+    - jó napot
 
 - intent: idopontfoglalas
   examples: |
@@ -26,14 +15,24 @@ nlu:
     - Mikor tudnánk konzultálni?
     - Esetleg tudnánk valamikor találkozni?
 
+- intent: idopontfoglalas_datummal
+  examples: |
+    - Szeretnék időpontot foglalni [keddre](date).
+    - Időpontot akarok foglalni [holnapra](date).
+    - [Holnap](date) tudnánk konzultálni?
+    - Esetleg [pénteken](date) találkozni?
+
 - intent: megerosit
   examples: |
     - Rendben, ott leszek.
     - Okés.
     - Tökéletes.
+    - jó lesz
+    - jó az időpont
 
 - intent: elutasit
   examples: |
     - Sajnos nem jó.
     - Nem megfelelő az időpont.
     - Akkor sajnos nem jó.
+    - Nem érek rá.

@@ -125,3 +125,6 @@ dmypy.json
 
 # PyCharm
 .idea/
+
+# dont upload models
+# models/
