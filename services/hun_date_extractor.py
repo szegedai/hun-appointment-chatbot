@@ -27,7 +27,7 @@ class HunDateExtractor(EntityExtractor):
         Process an incoming message by determining the most similar (or matching) names.
         """
         extracted = self._match_entities(message)
-        message.set("entities", message.get("entities", []) + extracted, add_to_output=True)
+        message.set("entity", message.get("entity", []) + extracted, add_to_output=True)
 
     def _match_entities(self, message: Message):
         """
@@ -37,7 +37,12 @@ class HunDateExtractor(EntityExtractor):
         message_text = message.get("text", "")
         dates, times = get_datetimes(message_text)
 
-        return [{
-            "dates": dates,
-            "times": times
-        }]
+        if not (dates or times):
+            res = [{
+                "dates": dates,
+                "times": times
+            }]
+        else:
+            res = []
+
+        return res
