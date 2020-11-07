@@ -12,10 +12,10 @@ pipeline:
   - name: CountVectorsFeaturizer
     analyzer: "char_wb"
     min_ngram: 1
-    max_ngram: 4
+    max_ngram: 3
+  - name: services.hun_date_extractor.HunDateExtractor
   - name: DIETClassifier
     epochs: 100
-  - name: EntitySynonymMapper
   - name: ResponseSelector
     epochs: 100
 
