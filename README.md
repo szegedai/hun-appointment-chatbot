@@ -1,5 +1,8 @@
 # HUN-BOT
 
+A simple Hungarian chatbot for booking an appointment.
+Date parsing is partially based on https://github.com/sedthh/lara-hungarian-nlp.
+
 ## SETUP
 
 * Set up Hungarian NLP models for Spacy

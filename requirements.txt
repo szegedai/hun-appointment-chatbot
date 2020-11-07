@@ -1,2 +1,3 @@
 spacy==2.2.1
+fuzzywuzzy
 git+git://github.com/oroszgy/spacy-hungarian-models/releases/download/hu_core_ud_lg-0.3.1/hu_core_ud_lg-0.3.1-py3-none-any.whl

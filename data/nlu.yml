@@ -17,10 +17,10 @@ nlu:
 
 - intent: idopontfoglalas_datummal
   examples: |
-    - Szeretnék időpontot foglalni [keddre](date).
-    - Időpontot akarok foglalni [holnapra](date).
-    - [Holnap](date) tudnánk konzultálni?
-    - Esetleg [pénteken](date) találkozni?
+    - Szeretnék időpontot foglalni keddre.
+    - Időpontot akarok foglalni holnapra.
+    - Holnap tudnánk konzultálni?
+    - Esetleg pénteken találkozni?
 
 - intent: megerosit
   examples: |
@@ -29,6 +29,7 @@ nlu:
     - Tökéletes.
     - jó lesz
     - jó az időpont
+    - igen
 
 - intent: elutasit
   examples: |
@@ -36,3 +37,4 @@ nlu:
     - Nem megfelelő az időpont.
     - Akkor sajnos nem jó.
     - Nem érek rá.
+    - nem

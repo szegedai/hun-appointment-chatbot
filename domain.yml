@@ -7,9 +7,6 @@ intents:
   - megerosit
   - elutasit
 
-entities:
-  - date
-
 responses:
   utter_greet:
   - text: "Szia!"
