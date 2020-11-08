@@ -24,7 +24,8 @@ responses:
   - text: "Hat ez nagy kar."
 
 actions:
-  - action_hello_world
+  - action_list_specific
+  - action_list_all
 
 session_config:
   session_expiration_time: 60
