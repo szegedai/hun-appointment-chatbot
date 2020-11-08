@@ -11,7 +11,7 @@ class HunDateExtractor(EntityExtractor):
     This is a custom date extractor based partially on https://github.com/sedthh/lara-hungarian-nlp.
     """
     name = "HunDateExtractor"
-    provides = ["entities"]
+    provides = ["entity"]
     requires = ["tokens"]
 
     def __init__(self, parameters: Dict[Text, Text]) -> None:
@@ -37,7 +37,7 @@ class HunDateExtractor(EntityExtractor):
         message_text = message.get("text", "")
         dates, times = get_datetimes(message_text)
 
-        if not (dates or times):
+        if dates or times:
             res = [{
                 "dates": dates,
                 "times": times
