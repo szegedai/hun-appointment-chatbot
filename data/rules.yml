@@ -5,7 +5,7 @@ rules:
 - rule: rule 2
   steps:
   - intent: idopontfoglalas
-  - action: action_hello_world
+  - action: utter_idopontfoglalas
 
 - rule: rule 3
   steps:
@@ -20,4 +20,4 @@ rules:
 - rule: rule 5
   steps:
   - intent: idopontfoglalas_datummal
-  - action: action_hello_world
+  - action: action_list_specific

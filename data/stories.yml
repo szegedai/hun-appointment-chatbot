@@ -7,12 +7,14 @@ stories:
   - intent: greet
   - action: utter_greet
   - intent: idopontfoglalas
-  - action: action_hello_world
+  - action: utter_idopontfoglalas
+  - intent: melyik_nap
+  - action: action_list_specific
 
 - story: foglal datummal path
   steps:
   - intent: greet
   - action: utter_greet
   - intent: idopontfoglalas_datummal
-  - action: action_hello_world
+  - action: action_list_specific
   #- action: utter_idopontfoglalas_datummal

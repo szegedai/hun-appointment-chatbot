@@ -20,31 +20,29 @@ class ActionListSpecificDate(Action):
 
 
     def name(self) -> Text:
-        return "action_hello_world"
+        return "action_list_specific"
 
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         print(tracker.latest_message)
-        response = ''
-        for entity in tracker.latest_message['entities']:
-            if entity['value']:
-                response += f'Elérhető időpontok ({entity["value"]}): {self.data[entity["value"]][0]}'
+        response = 'Elérhető időpontok\n'
+        for entity in tracker.latest_message['entity']:
+            for dates in entity['dates']:
+                response += f'({dates}): {self.data[dates]}\n'
 
         dispatcher.utter_message(text=response)
 
         return []
 
-class ActionListAllDate(Action):
-
-    def name(self) -> Text:
-        return "action_list_all"
-
-    def run(self, dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-        print(tracker.latest_message['entities'][0]['value'])
-        print(tracker.latest_message['entities'])
-        dispatcher.utter_message(text='From actions.py')
-
-        return []
+# class ActionListAllDate(Action):
+#
+#     def name(self) -> Text:
+#         return "action_list_all"
+#
+#     def run(self, dispatcher: CollectingDispatcher,
+#             tracker: Tracker,
+#             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+#         dispatcher.utter_message(text='From actions.py')
+#
+#         return []

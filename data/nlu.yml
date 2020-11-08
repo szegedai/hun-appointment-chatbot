@@ -22,6 +22,13 @@ nlu:
     - Holnap tudnánk konzultálni?
     - Esetleg pénteken találkozni?
 
+- intent: melyik_nap
+  examples: |
+    - Kedden jó lenne.
+    - Kedden vagy csütörtökön érek rá.
+    - A szerda jó nekem.
+    - Hétfő tökéletes volna.
+
 - intent: megerosit
   examples: |
     - Rendben, ott leszek.
@@ -30,6 +37,7 @@ nlu:
     - jó lesz
     - jó az időpont
     - igen
+    - Az jó nekem is.
 
 - intent: elutasit
   examples: |
