@@ -21,6 +21,9 @@ nlu:
     - Időpontot akarok foglalni [holnapra](date).
     - [Holnap](date) tudnánk konzultálni?
     - Esetleg [pénteken](date) találkozni?
+    - Szeretnék időpontot foglalni [szerdára](date).
+    - Szeretnék időpontot foglalni [csütörtökre](date).
+    - [Hétfőn](date) tudnánk konzultálni?
 
 - intent: megerosit
   examples: |
