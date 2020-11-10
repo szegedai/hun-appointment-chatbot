@@ -11,6 +11,7 @@ from typing import Any, Text, Dict, List
 
 from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
+from rasa_sdk.events import SlotSet
 
 
 class ActionListSpecificDate(Action):
@@ -26,14 +27,20 @@ class ActionListSpecificDate(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         print(tracker.latest_message)
+        print(tracker.slots)
         response = 'Elérhető időpontok\n'
         for entity in tracker.latest_message['entity']:
-            for dates in entity['dates']:
-                response += f'({dates}): {self.data[dates]}\n'
+            for date in entity['dates']:
+                response += f'({date}): {self.data.get(date, "")}\n'
+
+        if tracker.slots["dates"] is None:
+            slots = SlotSet('dates', entity['dates'])
+        else:
+            slots = SlotSet('dates', tracker.slots["dates"] + entity['dates'])
 
         dispatcher.utter_message(text=response)
 
-        return []
+        return [slots]
 
 # class ActionListAllDate(Action):
 #

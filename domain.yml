@@ -8,6 +8,10 @@ intents:
   - megerosit
   - elutasit
 
+slots:
+  dates:
+    type: list
+
 responses:
   utter_greet:
   - text: "Szia!"
