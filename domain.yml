@@ -1,33 +1,43 @@
 version: "2.0"
 
 intents:
-  - greet
+  - udvozol
   - idopontfoglalas
-  - idopontfoglalas_datummal
-  - melyik_nap
-  - megerosit
-  - elutasit
+
+entities:
+  - dates
+  - times
 
 slots:
-  dates:
-    type: list
+  date:
+    type: text
+  time:
+    type: text
+
+forms:
+  idopont_form:
+    date:
+      - type: from_entity
+    time:
+      - type: from_entity
 
 responses:
-  utter_greet:
+  utter_udvozol:
   - text: "Szia!"
 
-  utter_idopontfoglalas:
-  - text: "Melyik nap lenne jó neked?"
+  utter_submit:
+    - text: "Köszi, akkor ezt megbeszéltük."
 
-  utter_megerosit:
-  - text: "Okes."
+  utter_ask_date:
+    - text: "Melyik nap lenne jó neked?"
 
-  utter_elutasit:
-  - text: "Hat ez nagy kar."
+  utter_ask_time:
+    - text: "Hány órakor?"
 
 actions:
-  - action_list_specific
+  # - action_list_specific
 #  - action_list_all
+  - action_idopont_form
 
 session_config:
   session_expiration_time: 60

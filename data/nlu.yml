@@ -1,7 +1,7 @@
 version: "2.0"
 
 nlu:
-- intent: greet
+- intent: udvozol
   examples: |
     - szia
     - hali
@@ -14,35 +14,7 @@ nlu:
     - Időpontot akarok foglalni.
     - Mikor tudnánk konzultálni?
     - Esetleg tudnánk valamikor találkozni?
-
-- intent: idopontfoglalas_datummal
-  examples: |
     - Szeretnék időpontot foglalni keddre.
     - Időpontot akarok foglalni holnapra.
     - Holnap tudnánk konzultálni?
     - Esetleg pénteken találkozni?
-
-- intent: melyik_nap
-  examples: |
-    - Kedden jó lenne.
-    - Kedden vagy csütörtökön érek rá.
-    - A szerda jó nekem.
-    - Hétfő tökéletes volna.
-
-- intent: megerosit
-  examples: |
-    - Rendben, ott leszek.
-    - Okés.
-    - Tökéletes.
-    - jó lesz
-    - jó az időpont
-    - igen
-    - Az jó nekem is.
-
-- intent: elutasit
-  examples: |
-    - Sajnos nem jó.
-    - Nem megfelelő az időpont.
-    - Akkor sajnos nem jó.
-    - Nem érek rá.
-    - nem

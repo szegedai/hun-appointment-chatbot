@@ -2,22 +2,24 @@ version: "2.0"
 
 rules:
 
-- rule: rule 2
+- rule: udvozol
+  steps:
+  - intent: udvozol
+  - action: utter_udvozol
+
+- rule: Activate form
   steps:
   - intent: idopontfoglalas
-  - action: utter_idopontfoglalas
+  - action: action_idopont_form
+  - active_loop: idopont_form
 
-- rule: rule 3
+- rule: Submit form
+  condition:
+  # Condition that form is active.
+  - active_loop: idopont_form
   steps:
-  - intent: megerosit
-  - action: utter_megerosit
-
-- rule: rule 4
-  steps:
-  - intent: elutasit
-  - action: utter_elutasit
-
-- rule: rule 5
-  steps:
-  - intent: idopontfoglalas_datummal
-  - action: action_list_specific
+  # Form is deactivated
+  - action: idopont_form
+  - active_loop: null
+  # The actions we want to run when the form is submitted.
+  - action: utter_submit

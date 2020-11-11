@@ -2,19 +2,7 @@ version: "2.0"
 
 stories:
 
-- story: foglal path
+- story: udvozol path
   steps:
-  - intent: greet
-  - action: utter_greet
-  - intent: idopontfoglalas
-  - action: utter_idopontfoglalas
-  - intent: melyik_nap
-  - action: action_list_specific
-
-- story: foglal datummal path
-  steps:
-  - intent: greet
-  - action: utter_greet
-  - intent: idopontfoglalas_datummal
-  - action: action_list_specific
-  #- action: utter_idopontfoglalas_datummal
+  - intent: udvozol
+  - action: utter_udvozol
