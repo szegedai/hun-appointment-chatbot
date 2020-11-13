@@ -6,3 +6,9 @@ stories:
   steps:
   - intent: udvozol
   - action: utter_udvozol
+
+- story: form happy path
+  steps:
+    - intent: idopontfoglalas
+    - action: idopont_form
+    - active_loop: idopont_form

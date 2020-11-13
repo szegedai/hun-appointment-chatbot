@@ -10,6 +10,7 @@ rules:
 - rule: Activate form
   steps:
   - intent: idopontfoglalas
+  - action: idopont_form
   - action: action_idopont_form
   - active_loop: idopont_form
 
@@ -19,7 +20,6 @@ rules:
   - active_loop: idopont_form
   steps:
   # Form is deactivated
-  - action: idopont_form
   - intent: vege
   - active_loop: null
   # The actions we want to run when the form is submitted.

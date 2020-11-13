@@ -68,6 +68,8 @@ class ActionIdopontForm(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[EventType]:
 
+        print('pre action', tracker.slots)
+
         slots = []
         response = ""
 
@@ -92,7 +94,7 @@ class ActionIdopontForm(Action):
                     print("VAN DATUM DE NINCS LISTABAN")
                     response += "Sajnos az a nap nem jó... Egy másik esetleg?"
                     dispatcher.utter_message(text=response)
-                    return []
+                    #return [SlotSet('requested_slot', 'date')]
                 #jo datum
                 else:
                     print("JO DATUM")
@@ -124,12 +126,14 @@ class ActionIdopontForm(Action):
                     print("VAN IDŐPONT DE NINCS LISTÁBAN")
                     response += "Sajnos az az időpont nem jó... Egy másik időpont esetleg?"
                     dispatcher.utter_message(text=response)
-                    return []
+                    #return [SlotSet('requested_slot', 'time')]
                 else:
                     print("VAN IDŐPONT ÉS JÓ IS")
                     response += "Tökéletes időpont."
                     dispatcher.utter_message(text=response)
                     return [SlotSet('time', good_time), SlotSet('requested_slot', None)]
+
+        return [SlotSet('requested_slot', None)]
 
 class ActionSubmitForm(Action):
     def name(self) -> Text:
