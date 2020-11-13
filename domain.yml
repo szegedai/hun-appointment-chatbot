@@ -3,6 +3,7 @@ version: "2.0"
 intents:
   - udvozol
   - idopontfoglalas
+  - vege
 
 entities:
   - dates
@@ -18,15 +19,17 @@ forms:
   idopont_form:
     date:
       - type: from_entity
+        entity: dates
     time:
       - type: from_entity
+        entity: times
 
 responses:
   utter_udvozol:
-  - text: "Szia!"
+  - text: "Szia! Miben segíthetek?"
 
   utter_submit:
-    - text: "Köszi, akkor ezt megbeszéltük."
+    - text: "Köszi, akkor {date} {time} találkozunk."
 
   utter_ask_date:
     - text: "Melyik nap lenne jó neked?"
@@ -34,10 +37,12 @@ responses:
   utter_ask_time:
     - text: "Hány órakor?"
 
+
 actions:
   # - action_list_specific
 #  - action_list_all
   - action_idopont_form
+  - submit_idopont_form
 
 session_config:
   session_expiration_time: 60

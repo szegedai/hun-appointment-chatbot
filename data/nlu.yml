@@ -18,3 +18,11 @@ nlu:
     - Időpontot akarok foglalni holnapra.
     - Holnap tudnánk konzultálni?
     - Esetleg pénteken találkozni?
+
+- intent: vege
+  examples: |
+    - Oké.
+    - Oké, köszi.
+    - Köszi.
+    - Rendben.
+    - Ott leszek.

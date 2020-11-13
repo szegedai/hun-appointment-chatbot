@@ -20,6 +20,7 @@ rules:
   steps:
   # Form is deactivated
   - action: idopont_form
+  - intent: vege
   - active_loop: null
   # The actions we want to run when the form is submitted.
-  - action: utter_submit
+  - action: submit_idopont_form
