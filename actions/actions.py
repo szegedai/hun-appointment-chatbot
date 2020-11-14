@@ -13,35 +13,45 @@ from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
 from rasa_sdk.events import SlotSet, EventType
 
-"""
-class ActionListSpecificDate(Action):
+
+class ActionRecommendDate(Action):
     def __init__(self):
         with open('test_data.json', 'r') as f:
             self.data = json.load(f)
 
 
     def name(self) -> Text:
-        return "action_list_specific"
+        return "action_recommend_date"
 
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-        print(tracker.latest_message)
-        print(tracker.slots)
-        response = 'Elérhető időpontok\n'
-        for entity in tracker.latest_message['entity']:
-            for date in entity['dates']:
-                response += f'({date}): {self.data.get(date, "")}\n'
 
-        if tracker.slots["dates"] is None:
-            slots = SlotSet('dates', entity['dates'])
-        else:
-            slots = SlotSet('dates', tracker.slots["dates"] + entity['dates'])
+        # print(tracker.latest_message)
+        # print(tracker.slots)
+        # response = 'Elérhető időpontok\n'
+        # for entity in tracker.latest_message['entity']:
+        #     for date in entity['dates']:
+        #         response += f'({date}): {self.data.get(date, "")}\n'
+        #
+        # if tracker.slots["dates"] is None:
+        #     slots = SlotSet('dates', entity['dates'])
+        # else:
+        #     slots = SlotSet('dates', tracker.slots["dates"] + entity['dates'])
+        #
+        # dispatcher.utter_message(text=response)
+        response = ""
+        if tracker.get_slot('date') is None:
+            response += f"Ajánlom a két legközelebbi időpontot:\n"
+            response += f"{list(self.data.keys())[0:2]}\n"
+
+        if tracker.get_slot('date') is not None:
+            for possible_date in tracker.get_slot('date'):
+                response += f"{self.data[possible_date]}\n"
 
         dispatcher.utter_message(text=response)
+        return []
 
-        return [slots]
-"""
 
 
 # class ActionListAllDate(Action):

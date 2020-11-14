@@ -6,6 +6,7 @@ intents:
   - vege
   - say_date
   - say_time
+  - recommend_date_or_time
 
 entities:
   - dates
@@ -33,9 +34,8 @@ responses:
 
 
 actions:
-  # - action_list_specific
-#  - action_list_all
   - validate_idopont_form
+  - action_recommend_date
 
 session_config:
   session_expiration_time: 60

@@ -19,6 +19,15 @@ nlu:
     - Holnap tudnánk konzultálni?
     - Esetleg pénteken találkozni?
 
+- intent: recommend_date_or_time
+  examples: |
+    - Nem tudom.
+    - Neked mikor lenne jó?
+    - Nekem bármikor jó.
+    - Milyen opciók vannak?
+    - Tudnál ajánlani egy időpontot?
+
+
 - intent: say_date
   examples: |
     - kedden
@@ -28,6 +37,8 @@ nlu:
     - december 5-én
     - jövő kedden
     - két hét múlva szerdán
+    - november 16-án jó lenne
+    - holnap megfelelne
 
 - intent: say_time
   examples: |
