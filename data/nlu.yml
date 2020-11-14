@@ -19,6 +19,24 @@ nlu:
     - Holnap tudnánk konzultálni?
     - Esetleg pénteken találkozni?
 
+- intent: say_date
+  examples: |
+    - kedden
+    - vasárnap
+    - holnap
+    - szerdán
+    - december 5-én
+    - jövő kedden
+    - két hét múlva szerdán
+
+- intent: say_time
+  examples: |
+    - nyolc órakor
+    - reggel
+    - délelőtt
+    - 6 órakor
+    - tíz órakor
+
 - intent: vege
   examples: |
     - Oké.

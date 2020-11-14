@@ -7,20 +7,17 @@ rules:
   - intent: udvozol
   - action: utter_udvozol
 
-- rule: Activate form
+- rule: Activate form 1
   steps:
   - intent: idopontfoglalas
-  - action: idopont_form
-  - action: action_idopont_form
-  - active_loop: idopont_form
+  - action: validate_idopont_form
 
-- rule: Submit form
-  condition:
-  # Condition that form is active.
-  - active_loop: idopont_form
+- rule: Activate form 2
   steps:
-  # Form is deactivated
-  - intent: vege
-  - active_loop: null
-  # The actions we want to run when the form is submitted.
-  - action: submit_idopont_form
+  - intent: say_date
+  - action: validate_idopont_form
+
+- rule: Activate form 3
+  steps:
+  - intent: say_time
+  - action: validate_idopont_form

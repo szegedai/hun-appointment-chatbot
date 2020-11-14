@@ -62,7 +62,7 @@ class ActionIdopontForm(Action):
             self.data = json.load(f)
 
     def name(self) -> Text:
-        return "action_idopont_form"
+        return "validate_idopont_form"
 
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
@@ -87,14 +87,14 @@ class ActionIdopontForm(Action):
                 print("NINCS DATUM")
                 response += "Okés. Mikor lenne jó?"
                 dispatcher.utter_message(text=response)
-                return [SlotSet('requested_slot', 'date')]
+                return []
             else:
                 #van datum de nincs listaban
                 if len(good_date) == 0:
                     print("VAN DATUM DE NINCS LISTABAN")
                     response += "Sajnos az a nap nem jó... Egy másik esetleg?"
                     dispatcher.utter_message(text=response)
-                    #return [SlotSet('requested_slot', 'date')]
+                    return []
                 #jo datum
                 else:
                     print("JO DATUM")
@@ -119,31 +119,22 @@ class ActionIdopontForm(Action):
             if not any_time:
                 print("NINCS IDŐPONT")
                 print(tracker.get_slot('date'))
-                return [SlotSet('requested_slot', 'time')]
+                return []
 
             else:
                 if not good_time:
                     print("VAN IDŐPONT DE NINCS LISTÁBAN")
                     response += "Sajnos az az időpont nem jó... Egy másik időpont esetleg?"
                     dispatcher.utter_message(text=response)
-                    #return [SlotSet('requested_slot', 'time')]
+                    return []
                 else:
                     print("VAN IDŐPONT ÉS JÓ IS")
-                    response += "Tökéletes időpont."
-                    dispatcher.utter_message(text=response)
-                    return [SlotSet('time', good_time), SlotSet('requested_slot', None)]
 
-        return [SlotSet('requested_slot', None)]
+                    dispatcher.utter_message(template="utter_submit",
+                                             date=tracker.get_slot('date'),
+                                             time=good_time)
 
-class ActionSubmitForm(Action):
-    def name(self) -> Text:
-        return "submit_idopont_form"
+                    return [SlotSet('time', good_time)]
 
-    def run(self, dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-
-        dispatcher.utter_message(template="utter_submit",
-                                 date=tracker.get_slot('date'),
-                                 time=tracker.get_slot('time'))
+        print('kifutottunk mint a hell')
         return []

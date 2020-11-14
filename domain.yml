@@ -4,6 +4,8 @@ intents:
   - udvozol
   - idopontfoglalas
   - vege
+  - say_date
+  - say_time
 
 entities:
   - dates
@@ -15,14 +17,6 @@ slots:
   time:
     type: text
 
-forms:
-  idopont_form:
-    date:
-      - type: from_entity
-        entity: dates
-    time:
-      - type: from_entity
-        entity: times
 
 responses:
   utter_udvozol:
@@ -41,8 +35,7 @@ responses:
 actions:
   # - action_list_specific
 #  - action_list_all
-  - action_idopont_form
-  - submit_idopont_form
+  - validate_idopont_form
 
 session_config:
   session_expiration_time: 60
