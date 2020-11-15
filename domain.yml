@@ -7,6 +7,7 @@ intents:
   - say_date
   - say_time
   - recommend_date_or_time
+  - another_appointment
 
 entities:
   - dates
@@ -24,7 +25,7 @@ responses:
   - text: "Szia! Miben segíthetek?"
 
   utter_submit:
-    - text: "Köszi, akkor {date} {time} találkozunk."
+    - text: "Rendben, akkor {date} {time} találkozunk."
 
   utter_ask_date:
     - text: "Melyik nap lenne jó neked?"
@@ -32,10 +33,14 @@ responses:
   utter_ask_time:
     - text: "Hány órakor?"
 
+  utter_bye:
+    - text: "Viszlát!"
+
 
 actions:
   - validate_idopont_form
   - action_recommend_date
+  - action_remove_appointment
 
 session_config:
   session_expiration_time: 60

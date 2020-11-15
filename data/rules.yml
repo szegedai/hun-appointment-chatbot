@@ -26,3 +26,14 @@ rules:
   steps:
   - intent: recommend_date_or_time
   - action: action_recommend_date
+
+- rule: another appointment
+  steps:
+    - intent: another_appointment
+    - action: action_remove_appointment
+    - action: validate_idopont_form
+
+- rule: viszlat
+  steps:
+    - intent: vege
+    - action: utter_bye

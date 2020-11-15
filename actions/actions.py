@@ -8,17 +8,31 @@
 # This is a simple example for a custom action which utters "Hello World!"
 import json
 from typing import Any, Text, Dict, List
+from datetime import datetime, date, time
 
 from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
 from rasa_sdk.events import SlotSet, EventType
+
+from services.datetime2text import date2text, time2text
+
+
+class ActionRemoveAppointment(Action):
+
+    def name(self) -> Text:
+        return "action_remove_appointment"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+
+        return [SlotSet('date', None), SlotSet('time', None)]
 
 
 class ActionRecommendDate(Action):
     def __init__(self):
         with open('test_data.json', 'r') as f:
             self.data = json.load(f)
-
 
     def name(self) -> Text:
         return "action_recommend_date"
@@ -27,44 +41,28 @@ class ActionRecommendDate(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
 
-        # print(tracker.latest_message)
-        # print(tracker.slots)
-        # response = 'Elérhető időpontok\n'
-        # for entity in tracker.latest_message['entity']:
-        #     for date in entity['dates']:
-        #         response += f'({date}): {self.data.get(date, "")}\n'
-        #
-        # if tracker.slots["dates"] is None:
-        #     slots = SlotSet('dates', entity['dates'])
-        # else:
-        #     slots = SlotSet('dates', tracker.slots["dates"] + entity['dates'])
-        #
-        # dispatcher.utter_message(text=response)
-        response = ""
         if tracker.get_slot('date') is None:
-            response += f"Ajánlom a két legközelebbi időpontot:\n"
-            response += f"{list(self.data.keys())[0:2]}\n"
+            free_dates = list(self.data.keys())
+            if len(free_dates) >= 2:
+                response = f"Legközelebb {date2text(free_dates[0])} és {date2text(free_dates[1])} érek rá."
+            elif len(free_dates) == 1:
+                response = f"Legközelebb {date2text(free_dates[0])} érek rá."
+            else:
+                response = "Sajnos nincs szabad időpontom mostanában..."
+        else:
+            possible_date = tracker.get_slot('date')
+            pos_times = self.data[possible_date]
+            if len(pos_times) > 1:
+                pos_times_s = ", ".join(list(map(time2text, pos_times[:-1])))
+                pos_times_s += f' és {time2text(pos_times[-1])}'
+            else:
+                pos_times_s = f'{time2text(pos_times[0])}'
 
-        if tracker.get_slot('date') is not None:
-            for possible_date in tracker.get_slot('date'):
-                response += f"{self.data[possible_date]}\n"
+            response = f"{date2text(possible_date)} ráérek {pos_times_s}.".capitalize()
 
         dispatcher.utter_message(text=response)
         return []
 
-
-
-# class ActionListAllDate(Action):
-#
-#     def name(self) -> Text:
-#         return "action_list_all"
-#
-#     def run(self, dispatcher: CollectingDispatcher,
-#             tracker: Tracker,
-#             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-#         dispatcher.utter_message(text='From actions.py')
-#
-#         return []
 
 class ActionIdopontForm(Action):
     def __init__(self):
@@ -78,73 +76,66 @@ class ActionIdopontForm(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[EventType]:
 
-        print('pre action', tracker.slots)
-
-        slots = []
         response = ""
 
-        if tracker.get_slot('date') is None:
-            any_date, good_date = False, []
+        if tracker.get_slot('date') is None and tracker.get_slot('time') is None:
+            any_date, good_date = False, False
             for entity in tracker.latest_message['entities']:
                 if entity['entity'] == 'dates':
                     any_date = True
-                    for date in entity['value']:
-                        if date in self.data.keys():
-                            good_date += [date]
+                    for e_date in entity['value']:
+                        if e_date in self.data.keys() and not good_date:
+                            good_date = e_date
                             break
+
             #nincs datum
             if not any_date:
-                print("NINCS DATUM")
                 response += "Okés. Mikor lenne jó?"
                 dispatcher.utter_message(text=response)
                 return []
             else:
                 #van datum de nincs listaban
-                if len(good_date) == 0:
-                    print("VAN DATUM DE NINCS LISTABAN")
-                    response += "Sajnos az a nap nem jó... Egy másik esetleg?"
+                if not good_date:
+                    response += "Sajnos nem érek rá akkor... Egy másik esetleg?"
                     dispatcher.utter_message(text=response)
                     return []
                 #jo datum
                 else:
-                    print("JO DATUM")
-                    response += "Rendben. Hány órakor lenne jó?"
+                    response += f"Ráérek {date2text(good_date)}. Mikor lenne jó aznap?"
                     dispatcher.utter_message(text=response)
                     return [SlotSet('date', good_date)]
 
         if tracker.get_slot("date") is not None:
-            print("DATUM BEALLITVA")
-            any_time, good_time = False, []
+            possible_date = tracker.get_slot('date')
+            any_time, good_time = False, False
             for entity in tracker.latest_message['entities']:
                 if entity['entity'] == 'times':
                     any_time = True
-                    for time in entity['value']:
-                        print(time, "TIME")
-                        print(tracker.get_slot('date'), "SLOTBAN")
-                        for possible_date in tracker.get_slot('date'):
-                            if time in self.data[possible_date]:
-                                good_time += [time]
-                                break
+                    for e_time in entity['value']:
+                        if e_time in self.data[possible_date] and not good_time:
+                            good_time = e_time
+                            break
             #nincs idő
             if not any_time:
-                print("NINCS IDŐPONT")
-                print(tracker.get_slot('date'))
+                response += "Nem értettem, ne haragudj. Hány órakor találkozzunk?"
+                dispatcher.utter_message(text=response)
                 return []
 
             else:
                 if not good_time:
-                    print("VAN IDŐPONT DE NINCS LISTÁBAN")
-                    response += "Sajnos az az időpont nem jó... Egy másik időpont esetleg?"
+                    response += f"Sajnos nem érek rá ekkor... Egy másik időpont esetleg?"
                     dispatcher.utter_message(text=response)
                     return []
                 else:
-                    print("VAN IDŐPONT ÉS JÓ IS")
-
+                    # konszenzus
                     dispatcher.utter_message(template="utter_submit",
-                                             date=tracker.get_slot('date'),
-                                             time=good_time)
+                                             date=date2text(tracker.get_slot('date')),
+                                             time=time2text(good_time))
 
                     return [SlotSet('time', good_time)]
 
-        print('kifutottunk mint a hell')
+
+            # resetting previously set appointment
+
+
         return []
