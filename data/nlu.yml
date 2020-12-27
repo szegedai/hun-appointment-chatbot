@@ -1,40 +1,95 @@
 version: "2.0"
 
 nlu:
-- intent: greet
+- intent: udvozol
   examples: |
     - szia
     - hali
     - hello
     - jó napot
+    - jó estét
+    - jó reggel
 
 - intent: idopontfoglalas
   examples: |
     - Szeretnék időpontot foglalni.
     - Időpontot akarok foglalni.
-    - Mikor tudnánk konzultálni?
-    - Esetleg tudnánk valamikor találkozni?
-
-- intent: idopontfoglalas_datummal
-  examples: |
     - Szeretnék időpontot foglalni keddre.
     - Időpontot akarok foglalni holnapra.
     - Holnap tudnánk konzultálni?
     - Esetleg pénteken találkozni?
+    - Konzultálni szeretnék
+    - Időpontot foglalnék
 
-- intent: megerosit
+- intent: recommend_date_or_time
   examples: |
-    - Rendben, ott leszek.
-    - Okés.
-    - Tökéletes.
-    - jó lesz
-    - jó az időpont
-    - igen
+    - bármikor
+    - ráéreg egész nap
+    - szabad vagyok, amikor neked jó
+    - amikor te ráérsz
+    - amikor csak neked jó
+    - rugalmas vagyok
+    - Neked mikor lenne jó?
+    - Nekem bármikor jó.
+    - Milyen opciók vannak?
+    - Tudnál ajánlani egy időpontot?
+    - Mikor tudnánk konzultálni?
+    - Esetleg tudnánk valamikor találkozni?
+    - Mikor érnél rá?
+    - Ráérsz valamikor?
+    - Mikor érnél rá egy találkozóra?
+    - Mikor érnél rá egy konzultálni?
+    - Szabad vagy mostanában valamikor?
+    - Mikor vagy szabad?
 
-- intent: elutasit
+- intent: another_appointment
   examples: |
-    - Sajnos nem jó.
-    - Nem megfelelő az időpont.
-    - Akkor sajnos nem jó.
-    - Nem érek rá.
-    - nem
+    - Legyen másik nap akkor
+    - Akkor egy másik nap esetleg?
+    - Akkor legyen inkább a szerda
+    - Tegyük egy másik napra
+    - Legyen inkább a szerda
+
+- intent: say_date
+  examples: |
+    - kedden
+    - vasárnap
+    - holnap
+    - szerdán
+    - december 5-én
+    - jövő kedden
+    - két hét múlva szerdán
+    - november 16-án jó lenne
+    - holnap megfelelne
+    - nekem jó a holnap
+    - kedden ráérsz?
+    - a szerda jó esetleg?
+    - egy találkozó csütörtökön?
+
+- intent: say_time
+  examples: |
+    - nyolc órakor
+    - reggel
+    - délelőtt
+    - 6 órakor
+    - tíz órakor
+    - egész reggel jó
+    - legyen két órakor akkor
+    - ha jó neked is akkor legyen a két óra
+    - akkor legyen 3 órakor
+    - három órakor jó?
+    - két órakor ráérsz?
+    - reggel nyolckor megfelel?
+    - Reggel ráérsz?
+    - Délután jó?
+
+- intent: vege
+  examples: |
+    - Oké.
+    - Oké, köszi.
+    - Köszi.
+    - Rendben.
+    - Ott leszek.
+    - Akkor ezt megbeszéltük
+    - Viszlát
+    - Rendben. Szia!

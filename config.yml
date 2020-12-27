@@ -6,18 +6,13 @@ pipeline:
   - name: SpacyNLP
   - name: SpacyTokenizer
   - name: SpacyFeaturizer
-  - name: RegexFeaturizer
-  - name: LexicalSyntacticFeaturizer
   - name: CountVectorsFeaturizer
-  - name: CountVectorsFeaturizer
-    analyzer: "char_wb"
-    min_ngram: 1
-    max_ngram: 3
   - name: services.hun_date_extractor.HunDateExtractor
   - name: DIETClassifier
-    epochs: 100
+    epochs: 50
+    entity_recognition: False
   - name: ResponseSelector
-    epochs: 100
+    epochs: 50
 
 # Configuration for Rasa Core.
 # https://rasa.com/docs/rasa/core/policies/
@@ -25,8 +20,8 @@ policies:
 # # No configuration for policies was provided. The following default policies were used to train your model.
 # # If you'd like to customize them, uncomment and adjust the policies.
 # # See https://rasa.com/docs/rasa/policies for more information.
-#   - name: MemoizationPolicy
-#   - name: TEDPolicy
-#     max_history: 5
-#     epochs: 100
-#   - name: RulePolicy
+   - name: MemoizationPolicy
+   - name: TEDPolicy
+     max_history: 5
+     epochs: 100
+   - name: RulePolicy

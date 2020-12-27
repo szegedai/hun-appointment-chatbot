@@ -2,22 +2,38 @@ version: "2.0"
 
 rules:
 
-- rule: rule 2
+- rule: udvozol
+  steps:
+  - intent: udvozol
+  - action: utter_udvozol
+
+- rule: Activate form 1
   steps:
   - intent: idopontfoglalas
-  - action: utter_idopontfoglalas
+  - action: validate_idopont_form
 
-- rule: rule 3
+- rule: Activate form 2
   steps:
-  - intent: megerosit
-  - action: utter_megerosit
+  - intent: say_date
+  - action: validate_idopont_form
 
-- rule: rule 4
+- rule: Activate form 3
   steps:
-  - intent: elutasit
-  - action: utter_elutasit
+  - intent: say_time
+  - action: validate_idopont_form
 
-- rule: rule 5
+- rule: Activate form 4
   steps:
-  - intent: idopontfoglalas_datummal
-  - action: utter_idopontfoglalas_datummal
+  - intent: recommend_date_or_time
+  - action: action_recommend_date
+
+- rule: another appointment
+  steps:
+    - intent: another_appointment
+    - action: action_remove_appointment
+    - action: validate_idopont_form
+
+- rule: viszlat
+  steps:
+    - intent: vege
+    - action: utter_bye

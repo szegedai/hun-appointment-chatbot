@@ -1,27 +1,46 @@
 version: "2.0"
 
 intents:
-  - greet
+  - udvozol
   - idopontfoglalas
-  - idopontfoglalas_datummal
-  - megerosit
-  - elutasit
+  - vege
+  - say_date
+  - say_time
+  - recommend_date_or_time
+  - another_appointment
+
+entities:
+  - dates
+  - times
+
+slots:
+  date:
+    type: text
+  time:
+    type: text
+
 
 responses:
-  utter_greet:
-  - text: "Szia!"
+  utter_udvozol:
+  - text: "Szia! Miben segíthetek?"
 
-  utter_idopontfoglalas:
-  - text: "Holnap delben megfelel?"
+  utter_submit:
+    - text: "Rendben, akkor {date} {time} találkozunk."
 
-  utter_idopontfoglalas_datummal:
-  - text: "Nekem megfelel az időpont."
+  utter_ask_date:
+    - text: "Melyik nap lenne jó neked?"
 
-  utter_megerosit:
-  - text: "Okes."
+  utter_ask_time:
+    - text: "Hány órakor?"
 
-  utter_elutasit:
-  - text: "Hat ez nagy kar."
+  utter_bye:
+    - text: "Viszlát!"
+
+
+actions:
+  - validate_idopont_form
+  - action_recommend_date
+  - action_remove_appointment
 
 session_config:
   session_expiration_time: 60
