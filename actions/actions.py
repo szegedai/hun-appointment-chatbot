@@ -1,20 +1,63 @@
-# This files contains your custom actions which can be used to run
-# custom Python code.
-#
-# See this guide on how to implement these action:
-# https://rasa.com/docs/rasa/custom-actions
-
-
-# This is a simple example for a custom action which utters "Hello World!"
 import json
 from typing import Any, Text, Dict, List
-from datetime import datetime, date, time
+
+from datetime import datetime
 
 from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
 from rasa_sdk.events import SlotSet, EventType
 
-from services.datetime2text import date2text, time2text
+from hun_date_parser import datetime2text, text2datetime
+from datetimerange import DateTimeRange
+
+
+def get_available_appointments():
+    """
+    Loads available appointment list.
+    :return:
+    """
+    now = datetime.now()
+
+    with open('test_data.json', 'r') as f:
+        data = json.load(f)
+
+    res = []
+    for day in data:
+        res.append({'start_date': datetime.fromisoformat(day['start_date']),
+                    'end_date': datetime.fromisoformat(day['end_date'])})
+
+    return res
+
+
+def get_date_text(dt):
+    dt = datetime.combine(dt, datetime.min.time())
+    candidates = datetime2text(dt, time_precision=2)
+    return candidates['dates'][0]
+
+
+def get_time_text(dt):
+    candidates = datetime2text(dt, time_precision=2)
+    return candidates['times'][-1]
+
+
+def get_common_intervals(d_range_1, d_range_2):
+    dtr1 = DateTimeRange(d_range_1['start_date'], d_range_1['end_date'])
+    dtr2 = DateTimeRange(d_range_2['start_date'], d_range_2['end_date'])
+
+    dtr_common = dtr1.intersection(dtr2)
+
+    if dtr_common.start_datetime and dtr_common.end_datetime:
+        return {'start_date': dtr_common.start_datetime, 'end_date': dtr_common.end_datetime}
+    else:
+        return None
+
+
+def is_good_date(candidates, option):
+    for c in candidates:
+        print('C-OPTION', c, option)
+        if get_common_intervals(c, option):
+            return get_common_intervals(c, option)
+    return None
 
 
 class ActionRemoveAppointment(Action):
@@ -31,8 +74,7 @@ class ActionRemoveAppointment(Action):
 
 class ActionRecommendDate(Action):
     def __init__(self):
-        with open('test_data.json', 'r') as f:
-            self.data = json.load(f)
+        self.appointments = get_available_appointments()
 
     def name(self) -> Text:
         return "action_recommend_date"
@@ -41,24 +83,27 @@ class ActionRecommendDate(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
 
+        # Recommends date...
         if tracker.get_slot('date') is None:
-            free_dates = list(self.data.keys())
-            if len(free_dates) >= 2:
-                response = f"Legközelebb {date2text(free_dates[0])} és {date2text(free_dates[1])} érek rá."
-            elif len(free_dates) == 1:
-                response = f"Legközelebb {date2text(free_dates[0])} érek rá."
+            if len(self.appointments) >= 2:
+                response = f"Legközelebb {get_date_text(self.appointments[0])} és {get_date_text(self.appointments[1])} érek rá."
+            elif self.appointments:
+                response = f"Legközelebb {get_date_text(self.appointments[0])} érek rá."
             else:
                 response = "Sajnos nincs szabad időpontom mostanában..."
-        else:
-            possible_date = tracker.get_slot('date')
-            pos_times = self.data[possible_date]
-            if len(pos_times) > 1:
-                pos_times_s = ", ".join(list(map(time2text, pos_times[:-1])))
-                pos_times_s += f' és {time2text(pos_times[-1])}'
-            else:
-                pos_times_s = f'{time2text(pos_times[0])}'
 
-            response = f"{date2text(possible_date)} ráérek {pos_times_s}.".capitalize()
+        # Recommends times...
+        else:
+            set_date = tracker.get_slot('date')
+            pos_times = [a for a in self.appointments if a.date() == set_date.date()]
+
+            if len(pos_times) > 1:
+                pos_times_s = ", ".join(list(map(get_time_text, pos_times[:-1])))
+                pos_times_s += f' és {get_time_text(pos_times[-1])}'
+            else:
+                pos_times_s = f'{get_time_text(pos_times[0])}'
+
+            response = f"{get_date_text(set_date)} ráérek {pos_times_s}.".capitalize()
 
         dispatcher.utter_message(text=response)
         return []
@@ -66,8 +111,7 @@ class ActionRecommendDate(Action):
 
 class ActionIdopontForm(Action):
     def __init__(self):
-        with open('test_data.json', 'r') as f:
-            self.data = json.load(f)
+        self.appointments = get_available_appointments()
 
     def name(self) -> Text:
         return "validate_idopont_form"
@@ -83,39 +127,46 @@ class ActionIdopontForm(Action):
             for entity in tracker.latest_message['entities']:
                 if entity['entity'] == 'dates':
                     any_date = True
-                    for e_date in entity['value']:
-                        if e_date in self.data.keys() and not good_date:
-                            good_date = e_date
+                    date_intervals = entity['value']
+                    print('DI', date_intervals)
+                    for e_date in date_intervals:
+                        overlap = is_good_date(self.appointments, e_date)
+                        print('OVERLAP', overlap)
+                        if overlap and not good_date:
+                            good_date = overlap['start_date'].date()
                             break
 
-            #nincs datum
             if not any_date:
                 response += "Okés. Mikor lenne jó?"
                 dispatcher.utter_message(text=response)
                 return []
-            else:
-                #van datum de nincs listaban
+            elif any_date:
                 if not good_date:
-                    response += "Sajnos nem érek rá akkor... Egy másik esetleg?"
+                    response += "Sajnos nem érek rá akkor... Máskor esetleg?"
                     dispatcher.utter_message(text=response)
                     return []
-                #jo datum
                 else:
-                    response += f"Ráérek {date2text(good_date)}. Mikor lenne jó aznap?"
+                    response += f"Ráérek {get_date_text(good_date)}. Mikor lenne jó aznap?"
                     dispatcher.utter_message(text=response)
-                    return [SlotSet('date', good_date)]
+                    return [SlotSet('date', good_date.strftime('%Y-%m-%d'))]
 
         if tracker.get_slot("date") is not None:
-            possible_date = tracker.get_slot('date')
+            possible_date = datetime.strptime(tracker.get_slot('date'), '%Y-%m-%d')
             any_time, good_time = False, False
             for entity in tracker.latest_message['entities']:
                 if entity['entity'] == 'times':
                     any_time = True
-                    for e_time in entity['value']:
-                        if e_time in self.data[possible_date] and not good_time:
-                            good_time = e_time
+                    time_intervals = entity['value']
+                    print('T_I', time_intervals)
+                    time_intervals = [{'start_date': datetime.combine(possible_date.date(), datetime.strptime(ti['start_date'], '%H:%M').time()),
+                                       'end_date': datetime.combine(possible_date.date(), datetime.strptime(ti['end_date'], '%H:%M').time())} for ti in time_intervals]
+                    for e_time in time_intervals:
+                        overlap = is_good_date(self.appointments, e_time)
+                        print('OVERLAP', overlap)
+                        if overlap and not good_time:
+                            good_time = overlap['start_date'].time()
                             break
-            #nincs idő
+
             if not any_time:
                 response += "Nem értettem, ne haragudj. Hány órakor találkozzunk?"
                 dispatcher.utter_message(text=response)
@@ -129,13 +180,9 @@ class ActionIdopontForm(Action):
                 else:
                     # konszenzus
                     dispatcher.utter_message(template="utter_submit",
-                                             date=date2text(tracker.get_slot('date')),
-                                             time=time2text(good_time))
+                                             date=get_date_text(datetime.strptime(tracker.get_slot('date'), '%Y-%m-%d')),
+                                             time=get_time_text(datetime.combine(datetime.min.date(), good_time)))
 
-                    return [SlotSet('time', good_time)]
-
-
-            # resetting previously set appointment
-
+                    return [SlotSet('time', good_time.strftime('%M:%H'))]
 
         return []

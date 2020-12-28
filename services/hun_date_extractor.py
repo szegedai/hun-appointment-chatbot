@@ -1,15 +1,13 @@
 from typing import Any, Dict, Text
+from datetime import timedelta
 
 from rasa.nlu.extractors.extractor import EntityExtractor
 from rasa.shared.nlu.training_data.message import Message
 
-from services.hun_date_parser_service import *
+from hun_date_parser import text2date, text2time
 
 
 class HunDateExtractor(EntityExtractor):
-    """
-    This is a custom date extractor based partially on https://github.com/sedthh/lara-hungarian-nlp.
-    """
     name = "HunDateExtractor"
     provides = ["entities"]
     requires = ["tokens"]
@@ -23,19 +21,16 @@ class HunDateExtractor(EntityExtractor):
             raise AttributeError(f"config has type {type(parameters)}")
 
     def process(self, message: Message, **kwargs: Any) -> None:
-        """
-        Process an incoming message by determining the most similar (or matching) names.
-        """
         extracted = self._match_entities(message)
         message.set("entities", message.get("entities", []) + extracted, add_to_output=True)
 
     def _match_entities(self, message: Message):
-        """
-        Perform fuzzy matching on each token of the message.
-        A token contains its text, its offset, its end and optionally additional data.
-        """
         message_text = message.get("text", "")
-        dates, times = get_datetimes(message_text)
+        dates = [{'start_date': d['start_date'].strftime('%Y-%m-%d'),
+                  'end_date': (d['end_date'] + timedelta(days=1)).strftime('%Y-%m-%d')} for d in
+                 text2date(message_text)]
+        times = [{'start_date': d['start_date'].strftime('%H:%M'), 'end_date': d['end_date'].strftime('%H:%M')} for d in
+                 text2time(message_text)]
 
         res = []
 
