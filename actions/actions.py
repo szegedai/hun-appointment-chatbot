@@ -94,8 +94,8 @@ class ActionRecommendDate(Action):
 
         # Recommends times...
         else:
-            set_date = tracker.get_slot('date')
-            pos_times = [a for a in self.appointments if a.date() == set_date.date()]
+            set_date = datetime.strptime(tracker.get_slot('date'), '%Y-%m-%d')
+            pos_times = [a['start_date'] for a in self.appointments if a['start_date'].date() == set_date.date()]
 
             if len(pos_times) > 1:
                 pos_times_s = ", ".join(list(map(get_time_text, pos_times[:-1])))
@@ -178,7 +178,6 @@ class ActionIdopontForm(Action):
                     dispatcher.utter_message(text=response)
                     return []
                 else:
-                    # konszenzus
                     dispatcher.utter_message(template="utter_submit",
                                              date=get_date_text(datetime.strptime(tracker.get_slot('date'), '%Y-%m-%d')),
                                              time=get_time_text(datetime.combine(datetime.min.date(), good_time)))
