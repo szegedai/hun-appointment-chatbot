@@ -36,6 +36,9 @@ responses:
   utter_bye:
     - text: "Viszlát!"
 
+  utter_rephrase:
+    - text: "Elnézést, nem teljesen értettem. Át tudnád fogalmazni?"
+
 
 actions:
   - validate_idopont_form
