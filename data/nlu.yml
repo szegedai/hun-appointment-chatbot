@@ -82,6 +82,13 @@ nlu:
     - reggel nyolckor megfelel?
     - Reggel ráérsz?
     - Délután jó?
+    - legyen 16:20-kor
+    - legyen délután négykor
+    - este 7
+    - legyen 12:00
+    - 20:00
+    - 14 óra 46 perckor
+    - délután fél 2 után 5 perccel
 
 - intent: vege
   examples: |
