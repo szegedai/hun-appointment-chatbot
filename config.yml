@@ -9,6 +9,8 @@ pipeline:
   - name: DIETClassifier
     epochs: 50
     entity_recognition: False
+  - name: FallbackClassifier
+    threshold: 0.6
   - name: ResponseSelector
     epochs: 50
 

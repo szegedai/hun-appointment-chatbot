@@ -1,5 +1,4 @@
 version: "2.0"
-
 nlu:
 - intent: udvozol
   examples: |
@@ -9,7 +8,6 @@ nlu:
     - jó napot
     - jó estét
     - jó reggel
-
 - intent: idopontfoglalas
   examples: |
     - Szeretnék időpontot foglalni.
@@ -20,7 +18,6 @@ nlu:
     - Esetleg pénteken találkozni?
     - Konzultálni szeretnék
     - Időpontot foglalnék
-
 - intent: recommend_date_or_time
   examples: |
     - bármikor
@@ -41,7 +38,6 @@ nlu:
     - Mikor érnél rá egy konzultálni?
     - Szabad vagy mostanában valamikor?
     - Mikor vagy szabad?
-
 - intent: another_appointment
   examples: |
     - Legyen másik nap akkor
@@ -67,7 +63,6 @@ nlu:
     - kedden ráérsz?
     - a szerda jó esetleg?
     - egy találkozó csütörtökön?
-
 - intent: say_time
   examples: |
     - nyolc órakor
@@ -102,3 +97,7 @@ nlu:
     - Akkor ezt megbeszéltük
     - Viszlát
     - Rendben. Szia!
+
+- intent: nlu_fallback
+  examples: |
+    - Elnök szeretnék lenni

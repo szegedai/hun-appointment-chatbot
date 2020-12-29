@@ -2,6 +2,11 @@ version: "2.0"
 
 rules:
 
+- rule: fallback
+  steps:
+    - intent: nlu_fallback
+    - action: utter_rephrase
+
 - rule: udvozol
   steps:
   - intent: udvozol
