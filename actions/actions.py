@@ -14,7 +14,6 @@ from datetimerange import DateTimeRange
 def get_available_appointments():
     """
     Loads available appointment list.
-    :return:
     """
     now = datetime.now()
 
@@ -23,8 +22,15 @@ def get_available_appointments():
 
     res = []
     for day in data:
-        res.append({'start_date': datetime.fromisoformat(day['start_date']),
-                    'end_date': datetime.fromisoformat(day['end_date'])})
+        parsed = {'start_date': datetime.fromisoformat(day['start_date']),
+                  'end_date': datetime.fromisoformat(day['end_date'])}
+
+        if parsed['end_date'] <= now:
+            continue
+        if parsed['start_date'] <= now:
+            parsed['start_date'] = now
+
+        res.append(parsed)
 
     return res
 
@@ -32,12 +38,20 @@ def get_available_appointments():
 def get_date_text(dt):
     dt = datetime.combine(dt, datetime.min.time())
     candidates = datetime2text(dt, time_precision=2)
-    return candidates['dates'][0]
+
+    return f"{candidates['dates'][0]}"
 
 
-def get_time_text(dt):
+def get_time_text(dt, add_suffix=False):
     candidates = datetime2text(dt, time_precision=2)
-    return candidates['times'][-1]
+    cand = candidates['times'][-1]
+    if not cand.endswith('perccel') and add_suffix:
+        if cand[-1].isdigit():
+            cand += '-kor'
+        else:
+            cand += 'kor'
+
+    return cand
 
 
 def get_common_intervals(d_range_1, d_range_2):
@@ -54,9 +68,9 @@ def get_common_intervals(d_range_1, d_range_2):
 
 def is_good_date(candidates, option):
     for c in candidates:
-        print('C-OPTION', c, option)
         if get_common_intervals(c, option):
             return get_common_intervals(c, option)
+
     return None
 
 
@@ -68,7 +82,6 @@ class ActionRemoveAppointment(Action):
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-
         return [SlotSet('date', None), SlotSet('time', None)]
 
 
@@ -86,22 +99,24 @@ class ActionRecommendDate(Action):
         # Recommends date...
         if tracker.get_slot('date') is None:
             if len(self.appointments) >= 2:
-                response = f"Legközelebb {get_date_text(self.appointments[0])} és {get_date_text(self.appointments[1])} érek rá."
+                response = f"Legközelebb {get_date_text(self.appointments[0]['start_date'])} és {get_date_text(self.appointments[1]['start_date'])} érek rá."
             elif self.appointments:
-                response = f"Legközelebb {get_date_text(self.appointments[0])} érek rá."
+                response = f"Legközelebb {get_date_text(self.appointments[0]['start_date'])} érek rá."
             else:
                 response = "Sajnos nincs szabad időpontom mostanában..."
 
         # Recommends times...
         else:
             set_date = datetime.strptime(tracker.get_slot('date'), '%Y-%m-%d')
-            pos_times = [a['start_date'] for a in self.appointments if a['start_date'].date() == set_date.date()]
+            pos_times = [(a['start_date'], a['end_date']) for a in self.appointments if
+                         a['start_date'].date() == set_date.date()]
+            pos_times = [f'{get_time_text(beg)} és {get_time_text(end)} között' for beg, end in pos_times]
 
             if len(pos_times) > 1:
-                pos_times_s = ", ".join(list(map(get_time_text, pos_times[:-1])))
-                pos_times_s += f' és {get_time_text(pos_times[-1])}'
+                pos_times_s = ", ".join(pos_times[:-1])
+                pos_times_s += f' és {pos_times[-1]}'
             else:
-                pos_times_s = f'{get_time_text(pos_times[0])}'
+                pos_times_s = f'{pos_times[0]}'
 
             response = f"{get_date_text(set_date)} ráérek {pos_times_s}.".capitalize()
 
@@ -128,10 +143,8 @@ class ActionIdopontForm(Action):
                 if entity['entity'] == 'dates':
                     any_date = True
                     date_intervals = entity['value']
-                    print('DI', date_intervals)
                     for e_date in date_intervals:
                         overlap = is_good_date(self.appointments, e_date)
-                        print('OVERLAP', overlap)
                         if overlap and not good_date:
                             good_date = overlap['start_date'].date()
                             break
@@ -157,12 +170,14 @@ class ActionIdopontForm(Action):
                 if entity['entity'] == 'times':
                     any_time = True
                     time_intervals = entity['value']
-                    print('T_I', time_intervals)
-                    time_intervals = [{'start_date': datetime.combine(possible_date.date(), datetime.strptime(ti['start_date'], '%H:%M').time()),
-                                       'end_date': datetime.combine(possible_date.date(), datetime.strptime(ti['end_date'], '%H:%M').time())} for ti in time_intervals]
+                    time_intervals = [{'start_date': datetime.combine(possible_date.date(),
+                                                                      datetime.strptime(ti['start_date'],
+                                                                                        '%H:%M').time()),
+                                       'end_date': datetime.combine(possible_date.date(),
+                                                                    datetime.strptime(ti['end_date'], '%H:%M').time())}
+                                      for ti in time_intervals]
                     for e_time in time_intervals:
                         overlap = is_good_date(self.appointments, e_time)
-                        print('OVERLAP', overlap)
                         if overlap and not good_time:
                             good_time = overlap['start_date'].time()
                             break
@@ -179,8 +194,10 @@ class ActionIdopontForm(Action):
                     return []
                 else:
                     dispatcher.utter_message(template="utter_submit",
-                                             date=get_date_text(datetime.strptime(tracker.get_slot('date'), '%Y-%m-%d')),
-                                             time=get_time_text(datetime.combine(datetime.min.date(), good_time)))
+                                             date=get_date_text(
+                                                 datetime.strptime(tracker.get_slot('date'), '%Y-%m-%d')),
+                                             time=get_time_text(datetime.combine(datetime.min.date(), good_time),
+                                                                add_suffix=True))
 
                     return [SlotSet('time', good_time.strftime('%M:%H'))]
 
