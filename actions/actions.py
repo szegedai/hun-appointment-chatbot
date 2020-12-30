@@ -98,10 +98,13 @@ class ActionRecommendDate(Action):
 
         # Recommends date...
         if tracker.get_slot('date') is None:
-            if len(self.appointments) >= 2:
-                response = f"Legközelebb {get_date_text(self.appointments[0]['start_date'])} és {get_date_text(self.appointments[1]['start_date'])} érek rá."
-            elif self.appointments:
-                response = f"Legközelebb {get_date_text(self.appointments[0]['start_date'])} érek rá."
+            next_dates = [get_date_text(d['start_date']) for d in self.appointments]
+            if next_dates:
+                unique_next_dates = list(dict.fromkeys(next_dates))
+                if len(unique_next_dates) >= 2:
+                    response = f"Legközelebb {unique_next_dates[0]} és {unique_next_dates[1]} érek rá."
+                else:
+                    response = f"Legközelebb {unique_next_dates[0]} érek rá."
             else:
                 response = "Sajnos nincs szabad időpontom mostanában..."
 
