@@ -49,6 +49,8 @@ nlu:
     - Akkor legyen inkább a szerda
     - Tegyük egy másik napra
     - Legyen inkább a szerda
+    - tegyük inkább máskorra légyszi
+    - legyen inkább máskor kérlek
 
 - intent: say_date
   examples: |

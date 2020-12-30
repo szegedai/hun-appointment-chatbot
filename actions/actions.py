@@ -138,7 +138,7 @@ class ActionIdopontForm(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[EventType]:
 
-        response = ""
+        slots = {}
 
         if tracker.get_slot('date') is None and tracker.get_slot('time') is None:
             any_date, good_date = False, False
@@ -153,30 +153,31 @@ class ActionIdopontForm(Action):
                             break
 
             if not any_date:
-                response += "Okés. Mikor lenne jó?"
-                dispatcher.utter_message(text=response)
+                dispatcher.utter_message(text="Okés. Mikor lenne jó?")
                 return []
-            elif any_date:
-                if not good_date:
-                    response += "Sajnos nem érek rá akkor... Máskor esetleg?"
-                    dispatcher.utter_message(text=response)
-                    return []
-                else:
-                    response += f"Ráérek {get_date_text(good_date)}. Mikor lenne jó aznap?"
-                    dispatcher.utter_message(text=response)
-                    return [SlotSet('date', good_date.strftime('%Y-%m-%d'))]
 
-        if tracker.get_slot("date") is not None:
-            possible_date = datetime.strptime(tracker.get_slot('date'), '%Y-%m-%d')
+            if not good_date:
+                dispatcher.utter_message(text="Sajnos nem érek rá akkor... Máskor esetleg?")
+                return []
+
+            if good_date:
+                slots['date'] = SlotSet('date', good_date.strftime('%Y-%m-%d'))
+
+        if tracker.get_slot("date") or slots:
+            if tracker.get_slot('date'):
+                possible_date = datetime.strptime(tracker.get_slot('date'), '%Y-%m-%d').date()
+            else:
+                possible_date = good_date
+
             any_time, good_time = False, False
             for entity in tracker.latest_message['entities']:
                 if entity['entity'] == 'times':
                     any_time = True
                     time_intervals = entity['value']
-                    time_intervals = [{'start_date': datetime.combine(possible_date.date(),
+                    time_intervals = [{'start_date': datetime.combine(possible_date,
                                                                       datetime.strptime(ti['start_date'],
                                                                                         '%H:%M').time()),
-                                       'end_date': datetime.combine(possible_date.date(),
+                                       'end_date': datetime.combine(possible_date,
                                                                     datetime.strptime(ti['end_date'], '%H:%M').time())}
                                       for ti in time_intervals]
                     for e_time in time_intervals:
@@ -185,23 +186,32 @@ class ActionIdopontForm(Action):
                             good_time = overlap['start_date'].time()
                             break
 
-            if not any_time:
-                response += "Nem értettem, ne haragudj. Hány órakor találkozzunk?"
-                dispatcher.utter_message(text=response)
+            if not any_time and not slots:
+                dispatcher.utter_message(text="Nem értettem, ne haragudj. Hány órakor találkozzunk?")
                 return []
 
-            else:
-                if not good_time:
-                    response += f"Sajnos nem érek rá ekkor... Egy másik időpont esetleg?"
-                    dispatcher.utter_message(text=response)
-                    return []
+            if not good_time and not slots:
+                dispatcher.utter_message(text=f"Sajnos nem érek rá ekkor... Egy másik időpont esetleg?")
+                return []
+
+            if good_time:
+                slots['time'] = SlotSet('time', good_time.strftime('%M:%H'))
+
+        if slots:
+            if 'time' in list(slots.keys()):
+                if 'date' in list(slots.keys()):
+                    date = good_date
                 else:
-                    dispatcher.utter_message(template="utter_submit",
-                                             date=get_date_text(
-                                                 datetime.strptime(tracker.get_slot('date'), '%Y-%m-%d')),
-                                             time=get_time_text(datetime.combine(datetime.min.date(), good_time),
-                                                                add_suffix=True))
+                    date = datetime.strptime(tracker.get_slot('date'), '%Y-%m-%d')
 
-                    return [SlotSet('time', good_time.strftime('%M:%H'))]
+                dispatcher.utter_message(template="utter_submit",
+                                         date=get_date_text(date),
+                                         time=get_time_text(datetime.combine(datetime.min.date(), good_time),
+                                                            add_suffix=True))
 
-        return []
+            elif 'date' in list(slots.keys()):
+                dispatcher.utter_message(text=f"Ráérek {get_date_text(good_date)}. Mikor lenne jó aznap?")
+
+            return list(slots.values())
+        else:
+            return []
