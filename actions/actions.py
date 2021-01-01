@@ -66,10 +66,17 @@ def get_common_intervals(d_range_1, d_range_2):
         return None
 
 
-def is_good_date(candidates, option):
+def is_good_date(candidates, option, all_options=False):
+    all_overlaps = []
     for c in candidates:
         if get_common_intervals(c, option):
-            return get_common_intervals(c, option)
+            if not all_options:
+                return get_common_intervals(c, option)
+            else:
+                all_overlaps.append(get_common_intervals(c, option))
+
+    if all_overlaps and all_options:
+        return all_overlaps
 
     return None
 
@@ -147,10 +154,19 @@ class ActionIdopontForm(Action):
                     any_date = True
                     date_intervals = entity['value']
                     for e_date in date_intervals:
-                        overlap = is_good_date(self.appointments, e_date)
-                        if overlap and not good_date:
-                            good_date = overlap['start_date'].date()
-                            break
+                        overlaps = is_good_date(self.appointments, e_date, all_options=True)
+                        print(overlaps)
+                        if overlaps and not good_date:
+
+                            # If specified interval is longer then a day, suggest narrowing it...
+                            if len(overlaps) > 1:
+                                cands = sorted([d['start_date'] for d in overlaps])
+                                cands_s = f'{get_date_text(cands[0])} és {get_date_text(cands[1])}'
+                                dispatcher.utter_message(text=f"A legközelebbi két nap amikor ráérek a kért időszakban {cands_s} lesz.")
+                                return []
+                            else:
+                                good_date = overlaps[0]['start_date'].date()
+                                break
 
             if not any_date:
                 dispatcher.utter_message(text="Okés. Mikor lenne jó?")
@@ -183,8 +199,15 @@ class ActionIdopontForm(Action):
                     for e_time in time_intervals:
                         overlap = is_good_date(self.appointments, e_time)
                         if overlap and not good_time:
-                            good_time = overlap['start_date'].time()
-                            break
+
+                            # If specified interval is longer then an hour, suggest narrowing it...
+                            if (overlap['end_date'] - overlap['start_date']).seconds > 3600:
+                                dispatcher.utter_message(
+                                    text=f"{get_time_text(overlap['start_date'])} és {get_time_text(overlap['end_date'])} között ráérek. Mikor legyen pontosan?")
+                                return []
+                            else:
+                                good_time = overlap['start_date'].time()
+                                break
 
             if not any_time and not slots:
                 dispatcher.utter_message(text="Nem értettem, ne haragudj. Hány órakor találkozzunk?")
