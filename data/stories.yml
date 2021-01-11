@@ -2,7 +2,79 @@ version: "2.0"
 
 stories:
 
-- story: udvozol path
+- story: minden jo
   steps:
   - intent: udvozol
   - action: utter_udvozol
+  - intent: idopontfoglalas
+  - action: validate_idopont_form
+  - intent: say_date
+  - slot_was_set:
+      - date: "2021-02-17"
+  - action: validate_idopont_form
+  - intent: say_time
+  - slot_was_set:
+      - time: "13:00"
+  - action: validate_idopont_form
+  - intent: vege
+  - action: utter_bye
+
+- story: visszakerdez
+  steps:
+  - intent: udvozol
+  - action: utter_udvozol
+  - intent: idopontfoglalas
+  - action: validate_idopont_form
+  - intent: recommend_date_or_time
+  - action: action_recommend_date
+  - intent: say_date
+  - slot_was_set:
+      - date: "2021-02-03"
+  - action: validate_idopont_form
+  - intent: recommend_date_or_time
+  - action: action_recommend_date
+  - intent: say_time
+  - slot_was_set:
+      - time: "16:30"
+  - action: validate_idopont_form
+  - intent: vege
+  - action: utter_bye
+
+- story: visszakerdez datumra
+  steps:
+  - intent: udvozol
+  - action: utter_udvozol
+  - intent: idopontfoglalas
+  - action: validate_idopont_form
+  - intent: recommend_date_or_time
+  - action: action_recommend_date
+  - intent: say_date
+  - slot_was_set:
+      - date: "2021-02-16"
+  - action: validate_idopont_form
+  - intent: say_time
+  - slot_was_set:
+      - time: "14:50"
+  - action: validate_idopont_form
+  - intent: vege
+  - action: utter_bye
+
+- story: visszakerdez idopontra
+  steps:
+  - intent: udvozol
+  - action: utter_udvozol
+  - intent: idopontfoglalas
+  - action: validate_idopont_form
+  - intent: recommend_date_or_time
+  - action: action_recommend_date
+  - intent: say_date
+  - slot_was_set:
+      - date: "2021-02-13"
+  - action: validate_idopont_form
+  - intent: say_time
+  - slot_was_set:
+      - time: "09:15"
+  - action: validate_idopont_form
+  - intent: vege
+  - action: utter_bye
+
