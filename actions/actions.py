@@ -159,7 +159,6 @@ class ActionIdopontForm(Action):
                     date_intervals = entity['value']
                     for e_date in date_intervals:
                         overlaps = is_good_date(self.appointments, e_date, all_options=True)
-                        print(overlaps)
                         if overlaps and not good_date:
 
                             # If specified interval is longer then a day, suggest narrowing it...
@@ -202,7 +201,6 @@ class ActionIdopontForm(Action):
                                       for ti in time_intervals]
                     for e_time in time_intervals:
                         overlap = is_good_date(self.appointments, e_time)
-                        print(overlap)
                         if overlap and not good_time:
 
                             # If specified interval is longer then an hour, suggest narrowing it...
