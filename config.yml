@@ -1,5 +1,3 @@
-# Configuration for Rasa NLU.
-# https://rasa.com/docs/rasa/nlu/components/
 language: hu
 
 pipeline:
@@ -14,12 +12,7 @@ pipeline:
   - name: ResponseSelector
     epochs: 50
 
-# Configuration for Rasa Core.
-# https://rasa.com/docs/rasa/core/policies/
 policies:
-# # No configuration for policies was provided. The following default policies were used to train your model.
-# # If you'd like to customize them, uncomment and adjust the policies.
-# # See https://rasa.com/docs/rasa/policies for more information.
    - name: MemoizationPolicy
    - name: TEDPolicy
      max_history: 5
