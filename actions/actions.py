@@ -1,7 +1,7 @@
 import json
 from typing import Any, Text, Dict, List
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
@@ -71,9 +71,13 @@ def is_good_date(candidates, option, all_options=False):
     for c in candidates:
         if get_common_intervals(c, option):
             if not all_options:
-                return get_common_intervals(c, option)
+                common_interval = get_common_intervals(c, option)
+                common_interval['end_date'] += timedelta(minutes=1)  # TODO: find proper solution instead of hotfix
+                return common_interval
             else:
-                all_overlaps.append(get_common_intervals(c, option))
+                common_interval = get_common_intervals(c, option)
+                common_interval['end_date'] += timedelta(minutes=1)  # TODO: find proper solution instead of hotfix
+                all_overlaps.append(common_interval)
 
     if all_overlaps and all_options:
         return all_overlaps
@@ -198,6 +202,7 @@ class ActionIdopontForm(Action):
                                       for ti in time_intervals]
                     for e_time in time_intervals:
                         overlap = is_good_date(self.appointments, e_time)
+                        print(overlap)
                         if overlap and not good_time:
 
                             # If specified interval is longer then an hour, suggest narrowing it...
