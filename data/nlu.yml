@@ -2,6 +2,7 @@ version: "2.0"
 nlu:
 - intent: udvozol
   examples: |
+    - Szia
     - szia
     - hali
     - hello
