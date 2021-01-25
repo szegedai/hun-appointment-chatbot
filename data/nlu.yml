@@ -64,6 +64,7 @@ nlu:
     - kedden ráérsz?
     - a szerda jó esetleg?
     - egy találkozó csütörtökön?
+    - holnap ráérek
 - intent: say_time
   examples: |
     - nyolc órakor
@@ -102,3 +103,5 @@ nlu:
 - intent: nlu_fallback
   examples: |
     - Elnök szeretnék lenni
+    - Programozni akarok
+    - Meg szeretnék tanulni angolul
