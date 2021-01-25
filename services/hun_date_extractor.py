@@ -1,5 +1,5 @@
 from typing import Any, Dict, Text
-from datetime import timedelta
+from datetime import timedelta, date, time, datetime
 
 from rasa.nlu.extractors.extractor import EntityExtractor
 from rasa.shared.nlu.training_data.message import Message
@@ -32,14 +32,37 @@ class HunDateExtractor(EntityExtractor):
         except:
             return []
 
-        if date_matches:
+        date_matches_valid = []
+        for d in date_matches:
+            if d is not None:
+                if d['start_date'] or d['end_date']:
+                    if d['start_date'] is None:
+                        d['start_date'] = date.today()
+                    if d['end_date'] is None:
+                        # hack for max date, as actual max date may result to an overflow
+                        d['end_date'] = date(3000, 1, 1)
+                    date_matches_valid.append(d)
+
+        time_matches_valid = []
+        for d in time_matches:
+            if d is not None:
+                if d['start_date'] or d['end_date']:
+                    if d['start_date'] is None:
+                        now = datetime.now().time()
+                        d['start_date'] = time(now.hour, now.second)
+                    if d['end_date'] is None:
+                        max_time = time.max
+                        d['end_date'] = time(max_time.hour, max_time.second)
+                    time_matches_valid.append(d)
+
+        if date_matches_valid:
             dates = [{'start_date': d['start_date'].strftime('%Y-%m-%d'),
                       'end_date': (d['end_date'] + timedelta(days=1)).strftime('%Y-%m-%d')} for d in
                      date_matches]
         else:
             dates = []
 
-        if time_matches:
+        if time_matches_valid:
             times = [{'start_date': d['start_date'].strftime('%H:%M'), 'end_date': d['end_date'].strftime('%H:%M')} for
                      d in time_matches]
         else:
