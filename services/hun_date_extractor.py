@@ -26,11 +26,24 @@ class HunDateExtractor(EntityExtractor):
 
     def _match_entities(self, message: Message):
         message_text = message.get("text", "")
-        dates = [{'start_date': d['start_date'].strftime('%Y-%m-%d'),
-                  'end_date': (d['end_date'] + timedelta(days=1)).strftime('%Y-%m-%d')} for d in
-                 text2date(message_text)]
-        times = [{'start_date': d['start_date'].strftime('%H:%M'), 'end_date': d['end_date'].strftime('%H:%M')} for d in
-                 text2time(message_text)]
+        try:
+            date_matches = text2date(message_text)
+            time_matches = text2time(message_text)
+        except:
+            return []
+
+        if date_matches:
+            dates = [{'start_date': d['start_date'].strftime('%Y-%m-%d'),
+                      'end_date': (d['end_date'] + timedelta(days=1)).strftime('%Y-%m-%d')} for d in
+                     date_matches]
+        else:
+            dates = []
+
+        if time_matches:
+            times = [{'start_date': d['start_date'].strftime('%H:%M'), 'end_date': d['end_date'].strftime('%H:%M')} for
+                     d in time_matches]
+        else:
+            times = []
 
         res = []
 
