@@ -232,7 +232,7 @@ class ActionIdopontForm(Action):
                 return []
 
             if good_time:
-                slots['time'] = SlotSet('time', good_time.strftime('%M:%H'))
+                slots['time'] = SlotSet('time', good_time.strftime('%H:%M'))
 
         if slots:
             if 'time' in list(slots.keys()):
