@@ -7,6 +7,11 @@ rules:
     - intent: nlu_fallback
     - action: utter_rephrase
 
+- rule: out_of_scope
+  steps:
+    - intent: out_of_scope
+    - action: utter_out_of_scope
+
 - rule: udvozol
   steps:
   - intent: udvozol
@@ -41,4 +46,5 @@ rules:
 - rule: viszlat
   steps:
     - intent: vege
+    - action: action_remove_appointment
     - action: utter_bye

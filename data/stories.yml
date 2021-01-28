@@ -17,6 +17,7 @@ stories:
       - time: "13:00"
   - action: validate_idopont_form
   - intent: vege
+  - action: action_remove_appointment
   - action: utter_bye
 
 - story: visszakerdez
@@ -38,6 +39,7 @@ stories:
       - time: "16:30"
   - action: validate_idopont_form
   - intent: vege
+  - action: action_remove_appointment
   - action: utter_bye
 
 - story: visszakerdez datumra
@@ -57,6 +59,7 @@ stories:
       - time: "14:50"
   - action: validate_idopont_form
   - intent: vege
+  - action: action_remove_appointment
   - action: utter_bye
 
 - story: visszakerdez idopontra
@@ -76,5 +79,6 @@ stories:
       - time: "09:15"
   - action: validate_idopont_form
   - intent: vege
+  - action: action_remove_appointment
   - action: utter_bye
 
