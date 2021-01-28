@@ -49,6 +49,8 @@ nlu:
     - Legyen inkább a szerda
     - tegyük inkább máskorra légyszi
     - legyen inkább máskor kérlek
+    - Mégse jó a hétfő
+    - Nem érek rá akkor
 - intent: say_date
   examples: |
     - kedden
@@ -92,6 +94,8 @@ nlu:
     - 20:00
     - 14 óra 46 perckor
     - délután fél 2 után 5 perccel
+    - 15:23-kor ott vagyok
+    - 17 óra 34-kor ott leszek
 - intent: vege
   examples: |
     - Oké.
@@ -102,8 +106,10 @@ nlu:
     - Akkor ezt megbeszéltük
     - Viszlát
     - Rendben. Szia!
-- intent: nlu_fallback
+- intent: out_of_scope
   examples: |
     - Elnök szeretnék lenni
     - Programozni akarok
     - Meg szeretnék tanulni angolul
+    - Egy bigmacet szeretnék
+    - Megennék egy magyaros pizzát
