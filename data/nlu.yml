@@ -1,26 +1,26 @@
 version: "2.0"
-
 nlu:
 - intent: udvozol
   examples: |
+    - Szia
     - szia
     - hali
     - hello
     - jó napot
     - jó estét
     - jó reggel
-
+    - üdv
 - intent: idopontfoglalas
   examples: |
-    - Szeretnék időpontot foglalni.
-    - Időpontot akarok foglalni.
-    - Szeretnék időpontot foglalni keddre.
-    - Időpontot akarok foglalni holnapra.
-    - Holnap tudnánk konzultálni?
-    - Esetleg pénteken találkozni?
-    - Konzultálni szeretnék
-    - Időpontot foglalnék
-
+    - szeretnék időpontot foglalni.
+    - időpontot akarok foglalni.
+    - szeretnék időpontot foglalni keddre.
+    - időpontot akarok foglalni holnapra.
+    - szeretnék időpontot kérni
+    - holnap tudnánk konzultálni?
+    - esetleg pénteken találkozni?
+    - konzultálni szeretnék
+    - időpontot foglalnék
 - intent: recommend_date_or_time
   examples: |
     - bármikor
@@ -29,29 +29,29 @@ nlu:
     - amikor te ráérsz
     - amikor csak neked jó
     - rugalmas vagyok
-    - Neked mikor lenne jó?
-    - Nekem bármikor jó.
-    - Milyen opciók vannak?
-    - Tudnál ajánlani egy időpontot?
-    - Mikor tudnánk konzultálni?
-    - Esetleg tudnánk valamikor találkozni?
-    - Mikor érnél rá?
-    - Ráérsz valamikor?
-    - Mikor érnél rá egy találkozóra?
-    - Mikor érnél rá egy konzultálni?
-    - Szabad vagy mostanában valamikor?
-    - Mikor vagy szabad?
-
+    - neked mikor lenne jó?
+    - nekem bármikor jó.
+    - milyen opciók vannak?
+    - tudnál ajánlani egy időpontot?
+    - mikor tudnánk konzultálni?
+    - esetleg tudnánk valamikor találkozni?
+    - mikor érnél rá?
+    - ráérsz valamikor?
+    - mikor érnél rá egy találkozóra?
+    - mikor érnél rá egy konzultálni?
+    - szabad vagy mostanában valamikor?
+    - mikor vagy szabad?
 - intent: another_appointment
   examples: |
-    - Legyen másik nap akkor
-    - Akkor egy másik nap esetleg?
-    - Akkor legyen inkább a szerda
-    - Tegyük egy másik napra
-    - Legyen inkább a szerda
+    - legyen másik nap akkor
+    - akkor egy másik nap esetleg?
+    - akkor legyen inkább a szerda
+    - tegyük egy másik napra
+    - legyen inkább a szerda
     - tegyük inkább máskorra légyszi
     - legyen inkább máskor kérlek
-
+    - mégse jó a hétfő
+    - nem érek rá akkor
 - intent: say_date
   examples: |
     - kedden
@@ -67,7 +67,11 @@ nlu:
     - kedden ráérsz?
     - a szerda jó esetleg?
     - egy találkozó csütörtökön?
-
+    - holnap ráérek
+    - most
+    - most ráérek
+    - most jó
+    - akár most is jó nekem
 - intent: say_time
   examples: |
     - nyolc órakor
@@ -82,8 +86,8 @@ nlu:
     - három órakor jó?
     - két órakor ráérsz?
     - reggel nyolckor megfelel?
-    - Reggel ráérsz?
-    - Délután jó?
+    - reggel ráérsz?
+    - délután jó?
     - legyen 16:20-kor
     - legyen délután négykor
     - este 7
@@ -91,14 +95,22 @@ nlu:
     - 20:00
     - 14 óra 46 perckor
     - délután fél 2 után 5 perccel
-
+    - 15:23-kor ott vagyok
+    - 17 óra 34-kor ott leszek
 - intent: vege
   examples: |
-    - Oké.
-    - Oké, köszi.
-    - Köszi.
-    - Rendben.
-    - Ott leszek.
-    - Akkor ezt megbeszéltük
-    - Viszlát
-    - Rendben. Szia!
+    - oké
+    - oké, köszi
+    - köszi
+    - rendben
+    - ott leszek
+    - akkor ezt megbeszéltük
+    - viszlát
+    - rendben. szia!
+- intent: out_of_scope
+  examples: |
+    - elnök szeretnék lenni
+    - programozni akarok
+    - meg szeretnék tanulni angolul
+    - egy bigmacet szeretnék
+    - megennék egy magyaros pizzát

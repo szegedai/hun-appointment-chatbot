@@ -22,20 +22,19 @@ slots:
 
 responses:
   utter_udvozol:
-  - text: "Szia! Miben segíthetek?"
-
+  - text: Szia! Miben segíthetek?
   utter_submit:
-    - text: "Rendben, akkor {date} {time} találkozunk."
-
+  - text: Rendben, akkor {date} {time} találkozunk.
   utter_ask_date:
-    - text: "Melyik nap lenne jó neked?"
-
+  - text: Melyik nap lenne jó neked?
   utter_ask_time:
-    - text: "Hány órakor?"
-
+  - text: Hány órakor?
   utter_bye:
-    - text: "Viszlát!"
-
+  - text: Viszlát!
+  utter_rephrase:
+  - text: Elnézést, nem teljesen értettem. Át tudnád fogalmazni?
+  utter_out_of_scope:
+  - text: Sajnálom, ebben nem segíthetek.
 
 actions:
   - validate_idopont_form

@@ -85,6 +85,17 @@ def is_good_date(candidates, option, all_options=False):
     return None
 
 
+def is_multiple_days(candidates):
+    days = []
+    for d in candidates:
+        days.append(d['start_date'].date())
+
+    if len(set(days)) > 1:
+        return True
+    else:
+        return False
+
+
 class ActionRemoveAppointment(Action):
 
     def name(self) -> Text:
@@ -162,7 +173,7 @@ class ActionIdopontForm(Action):
                         if overlaps and not good_date:
 
                             # If specified interval is longer then a day, suggest narrowing it...
-                            if len(overlaps) > 1:
+                            if is_multiple_days(overlaps):
                                 cands = sorted([d['start_date'] for d in overlaps])
                                 cands_s = f'{get_date_text(cands[0])} és {get_date_text(cands[1])}'
                                 dispatcher.utter_message(text=f"A legközelebbi két nap amikor ráérek a kért időszakban {cands_s} lesz.")
@@ -221,7 +232,7 @@ class ActionIdopontForm(Action):
                 return []
 
             if good_time:
-                slots['time'] = SlotSet('time', good_time.strftime('%M:%H'))
+                slots['time'] = SlotSet('time', good_time.strftime('%H:%M'))
 
         if slots:
             if 'time' in list(slots.keys()):
