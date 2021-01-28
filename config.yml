@@ -10,7 +10,7 @@ pipeline:
     epochs: 50
     entity_recognition: False
   - name: FallbackClassifier
-    threshold: 0.4
+    threshold: 0.35
   - name: ResponseSelector
     epochs: 50
 
