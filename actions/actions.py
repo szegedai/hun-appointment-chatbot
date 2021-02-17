@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 
 from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
-from rasa_sdk.events import SlotSet, EventType
+from rasa_sdk.events import SlotSet, EventType, FollowupAction
 
 from hun_date_parser import datetime2text, text2datetime
 from datetimerange import DateTimeRange
@@ -188,7 +188,7 @@ class ActionIdopontForm(Action):
 
             if not good_date:
                 dispatcher.utter_message(text="Sajnos nem érek rá akkor... Máskor esetleg?")
-                return []
+                return [FollowupAction("action_recommend_date")]
 
             if good_date:
                 slots['date'] = SlotSet('date', good_date.strftime('%Y-%m-%d'))
@@ -229,7 +229,7 @@ class ActionIdopontForm(Action):
 
             if not good_time and not slots:
                 dispatcher.utter_message(text=f"Sajnos nem érek rá ekkor... Egy másik időpont esetleg?")
-                return []
+                return [FollowupAction("action_recommend_date")]
 
             if good_time:
                 slots['time'] = SlotSet('time', good_time.strftime('%H:%M'))
