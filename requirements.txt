@@ -2,5 +2,5 @@ rasa
 spacy==2.2.1
 fuzzywuzzy
 hun-date-parser==0.0.6
-git+git://github.com/oroszgy/spacy-hungarian-models/releases/download/hu_core_ud_lg-0.3.1/hu_core_ud_lg-0.3.1-py3-none-any.whl
+git+https//github.com/oroszgy/spacy-hungarian-models/releases/download/hu_core_ud_lg-0.3.1/hu_core_ud_lg-0.3.1-py3-none-any.whl
 datetimerange
