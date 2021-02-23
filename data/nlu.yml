@@ -52,7 +52,7 @@ nlu:
     - legyen inkább máskor kérlek
     - mégse jó a hétfő
     - nem érek rá akkor
-- intent: say_date
+- intent: say_date_or_time
   examples: |
     - kedden
     - vasárnap
@@ -72,8 +72,6 @@ nlu:
     - most ráérek
     - most jó
     - akár most is jó nekem
-- intent: say_time
-  examples: |
     - nyolc órakor
     - reggel
     - délelőtt

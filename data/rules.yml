@@ -24,15 +24,11 @@ rules:
 
 - rule: Activate form 2
   steps:
-  - intent: say_date
+  - intent: say_date_or_time
   - action: validate_idopont_form
+
 
 - rule: Activate form 3
-  steps:
-  - intent: say_time
-  - action: validate_idopont_form
-
-- rule: Activate form 4
   steps:
   - intent: recommend_date_or_time
   - action: action_recommend_date

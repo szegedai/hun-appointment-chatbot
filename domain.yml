@@ -4,8 +4,7 @@ intents:
   - udvozol
   - idopontfoglalas
   - vege
-  - say_date
-  - say_time
+  - say_date_or_time
   - recommend_date_or_time
   - another_appointment
 
