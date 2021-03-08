@@ -15,13 +15,13 @@ def get_available_appointments():
     """
     Loads available appointment list.
     """
-    now = datetime.now()
+    now = datetime.now()  # Get the current date
 
-    with open('test_data.json', 'r') as f:
+    with open('test_data.json', 'r') as f:  # Opening test_data
         data = json.load(f)
 
     res = []
-    for day in data:
+    for day in data:                                                              # Parsing the test_data into a dictionary
         parsed = {'start_date': datetime.fromisoformat(day['start_date']),
                   'end_date': datetime.fromisoformat(day['end_date'])}
 
@@ -224,7 +224,8 @@ class ActionIdopontForm(Action):
                             if is_multiple_days(overlaps):
                                 cands = sorted([d['start_date'] for d in overlaps])
                                 cands_s = f'{get_date_text(cands[0])} és {get_date_text(cands[1])}'
-                                dispatcher.utter_message(text=f"A legközelebbi két nap amikor ráérek a kért időszakban {cands_s} lesz.")
+                                dispatcher.utter_message(
+                                    text=f"A legközelebbi két nap amikor ráérek a kért időszakban {cands_s} lesz.")
                                 return []
                             else:
                                 good_date = overlaps[0]['start_date'].date()
