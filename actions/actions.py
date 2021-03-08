@@ -113,7 +113,6 @@ def rec_time(date, appointments):
     pos_times = [(a['start_date'], a['end_date']) for a in appointments if
                  a['start_date'].date() == set_date.date()]
     pos_times = [f'{get_time_text(beg)} és {get_time_text(end)} között' for beg, end in pos_times]
-    print(pos_times)
     if len(pos_times) > 1:
         pos_times_s = ", ".join(pos_times[:-1])
         pos_times_s += f' és {pos_times[-1]}'
@@ -154,7 +153,6 @@ class ActionRecommendDate(Action):
             response = ''
             possible_dates = []
             for date in dates:
-                print(f"{date} datecucc")
                 response += rec_time(date['start_date'], self.appointments)
                 possible_dates.append(date['start_date'])
             dispatcher.utter_message(response)
