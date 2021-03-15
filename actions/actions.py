@@ -97,6 +97,7 @@ def is_multiple_days(candidates):
 
 def rec_date(appointments):
     next_dates = [get_date_text(d['start_date']) for d in appointments]
+
     if next_dates:
         unique_next_dates = list(dict.fromkeys(next_dates))
         if len(unique_next_dates) >= 2:
@@ -113,15 +114,18 @@ def rec_time(date, appointments):
     pos_times = [(a['start_date'], a['end_date']) for a in appointments if
                  a['start_date'].date() == set_date.date()]
     pos_times = [f'{get_time_text(beg)} és {get_time_text(end)} között' for beg, end in pos_times]
+
     if len(pos_times) > 1:
         pos_times_s = ", ".join(pos_times[:-1])
         pos_times_s += f' és {pos_times[-1]}'
+        response = f"{get_date_text(set_date)} ráérek {pos_times_s}.".capitalize()
     elif len(pos_times) == 0:
-        return f"{get_date_text(set_date).capitalize()} nincs szabad időpontom sajnos."
+        response = f"{get_date_text(set_date).capitalize()} nincs szabad időpontom sajnos."
     else:
         pos_times_s = f'{pos_times[0]}'
+        response = f"{get_date_text(set_date)} ráérek {pos_times_s}.".capitalize()
 
-    return f"{get_date_text(set_date)} ráérek {pos_times_s}.".capitalize()
+    return response
 
 
 class ActionRemoveAppointment(Action):
