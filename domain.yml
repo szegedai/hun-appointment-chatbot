@@ -17,14 +17,20 @@ entities:
 - times
 slots:
   date:
-    type: text
+    type: rasa.shared.core.slots.TextSlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: true
   time:
     type: rasa.shared.core.slots.TextSlot
     initial_value: null
     auto_fill: true
     influence_conversation: true
   possible_dates:
-    type: list
+    type: rasa.shared.core.slots.ListSlot
+    initial_value: null
+    auto_fill: true
+    influence_conversation: true
 responses:
   utter_udvozol:
   - text: Szia! Miben segíthetek?
