@@ -15,17 +15,20 @@ def get_available_appointments():
     """
     Loads available appointment list.
     """
+
     now = datetime.now()  # Get the current date
 
     with open('test_data.json', 'r') as f:  # Opening test_data
         data = json.load(f)
 
+    # Parsing the test_data into a dictionary
     res = []
-    for day in data:                                                      # Parsing the test_data into a dictionary
+    for day in data:
         parsed = {'start_date': datetime.fromisoformat(day['start_date']),
                   'end_date': datetime.fromisoformat(day['end_date'])}
 
-        if parsed['end_date'] <= now:           # Normalizing the data
+        # Normalizing the data
+        if parsed['end_date'] <= now:
             continue
         if parsed['start_date'] <= now:
             parsed['start_date'] = now
@@ -35,14 +38,22 @@ def get_available_appointments():
     return res
 
 
-def get_date_text(dt):                                     # Converting dates into text
+def get_date_text(dt):
+    """
+     Converting dates into text.
+    """
+
     dt = datetime.combine(dt, datetime.min.time())
     candidates = datetime2text(dt, time_precision=2)
 
     return f"{candidates['dates'][0]}"
 
 
-def get_time_text(dt, add_suffix=False):                # Converting text into dates
+def get_time_text(dt, add_suffix=False):
+    """
+     Converting datetime to text
+    """
+
     candidates = datetime2text(dt, time_precision=2)
     cand = candidates['times'][-1]
     if not cand.endswith('perccel') and add_suffix:
@@ -54,7 +65,11 @@ def get_time_text(dt, add_suffix=False):                # Converting text into d
     return cand
 
 
-def get_common_intervals(d_range_1, d_range_2):         # Get the interval of start_date and end_date
+def get_common_intervals(d_range_1, d_range_2):
+    """
+    Get the interval of start_date and end_date
+    """
+
     dtr1 = DateTimeRange(d_range_1['start_date'], d_range_1['end_date'])
     dtr2 = DateTimeRange(d_range_2['start_date'], d_range_2['end_date'])
 
@@ -66,7 +81,11 @@ def get_common_intervals(d_range_1, d_range_2):         # Get the interval of st
         return None
 
 
-def is_good_date(candidates, option, all_options=False):  # Checks the intervals
+def is_good_date(candidates, option, all_options=False):  #
+    """
+    Checks the intervals
+    """
+
     all_overlaps = []
     for c in candidates:
         if get_common_intervals(c, option):
@@ -85,7 +104,11 @@ def is_good_date(candidates, option, all_options=False):  # Checks the intervals
     return None
 
 
-def is_multiple_days(candidates): # if the days is bigger than 1 return true, else false
+def is_multiple_days(candidates):
+    """
+    If the days is bigger than 1 return true, else false
+    """
+
     days = []
     for d in candidates:
         days.append(d['start_date'].date())
@@ -98,12 +121,18 @@ def is_multiple_days(candidates): # if the days is bigger than 1 return true, el
 
 class ActionRemoveAppointment(Action):
 
-    def name(self) -> Text:    # toString
+    def name(self) -> Text:
+        """
+        toString
+        """
         return "action_remove_appointment"
 
-    def run(self, dispatcher: CollectingDispatcher,  # Removes the appointment, clearing the slots
+    def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        """
+        Removes the appointment, clearing the slots
+        """
         return [SlotSet('date', None), SlotSet('time', None)]
 
 
@@ -111,7 +140,10 @@ class ActionRecommendDate(Action):
     def __init__(self):
         self.appointments = get_available_appointments()
 
-    def name(self) -> Text:  # toString
+    def name(self) -> Text:
+        """
+        toString
+        """
         return "action_recommend_date"
 
     def run(self, dispatcher: CollectingDispatcher,
@@ -153,7 +185,10 @@ class ActionIdopontForm(Action):
     def __init__(self):
         self.appointments = get_available_appointments()
 
-    def name(self) -> Text:  # toString
+    def name(self) -> Text:
+        """
+        toString
+        """
         return "validate_idopont_form"
 
     def run(self, dispatcher: CollectingDispatcher,
