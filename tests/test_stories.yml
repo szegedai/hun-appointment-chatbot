@@ -1,0 +1,27 @@
+version: "2.0"
+
+stories:
+
+- story: minden jo
+  steps:
+  - user: |
+      Szia
+    intent: udvozol
+  - action: utter_udvozol
+  - user: |
+      Időpontot szeretnék foglalni
+    intent: idopontfoglalas
+  - action: validate_idopont_form
+  - user: |
+      {date}
+    intent: say_date_or_time
+  - action: validate_idopont_form
+  - user: |
+      {time}
+    intent: say_date_or_time
+  - action: validate_idopont_form
+  - user: |
+      Rendben, viszlát!
+    intent: vege
+  - action: action_remove_appointment
+  - action: utter_bye
