@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 
 from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
-from rasa_sdk.events import SlotSet, EventType
+from rasa_sdk.events import SlotSet, EventType, FollowupAction
 
 from hun_date_parser import datetime2text, text2datetime
 from datetimerange import DateTimeRange
@@ -95,6 +95,38 @@ def is_multiple_days(candidates):
     else:
         return False
 
+def rec_date(appointments):
+    next_dates = [get_date_text(d['start_date']) for d in appointments]
+
+    if next_dates:
+        unique_next_dates = list(dict.fromkeys(next_dates))
+        if len(unique_next_dates) >= 2:
+            response = f"Legközelebb {unique_next_dates[0]} és {unique_next_dates[1]} érek rá."
+        else:
+            response = f"Legközelebb {unique_next_dates[0]} érek rá."
+    else:
+        response = "Sajnos nincs szabad időpontom mostanában..."
+
+    return response
+
+def rec_time(date, appointments):
+    set_date = datetime.strptime(date, '%Y-%m-%d')
+    pos_times = [(a['start_date'], a['end_date']) for a in appointments if
+                 a['start_date'].date() == set_date.date()]
+    pos_times = [f'{get_time_text(beg)} és {get_time_text(end)} között' for beg, end in pos_times]
+
+    if len(pos_times) > 1:
+        pos_times_s = ", ".join(pos_times[:-1])
+        pos_times_s += f' és {pos_times[-1]}'
+        response = f"{get_date_text(set_date)} ráérek {pos_times_s}.".capitalize()
+    elif len(pos_times) == 0:
+        response = f"{get_date_text(set_date).capitalize()} nincs szabad időpontom sajnos."
+    else:
+        pos_times_s = f'{pos_times[0]}'
+        response = f"{get_date_text(set_date)} ráérek {pos_times_s}.".capitalize()
+
+    return response
+
 
 class ActionRemoveAppointment(Action):
 
@@ -118,32 +150,48 @@ class ActionRecommendDate(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
 
+        # Recommends time on specific date
+        if tracker.latest_message['entities']:
+            dates = [e for entity in tracker.latest_message['entities']
+                     for e in entity['value'] if entity['entity'] == 'dates']
+            response = ''
+            possible_dates = []
+            for date in dates:
+                response += rec_time(date['start_date'], self.appointments)
+                possible_dates.append(date['start_date'])
+            dispatcher.utter_message(response)
+
+            return[SlotSet('possible_dates', possible_dates)]
+
         # Recommends date...
         if tracker.get_slot('date') is None:
-            next_dates = [get_date_text(d['start_date']) for d in self.appointments]
-            if next_dates:
-                unique_next_dates = list(dict.fromkeys(next_dates))
-                if len(unique_next_dates) >= 2:
-                    response = f"Legközelebb {unique_next_dates[0]} és {unique_next_dates[1]} érek rá."
-                else:
-                    response = f"Legközelebb {unique_next_dates[0]} érek rá."
-            else:
-                response = "Sajnos nincs szabad időpontom mostanában..."
+            response = rec_date(self.appointments)
 
         # Recommends times...
         else:
-            set_date = datetime.strptime(tracker.get_slot('date'), '%Y-%m-%d')
-            pos_times = [(a['start_date'], a['end_date']) for a in self.appointments if
-                         a['start_date'].date() == set_date.date()]
-            pos_times = [f'{get_time_text(beg)} és {get_time_text(end)} között' for beg, end in pos_times]
+            response = rec_time(tracker.get_slot('date'), self.appointments)
 
-            if len(pos_times) > 1:
-                pos_times_s = ", ".join(pos_times[:-1])
-                pos_times_s += f' és {pos_times[-1]}'
-            else:
-                pos_times_s = f'{pos_times[0]}'
+        dispatcher.utter_message(text=response)
+        return []
 
-            response = f"{get_date_text(set_date)} ráérek {pos_times_s}.".capitalize()
+class FActionRecommendDate(Action):
+    def __init__(self):
+        self.appointments = get_available_appointments()
+
+    def name(self) -> Text:
+        return "followup_action_recommend_date"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+
+        # Recommends date...
+        if tracker.get_slot('date') is None:
+            response = rec_date(self.appointments)
+
+        # Recommends times...
+        else:
+            response = rec_time(tracker.get_slot('date'), self.appointments)
 
         dispatcher.utter_message(text=response)
         return []
@@ -182,13 +230,21 @@ class ActionIdopontForm(Action):
                                 good_date = overlaps[0]['start_date'].date()
                                 break
 
+                elif entity['entity'] == 'times' and tracker.get_slot('possible_dates') is not None:
+                    for date in tracker.get_slot('possible_dates'):
+                        for appointment in self.appointments:
+                            if date in appointment['start_date'].strftime("%Y-%m-%d"):
+                                good_date = datetime.strptime(date, "%Y-%m-%d").date()
+                                any_date = True
+                                break
+
             if not any_date:
                 dispatcher.utter_message(text="Okés. Mikor lenne jó?")
                 return []
 
             if not good_date:
                 dispatcher.utter_message(text="Sajnos nem érek rá akkor... Máskor esetleg?")
-                return []
+                return [FollowupAction("followup_action_recommend_date")]
 
             if good_date:
                 slots['date'] = SlotSet('date', good_date.strftime('%Y-%m-%d'))
@@ -229,7 +285,7 @@ class ActionIdopontForm(Action):
 
             if not good_time and not slots:
                 dispatcher.utter_message(text=f"Sajnos nem érek rá ekkor... Egy másik időpont esetleg?")
-                return []
+                return [FollowupAction("followup_action_recommend_date")]
 
             if good_time:
                 slots['time'] = SlotSet('time', good_time.strftime('%H:%M'))
