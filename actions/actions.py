@@ -21,11 +21,11 @@ def get_available_appointments():
         data = json.load(f)
 
     res = []
-    for day in data:                                                              # Parsing the test_data into a dictionary
+    for day in data:                                                      # Parsing the test_data into a dictionary
         parsed = {'start_date': datetime.fromisoformat(day['start_date']),
                   'end_date': datetime.fromisoformat(day['end_date'])}
 
-        if parsed['end_date'] <= now:
+        if parsed['end_date'] <= now:           # Normalizing the data
             continue
         if parsed['start_date'] <= now:
             parsed['start_date'] = now
@@ -35,14 +35,14 @@ def get_available_appointments():
     return res
 
 
-def get_date_text(dt):
+def get_date_text(dt):                                     # Converting dates into text
     dt = datetime.combine(dt, datetime.min.time())
     candidates = datetime2text(dt, time_precision=2)
 
     return f"{candidates['dates'][0]}"
 
 
-def get_time_text(dt, add_suffix=False):
+def get_time_text(dt, add_suffix=False):                # Converting text into dates
     candidates = datetime2text(dt, time_precision=2)
     cand = candidates['times'][-1]
     if not cand.endswith('perccel') and add_suffix:
@@ -54,7 +54,7 @@ def get_time_text(dt, add_suffix=False):
     return cand
 
 
-def get_common_intervals(d_range_1, d_range_2):
+def get_common_intervals(d_range_1, d_range_2):         # Get the interval of start_date and end_date
     dtr1 = DateTimeRange(d_range_1['start_date'], d_range_1['end_date'])
     dtr2 = DateTimeRange(d_range_2['start_date'], d_range_2['end_date'])
 
@@ -66,7 +66,7 @@ def get_common_intervals(d_range_1, d_range_2):
         return None
 
 
-def is_good_date(candidates, option, all_options=False):
+def is_good_date(candidates, option, all_options=False):  # Checks the intervals
     all_overlaps = []
     for c in candidates:
         if get_common_intervals(c, option):
@@ -85,7 +85,7 @@ def is_good_date(candidates, option, all_options=False):
     return None
 
 
-def is_multiple_days(candidates):
+def is_multiple_days(candidates): # if the days is bigger than 1 return true, else false
     days = []
     for d in candidates:
         days.append(d['start_date'].date())
@@ -98,10 +98,10 @@ def is_multiple_days(candidates):
 
 class ActionRemoveAppointment(Action):
 
-    def name(self) -> Text:
+    def name(self) -> Text:    # toString
         return "action_remove_appointment"
 
-    def run(self, dispatcher: CollectingDispatcher,
+    def run(self, dispatcher: CollectingDispatcher,  # Removes the appointment, clearing the slots
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         return [SlotSet('date', None), SlotSet('time', None)]
@@ -111,14 +111,14 @@ class ActionRecommendDate(Action):
     def __init__(self):
         self.appointments = get_available_appointments()
 
-    def name(self) -> Text:
+    def name(self) -> Text:  # toString
         return "action_recommend_date"
 
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
 
-        # Recommends date...
+        # Recommends date, if the date slot is empty looks for a next available date
         if tracker.get_slot('date') is None:
             next_dates = [get_date_text(d['start_date']) for d in self.appointments]
             if next_dates:
@@ -130,7 +130,7 @@ class ActionRecommendDate(Action):
             else:
                 response = "Sajnos nincs szabad időpontom mostanában..."
 
-        # Recommends times...
+        # Recommends times,  if the date slot has a value and the time slot is empty looks for a next available time interval
         else:
             set_date = datetime.strptime(tracker.get_slot('date'), '%Y-%m-%d')
             pos_times = [(a['start_date'], a['end_date']) for a in self.appointments if
@@ -153,7 +153,7 @@ class ActionIdopontForm(Action):
     def __init__(self):
         self.appointments = get_available_appointments()
 
-    def name(self) -> Text:
+    def name(self) -> Text:  # toString
         return "validate_idopont_form"
 
     def run(self, dispatcher: CollectingDispatcher,
@@ -182,7 +182,7 @@ class ActionIdopontForm(Action):
                             else:
                                 good_date = overlaps[0]['start_date'].date()
                                 break
-
+            # Checking the value of any_date and good_date variables, and with that give back the right sentence
             if not any_date:
                 dispatcher.utter_message(text="Okés. Mikor lenne jó?")
                 return []
