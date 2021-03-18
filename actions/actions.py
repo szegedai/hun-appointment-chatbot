@@ -40,7 +40,7 @@ def get_available_appointments():
 
 def get_date_text(dt):
     """
-     Converting dates into text.
+    Converting dates into text.
     """
 
     dt = datetime.combine(dt, datetime.min.time())
@@ -51,7 +51,7 @@ def get_date_text(dt):
 
 def get_time_text(dt, add_suffix=False):
     """
-     Converting datetime to text
+    Converting datetime to text
     """
 
     candidates = datetime2text(dt, time_precision=2)
