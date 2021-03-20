@@ -89,15 +89,9 @@ def get_common_intervals(d_range_1, d_range_2):
         return None
 
 
-<<<<<<< HEAD
 def is_good_date(candidates, option, all_options=False):
     """
     Checks the intervals.
-=======
-def is_good_date(candidates, option, all_options=False):  #
-    """
-    Checks the intervals
->>>>>>> 7f4a370fd8430d23769dc85982748d69d7bc3a09
     """
 
     all_overlaps = []
@@ -120,11 +114,7 @@ def is_good_date(candidates, option, all_options=False):  #
 
 def is_multiple_days(candidates):
     """
-<<<<<<< HEAD
     If the days is bigger than 1 return true, else false.
-=======
-    If the days is bigger than 1 return true, else false
->>>>>>> 7f4a370fd8430d23769dc85982748d69d7bc3a09
     """
 
     days = []
@@ -200,7 +190,6 @@ class ActionRecommendDate(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
 
-<<<<<<< HEAD
         # Recommends time on specific date
         if tracker.latest_message['entities']:
             dates = [e for entity in tracker.latest_message['entities']
@@ -214,10 +203,7 @@ class ActionRecommendDate(Action):
 
             return[SlotSet('possible_dates', possible_dates)]
 
-        # Recommends date...
-=======
         # Recommends date, if the date slot is empty looks for a next available date
->>>>>>> 7f4a370fd8430d23769dc85982748d69d7bc3a09
         if tracker.get_slot('date') is None:
             response = rec_date(self.appointments)
 
@@ -287,7 +273,6 @@ class ActionIdopontForm(Action):
                             else:
                                 good_date = overlaps[0]['start_date'].date()
                                 break
-<<<<<<< HEAD
 
                 elif entity['entity'] == 'times' and tracker.get_slot('possible_dates') is not None:
                     for date in tracker.get_slot('possible_dates'):
@@ -297,9 +282,7 @@ class ActionIdopontForm(Action):
                                 any_date = True
                                 break
 
-=======
             # Checking the value of any_date and good_date variables, and with that give back the right sentence
->>>>>>> 7f4a370fd8430d23769dc85982748d69d7bc3a09
             if not any_date:
                 dispatcher.utter_message(text="Okés. Mikor lenne jó?")
                 return []
