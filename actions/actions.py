@@ -162,9 +162,6 @@ def rec_time(date, appointments):
 class ActionRemoveAppointment(Action):
 
     def name(self) -> Text:
-        """
-        toString
-        """
         return "action_remove_appointment"
 
     def run(self, dispatcher: CollectingDispatcher,
@@ -181,9 +178,6 @@ class ActionRecommendDate(Action):
         self.appointments = get_available_appointments()
 
     def name(self) -> Text:
-        """
-        toString
-        """
         return "action_recommend_date"
 
     def run(self, dispatcher: CollectingDispatcher,
@@ -242,9 +236,6 @@ class ActionIdopontForm(Action):
         self.appointments = get_available_appointments()
 
     def name(self) -> Text:
-        """
-        toString
-        """
         return "validate_idopont_form"
 
     def run(self, dispatcher: CollectingDispatcher,
