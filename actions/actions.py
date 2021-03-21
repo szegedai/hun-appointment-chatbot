@@ -51,11 +51,7 @@ def get_date_text(dt):
 
 def get_time_text(dt, add_suffix=False):
     """
-<<<<<<< HEAD
     Converting datetime to text.
-=======
-    Converting datetime to text
->>>>>>> 7f4a370fd8430d23769dc85982748d69d7bc3a09
     """
 
     candidates = datetime2text(dt, time_precision=2)
@@ -71,11 +67,7 @@ def get_time_text(dt, add_suffix=False):
 
 def get_common_intervals(d_range_1, d_range_2):
     """
-<<<<<<< HEAD
     Get the interval of start_date and end_date.
-=======
-    Get the interval of start_date and end_date
->>>>>>> 7f4a370fd8430d23769dc85982748d69d7bc3a09
     """
 
     dtr1 = DateTimeRange(d_range_1['start_date'], d_range_1['end_date'])
