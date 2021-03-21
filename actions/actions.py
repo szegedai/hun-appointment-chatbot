@@ -15,16 +15,19 @@ def get_available_appointments():
     """
     Loads available appointment list.
     """
-    now = datetime.now()
 
-    with open('test_data.json', 'r') as f:
+    now = datetime.now()  # Get the current date
+
+    with open('test_data.json', 'r') as f:  # Opening test_data
         data = json.load(f)
 
+    # Parsing the test_data into a dictionary
     res = []
     for day in data:
         parsed = {'start_date': datetime.fromisoformat(day['start_date']),
                   'end_date': datetime.fromisoformat(day['end_date'])}
 
+        # Normalizing the data
         if parsed['end_date'] <= now:
             continue
         if parsed['start_date'] <= now:
@@ -36,6 +39,10 @@ def get_available_appointments():
 
 
 def get_date_text(dt):
+    """
+    Converting dates into text.
+    """
+
     dt = datetime.combine(dt, datetime.min.time())
     candidates = datetime2text(dt, time_precision=2)
 
@@ -43,6 +50,10 @@ def get_date_text(dt):
 
 
 def get_time_text(dt, add_suffix=False):
+    """
+    Converting datetime to text.
+    """
+
     candidates = datetime2text(dt, time_precision=2)
     cand = candidates['times'][-1]
     if not cand.endswith('perccel') and add_suffix:
@@ -55,6 +66,10 @@ def get_time_text(dt, add_suffix=False):
 
 
 def get_common_intervals(d_range_1, d_range_2):
+    """
+    Get the interval of start_date and end_date.
+    """
+
     dtr1 = DateTimeRange(d_range_1['start_date'], d_range_1['end_date'])
     dtr2 = DateTimeRange(d_range_2['start_date'], d_range_2['end_date'])
 
@@ -67,6 +82,10 @@ def get_common_intervals(d_range_1, d_range_2):
 
 
 def is_good_date(candidates, option, all_options=False):
+    """
+    Checks the intervals.
+    """
+
     all_overlaps = []
     for c in candidates:
         if get_common_intervals(c, option):
@@ -86,6 +105,10 @@ def is_good_date(candidates, option, all_options=False):
 
 
 def is_multiple_days(candidates):
+    """
+    If the days is bigger than 1 return true, else false.
+    """
+
     days = []
     for d in candidates:
         days.append(d['start_date'].date())
@@ -136,6 +159,9 @@ class ActionRemoveAppointment(Action):
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        """
+        Removes the appointment, clearing the slots
+        """
         return [SlotSet('date', None), SlotSet('time', None)]
 
 
@@ -163,11 +189,11 @@ class ActionRecommendDate(Action):
 
             return[SlotSet('possible_dates', possible_dates)]
 
-        # Recommends date...
+        # Recommends date, if the date slot is empty looks for a next available date
         if tracker.get_slot('date') is None:
             response = rec_date(self.appointments)
 
-        # Recommends times...
+        # Recommends times,  if the date slot has a value and the time slot is empty looks for a next available time interval
         else:
             response = rec_time(tracker.get_slot('date'), self.appointments)
 
@@ -224,7 +250,8 @@ class ActionIdopontForm(Action):
                             if is_multiple_days(overlaps):
                                 cands = sorted([d['start_date'] for d in overlaps])
                                 cands_s = f'{get_date_text(cands[0])} és {get_date_text(cands[1])}'
-                                dispatcher.utter_message(text=f"A legközelebbi két nap amikor ráérek a kért időszakban {cands_s} lesz.")
+                                dispatcher.utter_message(
+                                    text=f"A legközelebbi két nap amikor ráérek a kért időszakban {cands_s} lesz.")
                                 return []
                             else:
                                 good_date = overlaps[0]['start_date'].date()
@@ -238,6 +265,7 @@ class ActionIdopontForm(Action):
                                 any_date = True
                                 break
 
+            # Checking the value of any_date and good_date variables, and with that give back the right sentence
             if not any_date:
                 dispatcher.utter_message(text="Okés. Mikor lenne jó?")
                 return []
