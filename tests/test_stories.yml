@@ -25,3 +25,6 @@ stories:
     intent: vege
   - action: action_remove_appointment
   - action: utter_bye
+
+    #  ["2021-03-24"]{"entity": "date"}
+    #  ["14:00"]{"entity": "time"}
