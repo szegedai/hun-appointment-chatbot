@@ -1,18 +1,16 @@
 language: hu
 
 pipeline:
-  - name: SpacyNLP
-  - name: SpacyTokenizer
-  - name: SpacyFeaturizer
-  - name: CountVectorsFeaturizer
+  - name: HFTransformersNLP
+    model_weights: "bert-base-uncased"
+    model_name: "bert"
+  - name: LanguageModelTokenizer
+  - name: LanguageModelFeaturizer
   - name: services.hun_date_extractor.HunDateExtractor
   - name: DIETClassifier
-    epochs: 50
+    epochs: 100
     entity_recognition: False
-  - name: FallbackClassifier
-    threshold: 0.35
-  - name: ResponseSelector
-    epochs: 50
+
 
 policies:
    - name: MemoizationPolicy
