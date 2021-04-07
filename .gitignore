@@ -127,4 +127,4 @@ dmypy.json
 .idea/
 
 # dont upload models
-models/
+backend/models/
