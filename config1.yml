@@ -6,9 +6,8 @@ pipeline:
     model_name: "bert"
   - name: LanguageModelTokenizer
   - name: LanguageModelFeaturizer
-  - name: services.hun_date_extractor.HunDateExtractor
   - name: DIETClassifier
-    epochs: 100
+    epochs: 200
     entity_recognition: False
 
 
