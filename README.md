@@ -51,21 +51,21 @@ You can test the bot with these pipelines:
 
 Explanation:
 
-**`--config`**:  Switch between the config files, that you currently want to test. 
+**`--config`** :  Switch between the config files, that you currently want to test. 
 
-**`--cross-validation`**: To test your model more extensively, use cross-validation, which automatically creates multiple train/test splits.  (~80% train/~20% test split)
+**`--cross-validation`** : To test your model more extensively, use cross-validation, which automatically creates multiple train/test splits.  (~80% train/~20% test split)
 
-**`--runs`**: Change the number of runs. 
+**`--runs`** : Change the number of runs. 
 
-**`--folds`**: Number of test in a run.
+**`--folds`** : Number of test in a run.
 
 
 Here, we compare scores for intent classification, side by side.
 
 |config| precision|accuracy|f1-score|
 |:---:|:---:|:---:|:---:|
-|config_1.yml (Bert)|0.675 |0.709|0.669|
-|config_2.yml (Spacy)|0.823 |0.794|0.787|
+|config1.yml (Bert)|0.675 |0.709|0.669|
+|config2.yml (Spacy)|0.823 |0.794|0.787|
 
 
 ## License
