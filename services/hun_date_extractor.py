@@ -27,8 +27,8 @@ class HunDateExtractor(EntityExtractor):
     def _match_entities(self, message: Message):
         message_text = message.get("text", "")
         try:
-            date_matches = text2date(message_text)
-            time_matches = text2time(message_text)
+            date_matches = text2date(message_text, expect_future_day=True)
+            time_matches = text2time(message_text, expect_future_day=True)
         except:
             return []
 
