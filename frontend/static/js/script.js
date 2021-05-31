@@ -1,4 +1,11 @@
 // ========================== greet user proactively ========================
+var ID = function () {
+	// Math.random should be unique because of its seeding algorithm.
+	// Convert it to base 36 (numbers + letters), and grab the first 9 characters
+	// after the decimal.
+	return '_' + Math.random().toString(36).substr(2, 9);
+};
+
 $(document).ready(function () {
 
 	//drop down menu for close, restart conversation & clear the chats.
@@ -13,8 +20,8 @@ $(document).ready(function () {
 
 	//global variables
 	action_name = "action_greet_user";
-	user_id = "user123";
-
+	user_id = ID();
+	console.log(user_id);
 	//if you want the bot to start the conversation
 	// action_trigger();
 
