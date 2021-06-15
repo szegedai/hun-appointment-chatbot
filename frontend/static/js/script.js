@@ -20,6 +20,7 @@ $(document).ready(function () {
 
 	//global variables
 	action_name = "action_greet_user";
+	PORT = "3005";
 	user_id = ID();
 	console.log(user_id);
 	//if you want the bot to start the conversation
@@ -145,7 +146,10 @@ function scrollToBottomOfResults() {
 
 //============== send the user message to rasa server =============================================
 function send(message) {
-	var url = document.location.protocol + "//" + document.location.hostname;
+	
+	var url = document.location.protocol + "//" + document.location.hostname + ":" + PORT;
+	console.log(url);
+	console.log(PORT);
 	$.ajax({
 
 		url: url + "/rasa/webhooks/rest/webhook",
@@ -167,7 +171,7 @@ function send(message) {
 
 		},
 		error: function (xhr, textStatus, errorThrown) {
-
+			
 			if (message.toLowerCase() == '/restart') {
 				// $("#userInput").prop('disabled', false);
 
@@ -175,7 +179,7 @@ function send(message) {
 				// action_trigger();
 				// return;
 			}
-
+			console.log("url =" + document.location.protocol + " asd " + document.location.hostname);
 			// if there is no response from rasa server
 			setBotResponse("");
 			console.log("Error from bot end: ", textStatus);
