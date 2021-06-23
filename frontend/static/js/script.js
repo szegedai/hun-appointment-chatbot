@@ -128,7 +128,7 @@ $("#sendButton").on("click", function (e) {
 
 //==================================== Set user response =====================================
 function setUserResponse(message) {
-	var UserResponse = '<img class="userAvatar" src=' + "/img/userAvatar.jpg" + '><p class="userMsg">' + message + ' </p><div class="clearfix"></div>';
+	var UserResponse = '<img class="userAvatar" src=' + "http://inf.u-szeged.hu/algmi/chatbot/img/userAvatar.jpg" + '><p class="userMsg">' + message + ' </p><div class="clearfix"></div>';
 	$(UserResponse).appendTo(".chats").show("slow");
 
 	$(".usrInput").val("");
@@ -147,7 +147,8 @@ function scrollToBottomOfResults() {
 //============== send the user message to rasa server =============================================
 function send(message) {
 	
-	var url = document.location.protocol + "//" + document.location.hostname + ":" + PORT;
+	//var url = //document.location.protocol + "//" + document.location.hostname + ":" + PORT;
+	var url = "http://inf.u-szeged.hu/algmi/chatbot/";
 	console.log(url);
 	console.log(PORT);
 	$.ajax({
@@ -179,7 +180,7 @@ function send(message) {
 				// action_trigger();
 				// return;
 			}
-			console.log("url =" + document.location.protocol + " asd " + document.location.hostname);
+			//console.log("url =" + document.location.protocol + " asd " + document.location.hostname);
 			// if there is no response from rasa server
 			setBotResponse("");
 			console.log("Error from bot end: ", textStatus);
@@ -197,7 +198,7 @@ function setBotResponse(response) {
 			//if there is no response from Rasa, send  fallback message to the user
 			var fallbackMsg = "I am facing some issues, please try again later!!!";
 
-			var BotResponse = '<img class="botAvatar" src="/img/botAvatar.png"/><p class="botMsg">' + fallbackMsg + '</p><div class="clearfix"></div>';
+			var BotResponse = '<img class="botAvatar" src="/http://inf.u-szeged.hu/algmi/chatbot/img/botAvatar.png"/><p class="botMsg">' + fallbackMsg + '</p><div class="clearfix"></div>';
 
 			$(BotResponse).appendTo(".chats").hide().fadeIn(1000);
 			scrollToBottomOfResults();
@@ -209,7 +210,7 @@ function setBotResponse(response) {
 
 				//check if the response contains "text"
 				if (response[i].hasOwnProperty("text")) {
-					var BotResponse = '<img class="botAvatar" src="/img/botAvatar.png"/><p class="botMsg">' + response[i].text + '</p><div class="clearfix"></div>';
+					var BotResponse = '<img class="botAvatar" src="http://inf.u-szeged.hu/algmi/chatbot/img/botAvatar.png"/><p class="botMsg">' + response[i].text + '</p><div class="clearfix"></div>';
 					$(BotResponse).appendTo(".chats").hide().fadeIn(1000);
 				}
 
@@ -534,7 +535,7 @@ function handleLocationAccessError(error) {
 //======================================bot typing animation ======================================
 function showBotTyping() {
 
-	var botTyping = '<img class="botAvatar" id="botAvatar" src="/img/botAvatar.png"/><div class="botTyping">' + '<div class="bounce1"></div>' + '<div class="bounce2"></div>' + '<div class="bounce3"></div>' + '</div>'
+	var botTyping = '<img class="botAvatar" id="botAvatar" src="http://inf.u-szeged.hu/algmi/chatbot/img/botAvatar.png"/><div class="botTyping">' + '<div class="bounce1"></div>' + '<div class="bounce2"></div>' + '<div class="bounce3"></div>' + '</div>'
 	$(botTyping).appendTo(".chats");
 	$('.botTyping').show();
 	scrollToBottomOfResults();
