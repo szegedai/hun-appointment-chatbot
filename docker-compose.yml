@@ -22,7 +22,7 @@ services:
       build: 
         context: action_server
       volumes:
-        - ./action_server:/app/actions
+        - ./action_server/test_data.json:/app/test_data.json
       ports:
         - "5055:5055"
     chatbot_ui:
