@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import datetime
 import pandas as pd
 import json
@@ -35,12 +37,12 @@ def generate_dates(dates):
 
     {"start_date": f"{dates[7]}T12:00", "end_date": f"{dates[7]}T18:00"},
 
-    {"start_date": f"{dates[8]}T07:45", "end_date": f"{dates[7]}T12:15"},
+    {"start_date": f"{dates[8]}T07:45", "end_date": f"{dates[8]}T12:15"},
     {"start_date": f"{dates[8]}T13:15", "end_date": f"{dates[8]}T16:15"},
 
     {"start_date": f"{dates[9]}T12:00", "end_date": f"{dates[9]}T18:00"},
 
-    {"start_date": f"{dates[10]}T14:00", "end_date": f"{dates[10]}T13:00"},
+    {"start_date": f"{dates[10]}T14:00", "end_date": f"{dates[10]}T21:00"},
 
     {"start_date": f"{dates[11]}T14:00", "end_date": f"{dates[11]}T17:00"},
 
@@ -51,5 +53,5 @@ def generate_dates(dates):
 
 if __name__ == '__main__':
     weekdays = generate_dates(get_bdates(datetime.datetime.now()+datetime.timedelta(days=1), 13))
-    with open('./action_server/test_data.json', 'w') as f:
+    with open('/home/herdinai/hun-appointment-chatbot/action_server/test_data.json', 'w') as f:
       json.dump(weekdays, f, indent=4)
