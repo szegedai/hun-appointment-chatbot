@@ -21,8 +21,6 @@ services:
       container_name: "action_server"
       build: 
         context: action_server
-      volumes:
-        - ./action_server/test_data.json:/app/test_data.json
       ports:
         - "5055:5055"
     chatbot_ui:
