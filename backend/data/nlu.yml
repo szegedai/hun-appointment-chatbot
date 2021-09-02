@@ -10,6 +10,9 @@ nlu:
     - jó estét
     - jó reggel
     - üdv
+    - jó napot kívánok
+    - üdvözlöm
+    - tiszteletem
 - intent: idopontfoglalas
   examples: |
     - szeretnék időpontot foglalni.
@@ -24,7 +27,7 @@ nlu:
 - intent: recommend_date_or_time
   examples: |
     - bármikor
-    - ráéreg egész nap
+    - ráérek egész nap
     - szabad vagyok, amikor neked jó
     - amikor te ráérsz
     - amikor csak neked jó
