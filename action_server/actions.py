@@ -249,6 +249,7 @@ class ActionIdopontForm(Action):
                             # If specified interval is longer then a day, suggest narrowing it...
                             if is_multiple_days(overlaps):
                                 cands = sorted([d['start_date'] for d in overlaps])
+                                cands = list(dict.fromkeys([cand.date() for cand in cands]).keys())
                                 cands_s = f'{get_date_text(cands[0])} és {get_date_text(cands[1])}'
                                 dispatcher.utter_message(
                                     text=f"A legközelebbi két nap amikor ráérek a kért időszakban {cands_s} lesz.")
