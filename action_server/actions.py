@@ -193,7 +193,8 @@ class ActionRecommendDate(Action):
         if tracker.get_slot('date') is None:
             response = rec_date(self.appointments)
 
-        # Recommends times,  if the date slot has a value and the time slot is empty looks for a next available time interval
+        # Recommends times, if the date slot has a value
+        # and the time slot is empty looks for a next available time interval
         else:
             response = rec_time(tracker.get_slot('date'), self.appointments)
 
@@ -296,16 +297,24 @@ class ActionIdopontForm(Action):
                                                                     datetime.strptime(ti['end_date'], '%H:%M').time())}
                                       for ti in time_intervals]
                     for e_time in time_intervals:
-                        overlap = is_good_date(self.appointments, e_time)
+                        overlap = is_good_date(self.appointments, e_time, True)
                         if overlap and not good_time:
 
                             # If specified interval is longer then an hour, suggest narrowing it...
-                            if (overlap['end_date'] - overlap['start_date']).seconds > 3600:
+                            if (overlap[-1]['end_date'] - overlap[0]['start_date']).seconds > 3600:
+                                intervals = [f"{get_time_text(overl['start_date'])} és"
+                                             f" {get_time_text(overl['end_date'])}" for overl in overlap]
+                                if len(intervals) > 1:
+                                    resp = ', '.join(intervals[:-1])
+                                    resp += f" és {intervals[-1]}"
+                                else:
+                                    resp = f"{intervals[0]}"
+
                                 dispatcher.utter_message(
-                                    text=f"{get_time_text(overlap['start_date'])} és {get_time_text(overlap['end_date'])} között ráérek. Mikor legyen pontosan?")
+                                    text=f"{resp.capitalize()} között ráérek. Mikor legyen pontosan?")
                                 return []
                             else:
-                                good_time = overlap['start_date'].time()
+                                good_time = overlap[0]['start_date'].time()
                                 break
 
             if not any_time and not slots:
