@@ -7,7 +7,6 @@ const mongoose = require('mongoose');
 
 const PORT = 3000;
 
-
 const dbUrl = 'mongodb+srv://<user>:<password>@<cluster>.s0pds.mongodb.net/test';
 mongoose.connect(dbUrl);
 
@@ -24,7 +23,7 @@ var FeedbackModel = require('./feedback.model');
 app.use(cors())
 app.use(express.static(path.join(__dirname, 'static')));
 
-app.get('/', (req, res, next) => {
+app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 }).post((req, res, next) => {
     if(req.body.user_id && req.body.description){
