@@ -7,12 +7,16 @@ const PORT = 3000;
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 const dbUrl = 'mongodb+srv://<user>:<password>@<cluster>.s0pds.mongodb.net/test';
 
 =======
 //const dbUrl = 'mongodb+srv://<user>:<password>@<cluster>.s0pds.mongodb.net/test';
 const dbUrl = 'mongodb+srv://admin:valami_amit_megjegyzek123@feedbackcluster.s0pds.mongodb.net/test';
 >>>>>>> b903390 (db connection)
+=======
+const dbUrl = 'mongodb+srv://<user>:<password>@<cluster>.s0pds.mongodb.net/test';
+>>>>>>> be9e053 (maybe stuff)
 mongoose.connect(dbUrl);
 
 mongoose.connection.on('connected', () => {
