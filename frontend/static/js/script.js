@@ -72,11 +72,13 @@ function restartConversation() {
 // Not actually triggering action as it would always create a new mongodb instance
 function action_trigger(){
 	setTimeout(function () {
+	        hideBotTyping();
 			var msg = "Szia! Egy időpontfoglalásra megvalósított virtuális asszisztens vagyok. Miben segíthetek?";
 			var BotResponse = '<img class="botAvatar" src="/http://inf.u-szeged.hu/algmi/chatbot/img/botAvatar.png"/><p class="botMsg">' + msg + '</p><div class="clearfix"></div>';
 			$(BotResponse).appendTo(".chats").hide().fadeIn(1000);
 			scrollToBottomOfResults();
 		}, 500)
+	$("#userInput").prop('disabled', false);
 }
 
 //=====================================	user enter or sends the message =====================
