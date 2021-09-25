@@ -74,7 +74,7 @@ function action_trigger(){
 	setTimeout(function () {
 	        hideBotTyping();
 			var msg = "Szia! Egy időpontfoglalásra megvalósított virtuális asszisztens vagyok. Miben segíthetek?";
-			var BotResponse = '<img class="botAvatar" src="/http://inf.u-szeged.hu/algmi/chatbot/img/botAvatar.png"/><p class="botMsg">' + msg + '</p><div class="clearfix"></div>';
+			var BotResponse = '<img class="botAvatar" src="http://inf.u-szeged.hu/algmi/chatbot/img/botAvatar.png"/><p class="botMsg">' + msg + '</p><div class="clearfix"></div>';
 			$(BotResponse).appendTo(".chats").hide().fadeIn(1000);
 			scrollToBottomOfResults();
 		}, 500)
