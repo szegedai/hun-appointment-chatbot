@@ -22,12 +22,14 @@ mongoose.connection.on('error', (error) => {
 
 var FeedbackModel = require('./feedback.model');
 
-app.use(cors())
+app.use(cors());
 app.use(express.static(path.join(__dirname, 'static')));
 
 app.get('/', (req, res, next) => {
     res.sendFile(__dirname + '/index.html');
-}).post((req, res, next) => {
+})
+
+app.post('/feedback', (req, res, next) => {
     if(req.body.user_id && req.body.description){
         var feedback = new FeedbackModel(req.body.user_id, req.body.description);
         feedback.save((err, doc) => {
