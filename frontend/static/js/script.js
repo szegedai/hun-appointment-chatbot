@@ -7,7 +7,8 @@ var ID = function () {
 };
 
 $(document).ready(function () {
-
+    $(".profile_div").toggle();
+	$(".widget").toggle();
 	//drop down menu for close, restart conversation & clear the chats.
 	$('.dropdown-trigger').dropdown();
 
@@ -15,16 +16,16 @@ $(document).ready(function () {
 	$('.modal').modal();
 
 	//enable this if u have configured the bot to start the conversation. 
-	// showBotTyping();
-	// $("#userInput").prop('disabled', true);
+	showBotTyping();
+	$("#userInput").prop('disabled', true);
 
 	//global variables
-	action_name = "action_greet_user";
+	//action_name = "action_greet_user";
 	PORT = "3005";
 	user_id = ID();
 	console.log(user_id);
 	//if you want the bot to start the conversation
-	// action_trigger();
+	action_trigger();
 
 })
 
@@ -44,8 +45,7 @@ function restartConversation() {
 }
 
 // ========================== let the bot start the conversation ========================
-function action_trigger() {
-
+/*function action_trigger() {
 	// send an event to the bot, so that bot can start the conversation by greeting the user
 	$.ajax({
 		url: `http://127.0.0.1/rasa/conversations/${user_id}/execute`,
@@ -68,6 +68,15 @@ function action_trigger() {
 			$("#userInput").prop('disabled', false);
 		}
 	});
+}*/
+// Not actually triggering action as it would always create a new mongodb instance
+function action_trigger(){
+	setTimeout(function () {
+			var msg = "Szia! Egy időpontfoglalásra megvalósított virtuális asszisztens vagyok. Miben segíthetek?";
+			var BotResponse = '<img class="botAvatar" src="/http://inf.u-szeged.hu/algmi/chatbot/img/botAvatar.png"/><p class="botMsg">' + msg + '</p><div class="clearfix"></div>';
+			$(BotResponse).appendTo(".chats").hide().fadeIn(1000);
+			scrollToBottomOfResults();
+		}, 500)
 }
 
 //=====================================	user enter or sends the message =====================
