@@ -7,9 +7,3 @@ var feedbackSchema = new mongoose.Schema({
 }, {collection: 'feedback'});
 
 mongoose.model('feedback', feedbackSchema);
-<<<<<<< HEAD
-=======
-mongoose.model('feedback', feedbackSchema);
->>>>>>> b903390 (db connection)
-=======
->>>>>>> 1cd241e (im lost)
