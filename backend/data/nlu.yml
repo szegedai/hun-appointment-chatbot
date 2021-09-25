@@ -11,8 +11,6 @@ nlu:
     - jó reggel
     - üdv
     - jó napot kívánok
-    - üdvözlöm
-    - tiszteletem
 - intent: idopontfoglalas
   examples: |
     - szeretnék időpontot foglalni.
