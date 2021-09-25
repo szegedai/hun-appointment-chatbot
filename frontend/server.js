@@ -8,8 +8,7 @@ const mongoose = require('mongoose');
 const PORT = 3000;
 
 
-//const dbUrl = 'mongodb+srv://<user>:<password>@<cluster>.s0pds.mongodb.net/test';
-const dbUrl = 'mongodb+srv://admin:valami_amit_megjegyzek123@feedbackcluster.s0pds.mongodb.net/test';
+const dbUrl = 'mongodb+srv://<user>:<password>@<cluster>.s0pds.mongodb.net/test';
 mongoose.connect(dbUrl);
 
 mongoose.connection.on('connected', () => {
