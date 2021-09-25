@@ -6,8 +6,13 @@ const mongoose = require('mongoose');
 const PORT = 3000;
 
 
+<<<<<<< HEAD
 const dbUrl = 'mongodb+srv://<user>:<password>@<cluster>.s0pds.mongodb.net/test';
 
+=======
+//const dbUrl = 'mongodb+srv://<user>:<password>@<cluster>.s0pds.mongodb.net/test';
+const dbUrl = 'mongodb+srv://admin:valami_amit_megjegyzek123@feedbackcluster.s0pds.mongodb.net/test';
+>>>>>>> b903390 (db connection)
 mongoose.connect(dbUrl);
 
 mongoose.connection.on('connected', () => {
@@ -35,4 +40,8 @@ app.get('/', (req, res, next) => {
     }
 });
 server.listen(PORT);
+<<<<<<< HEAD
 console.log(`Server is running on port ${PORT}`);
+=======
+console.log(`Server is running on port ${PORT}`);
+>>>>>>> b903390 (db connection)

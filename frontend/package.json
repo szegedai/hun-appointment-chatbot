@@ -10,7 +10,11 @@
   "author": "Jitesh Gaikwad",
   "license": "ISC",
   "dependencies": {
+<<<<<<< HEAD
     "cors":"2.8.5",
+=======
+    "cors": "2.8.5",
+>>>>>>> b903390 (db connection)
     "express": "^4.17.1",
     "mongoose": "^5.12.7"
   }
