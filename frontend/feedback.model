@@ -6,8 +6,4 @@ var feedbackSchema = new mongoose.Schema({
     createdAt: {type: Date, default: Date.now}
 }, {collection: 'feedback'});
 
-<<<<<<< HEAD
 mongoose.model('feedback', feedbackSchema);
-=======
-mongoose.model('feedback', feedbackSchema);
->>>>>>> 1ad42c8b7346ced7f049ccc804008d6f6b6c22ef
