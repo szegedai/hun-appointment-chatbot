@@ -5,6 +5,15 @@ body {
 
 /* ============= css related to chats =============== */
 
+#contrainer {
+    float: left;
+    width: 60%;
+    margin-left: 1%;
+}
+#description {
+    text-align: justify;
+}
+
 .widget {
 	display: none;
 	width: 350px;
