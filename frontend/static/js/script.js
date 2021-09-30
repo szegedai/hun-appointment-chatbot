@@ -44,6 +44,24 @@ function restartConversation() {
 	send("/restart");
 }
 
+$( "#feedback-btn" ).on("click", function(){
+    alert("clicked");
+
+    $.ajax({
+		url: `http://inf.u-szeged.hu/algmi/chatbot/`,
+		type: "POST",
+		contentType: "application/json",
+		data: JSON.stringify({ "user_id": user_id, "description": "MappingPolicy"}),
+		success: function () {
+			console.log("Sikeres visszajelzés!");
+		},
+		error: function () {
+			// if there is no response from rasa server
+			console.log("Hiba történt az adatbázisba való feltöltés során.");
+		}
+	});
+})
+
 // ========================== let the bot start the conversation ========================
 /*function action_trigger() {
 	// send an event to the bot, so that bot can start the conversation by greeting the user
