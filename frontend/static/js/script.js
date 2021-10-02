@@ -45,13 +45,14 @@ function restartConversation() {
 }
 
 $( "#feedback-btn" ).on("click", function(){
-    alert("clicked");
+    text = $("#feedback").val();
+    date = new Date.toLocaleString();
 
     $.ajax({
-		url: `http://inf.u-szeged.hu/algmi/chatbot/`,
+		url: "https://chatbot-feedback.herokuapp.com/",
 		type: "POST",
 		contentType: "application/json",
-		data: JSON.stringify({ "user_id": user_id, "description": "MappingPolicy"}),
+		data: JSON.stringify({ "user_id": user_id, "description": text, "createdAt": date}),
 		success: function () {
 			console.log("Sikeres visszajelzés!");
 		},
