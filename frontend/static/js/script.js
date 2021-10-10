@@ -46,7 +46,7 @@ function restartConversation() {
 
 $( "#feedback-btn" ).on("click", function(){
     text = $("#feedback").val();
-    date = new Date.toLocaleString();
+    date = new Date().toLocaleString();
 
     $.ajax({
 		url: "https://chatbot-feedback.herokuapp.com/",
@@ -56,12 +56,12 @@ $( "#feedback-btn" ).on("click", function(){
 		success: function () {
 			console.log("Sikeres visszajelzés!");
 			$("#feedback").val("");
-			$("#result").val("Sikeres visszajelzés")
+			$("#result").text("Sikeres visszajelzés")
 		},
 		error: function () {
 			console.log("Hiba történt az adatbázisba való feltöltés során.");
 			$("#feedback").val("");
-			$("#result").val("Hiba történt az adatbázisba való feltöltés során.")
+			$("#result").text("Hiba történt az adatbázisba való feltöltés során.")
 		}
 	});
 })
