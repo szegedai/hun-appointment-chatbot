@@ -95,7 +95,7 @@ $( "#feedback-btn" ).on("click", function(){
 function action_trigger(){
 	setTimeout(function () {
 	        hideBotTyping();
-			var msg = "Jó napot! Főnök Úr virtuális személyi asszisztense vagyok, én kezelem a naptárában az időpont foglalásokat. Mikorra szeretne hozzá időpontot";
+			var msg = "Jó napot! Főnök Úr virtuális személyi asszisztense vagyok, én kezelem a naptárában az időpont foglalásokat. Mikorra szeretne hozzá időpontot?";
 			var BotResponse = '<img class="botAvatar" src="http://inf.u-szeged.hu/algmi/chatbot/img/botAvatar.png"/><p class="botMsg">' + msg + '</p><div class="clearfix"></div>';
 			$(BotResponse).appendTo(".chats").hide().fadeIn(1000);
 			scrollToBottomOfResults();
