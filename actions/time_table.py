@@ -1,8 +1,4 @@
-from typing import Any, Text, Dict, List
-
-from rasa_sdk import Action, Tracker
-from rasa_sdk.executor import CollectingDispatcher
-from rasa_sdk.events import SlotSet
+from typing import List
 
 import pandas as pd
 import json
@@ -13,8 +9,14 @@ from copy import deepcopy
 
 
 class TimeTable:
+    """
+    Time interval state representation
+    """
 
-    def __init__(self, labels):
+    def __init__(self, labels: List[str]):
+        """
+        :param
+        """
         self.labels = labels
         self.sub_datetimes = {l: [] for l in labels}
 
