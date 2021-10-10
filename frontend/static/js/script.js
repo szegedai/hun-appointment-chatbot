@@ -55,10 +55,13 @@ $( "#feedback-btn" ).on("click", function(){
 		data: JSON.stringify({ "user_id": user_id, "description": text, "createdAt": date}),
 		success: function () {
 			console.log("Sikeres visszajelzés!");
+			$("#feedback").val("");
+			$("#result").val("Sikeres visszajelzés")
 		},
 		error: function () {
-			// if there is no response from rasa server
 			console.log("Hiba történt az adatbázisba való feltöltés során.");
+			$("#feedback").val("");
+			$("#result").val("Hiba történt az adatbázisba való feltöltés során.")
 		}
 	});
 })
