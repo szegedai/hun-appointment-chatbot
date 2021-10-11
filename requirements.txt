@@ -1,4 +1,5 @@
 rasa==2.2.7
+rasa_sdk==2.2
 spacy==2.2.1
 fuzzywuzzy
 hun-date-parser==0.0.7

@@ -9,6 +9,8 @@ from rasa_sdk.events import SlotSet
 
 from actions.time_table import TimeTable
 
+from hun_date_parser import text2datetime, datetime2text
+
 
 def get_available_appointments():
     """
@@ -53,7 +55,31 @@ class ActionTimeTableFiller(Action):
         else:
             time_table = TimeTable.fromJSON(time_table_repr)
 
-        time_table.label_timerange_by_text(tracker.latest_message['text'], 'user_free')
+        user_date_mentions = text2datetime(tracker.latest_message['text'])
+        if not user_date_mentions:
+            pass
+        else:
+            for date_intv in user_date_mentions:
+                if date_intv['start_date'] and date_intv['end_date']:
+                    time_table.label_timerange(date_intv['start_date'],
+                                               date_intv['end_date'],
+                                               'user_free')
+
+                    overlaps = time_table.query_timerange(date_intv['start_date'],
+                                                          date_intv['end_date'],
+                                                          'bot_free')
+
+                    if overlaps:
+                        for overlap in overlaps:
+                            human_friendly_start = f"{datetime2text(overlap.start_datetime, 2)['dates'][-1]} " \
+                                                   f"{datetime2text(overlap.start_datetime, 2)['times'][-1]}"
+                            human_friendly_end = f"{datetime2text(overlap.end_datetime, 2)['dates'][-1]} " \
+                                                 f"{datetime2text(overlap.end_datetime, 2)['times'][-1]}"
+
+                            dispatcher.utter_message(text=f"Ráérek az általad kért időszakon belül "
+                                                          f"{human_friendly_start} és {human_friendly_end} között.")
+                    else:
+                        dispatcher.utter_message(text="Sajos ekkor nem érek rá...")
 
         time_table.get_viz()
 
