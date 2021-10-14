@@ -18,7 +18,7 @@ nlu:
     - szeretnék időpontot foglalni keddre.
     - időpontot akarok foglalni holnapra.
     - szeretnék időpontot kérni
-    - holnap tudnánk konzultálni?
+    - holnap tudnánk konzultálni a Főnök úrral?
     - esetleg pénteken találkozni?
     - konzultálni szeretnék
     - időpontot foglalnék
@@ -26,22 +26,22 @@ nlu:
   examples: |
     - bármikor
     - ráérek egész nap
-    - szabad vagyok, amikor neked jó
-    - amikor te ráérsz
-    - amikor csak neked jó
+    - szabad vagyok, amikor a Főnök úrnak jó
+    - amikor a Főnök úr ráér
+    - amikor a Főnök úrnak jó
     - rugalmas vagyok
-    - neked mikor lenne jó?
-    - nekem bármikor jó.
+    - a Főnök úrnak mikor lenne jó?
+    - a Főnök úrnak bármikor jó.
     - milyen opciók vannak?
     - tudnál ajánlani egy időpontot?
-    - mikor tudnánk konzultálni?
-    - esetleg tudnánk valamikor találkozni?
-    - mikor érnél rá?
-    - ráérsz valamikor?
-    - mikor érnél rá egy találkozóra?
-    - mikor érnél rá egy konzultálni?
-    - szabad vagy mostanában valamikor?
-    - mikor vagy szabad?
+    - mikor tudnánk a Főnök úrral konzultálni?
+    - esetleg tudnánk valamikor a Főnök úrral találkozni?
+    - mikor érne rá?
+    - ráér valamikor?
+    - mikor érne rá egy találkozóra?
+    - mikor érne rá konzultálni?
+    - szabad mostanában valamikor?
+    - mikor szabad a Főnök úr?
 - intent: another_appointment
   examples: |
     - legyen másik nap akkor
@@ -65,7 +65,7 @@ nlu:
     - november 16-án jó lenne
     - holnap megfelelne
     - nekem jó a holnap
-    - kedden ráérsz?
+    - kedden ráér?
     - a szerda jó esetleg?
     - egy találkozó csütörtökön?
     - holnap ráérek
@@ -83,9 +83,9 @@ nlu:
     - ha jó neked is akkor legyen a két óra
     - akkor legyen 3 órakor
     - három órakor jó?
-    - két órakor ráérsz?
+    - két órakor ráér?
     - reggel nyolckor megfelel?
-    - reggel ráérsz?
+    - reggel ráér?
     - délután jó?
     - legyen 16:20-kor
     - legyen délután négykor
@@ -113,3 +113,4 @@ nlu:
     - meg szeretnék tanulni angolul
     - egy bigmacet szeretnék
     - megennék egy magyaros pizzát
+
