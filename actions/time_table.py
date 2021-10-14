@@ -62,6 +62,23 @@ class TimeTable:
             if tval['start_date'] and tval['end_date']:
                 self.label_timerange(tval['start_date'], tval['end_date'], label)
 
+    def flush_label(self, label):
+        self.sub_datetimes[label] = []
+
+    def get_label(self, label):
+        return self.sub_datetimes[label]
+
+    def get_first_range_for_label(self, label):
+        if not self.sub_datetimes[label]:
+            return None
+
+        min_dtr = self.sub_datetimes[label][0]
+        for dtrange in self.sub_datetimes[label][1:]:
+            if dtrange.start_datetime < min_dtr.start_datetime:
+                min_dtr = dtrange
+
+        return min_dtr
+
     def get_viz(self):
         res = []
 
