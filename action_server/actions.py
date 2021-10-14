@@ -118,19 +118,21 @@ def is_multiple_days(candidates):
     else:
         return False
 
+
 def rec_date(appointments):
     next_dates = [get_date_text(d['start_date']) for d in appointments]
 
     if next_dates:
         unique_next_dates = list(dict.fromkeys(next_dates))
         if len(unique_next_dates) >= 2:
-            response = f"Legközelebb {unique_next_dates[0]} és {unique_next_dates[1]} érek rá."
+            response = f"A Főnök úr legközelebb {unique_next_dates[0]} és {unique_next_dates[1]} ér rá."
         else:
-            response = f"Legközelebb {unique_next_dates[0]} érek rá."
+            response = f"A Főnök úr legközelebb {unique_next_dates[0]} ér rá."
     else:
-        response = "Sajnos nincs szabad időpontom mostanában..."
+        response = "A Főnök úrnak sajnos nincs szabad időpontja mostanában..."
 
     return response
+
 
 def rec_time(date, appointments):
     set_date = datetime.strptime(date, '%Y-%m-%d')
@@ -141,12 +143,12 @@ def rec_time(date, appointments):
     if len(pos_times) > 1:
         pos_times_s = ", ".join(pos_times[:-1])
         pos_times_s += f' és {pos_times[-1]}'
-        response = f"{get_date_text(set_date)} ráérek {pos_times_s}.".capitalize()
+        response = f"{get_date_text(set_date)} ráér {pos_times_s}.".capitalize()
     elif len(pos_times) == 0:
-        response = f"{get_date_text(set_date).capitalize()} nincs szabad időpontom sajnos."
+        response = f"A Főnök úrnak{get_date_text(set_date).capitalize()}sajnos nincs szabad időpontja."
     else:
         pos_times_s = f'{pos_times[0]}'
-        response = f"{get_date_text(set_date)} ráérek {pos_times_s}.".capitalize()
+        response = f"A Főnök úr {get_date_text(set_date)} ráér {pos_times_s}.".capitalize()
 
     return response
 
@@ -187,7 +189,7 @@ class ActionRecommendDate(Action):
                 possible_dates.append(date['start_date'])
             dispatcher.utter_message(response)
 
-            return[SlotSet('possible_dates', possible_dates)]
+            return [SlotSet('possible_dates', possible_dates)]
 
         # Recommends date, if the date slot is empty looks for a next available date
         if tracker.get_slot('date') is None:
@@ -200,6 +202,7 @@ class ActionRecommendDate(Action):
 
         dispatcher.utter_message(text=response)
         return []
+
 
 class FActionRecommendDate(Action):
     def __init__(self):
@@ -253,7 +256,7 @@ class ActionIdopontForm(Action):
                                 cands = list(dict.fromkeys([cand.date() for cand in cands]).keys())
                                 cands_s = f'{get_date_text(cands[0])} és {get_date_text(cands[1])}'
                                 dispatcher.utter_message(
-                                    text=f"A legközelebbi két nap amikor ráérek a kért időszakban {cands_s} lesz.")
+                                    text=f"A legközelebbi két nap amikor a Főnök úr ráér a kért időszakban {cands_s} lesz.")
                                 return []
                             else:
                                 good_date = overlaps[0]['start_date'].date()
@@ -273,7 +276,7 @@ class ActionIdopontForm(Action):
                 return []
 
             if not good_date:
-                dispatcher.utter_message(text="Sajnos nem érek rá akkor... Máskor esetleg?")
+                dispatcher.utter_message(text="A Főnök úr sajnos nem ér rá akkor... Máskor esetleg?")
                 return [FollowupAction("followup_action_recommend_date")]
 
             if good_date:
@@ -311,18 +314,18 @@ class ActionIdopontForm(Action):
                                     resp = f"{intervals[0]}"
 
                                 dispatcher.utter_message(
-                                    text=f"{resp.capitalize()} között ráérek. Mikor legyen pontosan?")
+                                    text=f"A Főnök úr {resp.capitalize()} között ráér. Mikor legyen pontosan?")
                                 return []
                             else:
                                 good_time = overlap[0]['start_date'].time()
                                 break
 
             if not any_time and not slots:
-                dispatcher.utter_message(text="Nem értettem, ne haragudj. Hány órakor találkozzunk?")
+                dispatcher.utter_message(text="Nem értettem, ne haragudj. Hány órakor találkoznál?")
                 return []
 
             if not good_time and not slots:
-                dispatcher.utter_message(text=f"Sajnos nem érek rá ekkor... Egy másik időpont esetleg?")
+                dispatcher.utter_message(text=f"A Főnök úr sajnos nem ér rá ekkor... Egy másik időpont esetleg?")
                 return [FollowupAction("followup_action_recommend_date")]
 
             if good_time:
@@ -341,7 +344,7 @@ class ActionIdopontForm(Action):
                                                             add_suffix=True))
 
             elif 'date' in list(slots.keys()):
-                dispatcher.utter_message(text=f"Ráérek {get_date_text(good_date)}. Mikor lenne jó aznap?")
+                dispatcher.utter_message(text=f"A Főnök úr ráér {get_date_text(good_date)}. Mikor lenne jó aznap?")
 
             return list(slots.values())
         else:
