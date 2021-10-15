@@ -49,9 +49,11 @@ def generate_dates(dates):
     {"start_date": f"{dates[12]}T09:25", "end_date": f"{dates[12]}T15:45"}
   ]
 
+def main():
+  weekdays = generate_dates(get_bdates(datetime.datetime.now()+datetime.timedelta(days=1), 13))
+  with open('./action_server/test_data.json', 'w') as f:
+    json.dump(weekdays, f, indent=4)
 
 
 if __name__ == '__main__':
-    weekdays = generate_dates(get_bdates(datetime.datetime.now()+datetime.timedelta(days=1), 13))
-    with open('/home/herdinai/hun-appointment-chatbot/action_server/test_data.json', 'w') as f:
-      json.dump(weekdays, f, indent=4)
+  main()
