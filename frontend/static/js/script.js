@@ -26,7 +26,8 @@ $(document).ready(function () {
 	console.log(user_id);
 	//if you want the bot to start the conversation
 	action_trigger();
-
+	//Set cursor in textarea
+	$("#userInput").focus();
 })
 
 // ========================== restart conversation ========================
@@ -126,7 +127,7 @@ $(".usrInput").on("keyup keypress", function (e) {
 			$("#paginated_cards").remove();
 			$(".suggestions").remove();
 			$(".quickReplies").remove();
-			$(".usrInput").blur();
+			$(".usrInput").focus();
 			setUserResponse(text);
 			send(text);
 			e.preventDefault();
@@ -138,6 +139,7 @@ $(".usrInput").on("keyup keypress", function (e) {
 $("#sendButton").on("click", function (e) {
 	var text = $(".usrInput").val();
 	if (text == "" || $.trim(text) == "") {
+		$("#userInput").focus();
 		e.preventDefault();
 		return false;
 	}
@@ -152,14 +154,32 @@ $("#sendButton").on("click", function (e) {
 		$(".suggestions").remove();
 		$("#paginated_cards").remove();
 		$(".quickReplies").remove();
-		$(".usrInput").blur();
+		$(".usrInput").focus();
 		setUserResponse(text);
 		send(text);
 		e.preventDefault();
 		return false;
 	}
 })
-
+$.fn.selectRange = function(start, end) {
+    if(end === undefined) {
+        end = start;
+    }
+    return this.each(function() {
+        if('selectionStart' in this) {
+            this.selectionStart = start;
+            this.selectionEnd = end;
+        } else if(this.setSelectionRange) {
+            this.setSelectionRange(start, end);
+        } else if(this.createTextRange) {
+            var range = this.createTextRange();
+            range.collapse(true);
+            range.moveEnd('character', end);
+            range.moveStart('character', start);
+            range.select();
+        }
+    });
+};
 //==================================== Set user response =====================================
 function setUserResponse(message) {
 	var UserResponse = '<img class="userAvatar" src=' + "https://inf.u-szeged.hu/algmi/chatbot/img/userAvatar.jpg" + '><p class="userMsg">' + message + ' </p><div class="clearfix"></div>';
