@@ -1,6 +1,7 @@
 language: hu
 
 pipeline:
+  - name: services.delete_special_chars.DeleteSpecialChars
   - name: SpacyNLP
   - name: SpacyTokenizer
   - name: SpacyFeaturizer
