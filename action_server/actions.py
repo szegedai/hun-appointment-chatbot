@@ -341,7 +341,10 @@ class ActionIdopontForm(Action):
                                                             add_suffix=True))
 
             elif 'date' in list(slots.keys()):
-                dispatcher.utter_message(text=f"Ráérek {get_date_text(good_date)}. Mikor lenne jó aznap?")
+                ending_string = "Mikor lenne jó?"
+                ending_string = ending_string if get_date_text(good_date) == "ma"\
+                    else ending_string.rstrip("?") + " aznap?"
+                dispatcher.utter_message(text=f"Ráérek {get_date_text(good_date)}. {ending_string}")
 
             return list(slots.values())
         else:
