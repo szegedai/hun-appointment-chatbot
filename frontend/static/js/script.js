@@ -203,10 +203,7 @@ function send(message) {
 	
 	//var url = //document.location.protocol + "//" + document.location.hostname + ":" + PORT;
 	var url = "https://inf.u-szeged.hu/algmi/chatbot/";
-	console.log(url);
-	console.log(PORT);
 	$.ajax({
-
 		url: url + "/rasa/webhooks/rest/webhook",
 		type: "POST",
 		contentType: "application/json",
