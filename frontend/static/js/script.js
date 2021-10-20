@@ -50,7 +50,7 @@ $( "#feedback-btn" ).on("click", function(){
     date = new Date().toLocaleString();
 
     $.ajax({
-		url: "https://chatbot-feedback.herokuapp.com/",
+		url: "https://www.inf.u-szeged.hu/algmi/chatbot/",
 		type: "POST",
 		contentType: "application/json",
 		data: JSON.stringify({ "user_id": user_id, "description": text, "createdAt": date}),
@@ -350,6 +350,7 @@ function setBotResponse(response) {
 $("#profile_div").click(function () {
 	$(".profile_div").toggle();
 	$(".widget").toggle();
+    $(".usrInput").focus();
 });
 
 //====================================== DropDown ==================================================
