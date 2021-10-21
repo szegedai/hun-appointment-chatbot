@@ -26,7 +26,8 @@ $(document).ready(function () {
 	console.log(user_id);
 	//if you want the bot to start the conversation
 	action_trigger();
-
+	//Set cursor in textarea
+	$("#userInput").focus();
 })
 
 // ========================== restart conversation ========================
@@ -49,7 +50,7 @@ $( "#feedback-btn" ).on("click", function(){
     date = new Date().toLocaleString();
 
     $.ajax({
-		url: "https://chatbot-feedback.herokuapp.com/",
+		url: "https://www.inf.u-szeged.hu/algmi/chatbot/",
 		type: "POST",
 		contentType: "application/json",
 		data: JSON.stringify({ "user_id": user_id, "description": text, "createdAt": date}),
@@ -96,7 +97,7 @@ function action_trigger(){
 	setTimeout(function () {
 	        hideBotTyping();
 			var msg = "Jó napot! Főnök Úr virtuális személyi asszisztense vagyok, én kezelem a naptárában az időpont foglalásokat. Mikorra szeretne hozzá időpontot?";
-			var BotResponse = '<img class="botAvatar" src="http://inf.u-szeged.hu/algmi/chatbot/img/botAvatar.png"/><p class="botMsg">' + msg + '</p><div class="clearfix"></div>';
+			var BotResponse = '<img class="botAvatar" src="https://inf.u-szeged.hu/algmi/chatbot/img/botAvatar.png"/><p class="botMsg">' + msg + '</p><div class="clearfix"></div>';
 			$(BotResponse).appendTo(".chats").hide().fadeIn(1000);
 			scrollToBottomOfResults();
 		}, 500)
@@ -126,7 +127,7 @@ $(".usrInput").on("keyup keypress", function (e) {
 			$("#paginated_cards").remove();
 			$(".suggestions").remove();
 			$(".quickReplies").remove();
-			$(".usrInput").blur();
+			$(".usrInput").focus();
 			setUserResponse(text);
 			send(text);
 			e.preventDefault();
@@ -138,30 +139,50 @@ $(".usrInput").on("keyup keypress", function (e) {
 $("#sendButton").on("click", function (e) {
 	var text = $(".usrInput").val();
 	if (text == "" || $.trim(text) == "") {
+		$("#userInput").focus();
 		e.preventDefault();
 		return false;
 	}
 	else {
 		//destroy the existing chart
 
-		chatChart.destroy();
+		if (typeof chatChart !== "undefined") { 
+			chatChart.destroy(); }
 		$(".chart-container").remove();
 		if (typeof modalChart !== 'undefined') { modalChart.destroy(); }
 
 		$(".suggestions").remove();
 		$("#paginated_cards").remove();
 		$(".quickReplies").remove();
-		$(".usrInput").blur();
+		$(".usrInput").focus();
 		setUserResponse(text);
 		send(text);
 		e.preventDefault();
 		return false;
 	}
 })
-
+$.fn.selectRange = function(start, end) {
+    if(end === undefined) {
+        end = start;
+    }
+    return this.each(function() {
+        if('selectionStart' in this) {
+            this.selectionStart = start;
+            this.selectionEnd = end;
+        } else if(this.setSelectionRange) {
+            this.setSelectionRange(start, end);
+        } else if(this.createTextRange) {
+            var range = this.createTextRange();
+            range.collapse(true);
+            range.moveEnd('character', end);
+            range.moveStart('character', start);
+            range.select();
+        }
+    });
+};
 //==================================== Set user response =====================================
 function setUserResponse(message) {
-	var UserResponse = '<img class="userAvatar" src=' + "http://inf.u-szeged.hu/algmi/chatbot/img/userAvatar.jpg" + '><p class="userMsg">' + message + ' </p><div class="clearfix"></div>';
+	var UserResponse = '<img class="userAvatar" src=' + "https://inf.u-szeged.hu/algmi/chatbot/img/userAvatar.jpg" + '><p class="userMsg">' + message + ' </p><div class="clearfix"></div>';
 	$(UserResponse).appendTo(".chats").show("slow");
 
 	$(".usrInput").val("");
@@ -181,11 +202,8 @@ function scrollToBottomOfResults() {
 function send(message) {
 	
 	//var url = //document.location.protocol + "//" + document.location.hostname + ":" + PORT;
-	var url = "http://inf.u-szeged.hu/algmi/chatbot/";
-	console.log(url);
-	console.log(PORT);
+	var url = "https://inf.u-szeged.hu/algmi/chatbot/";
 	$.ajax({
-
 		url: url + "/rasa/webhooks/rest/webhook",
 		type: "POST",
 		contentType: "application/json",
@@ -231,7 +249,7 @@ function setBotResponse(response) {
 			//if there is no response from Rasa, send  fallback message to the user
 			var fallbackMsg = "I am facing some issues, please try again later!!!";
 
-			var BotResponse = '<img class="botAvatar" src="/http://inf.u-szeged.hu/algmi/chatbot/img/botAvatar.png"/><p class="botMsg">' + fallbackMsg + '</p><div class="clearfix"></div>';
+			var BotResponse = '<img class="botAvatar" src="https://inf.u-szeged.hu/algmi/chatbot/img/botAvatar.png"/><p class="botMsg">' + fallbackMsg + '</p><div class="clearfix"></div>';
 
 			$(BotResponse).appendTo(".chats").hide().fadeIn(1000);
 			scrollToBottomOfResults();
@@ -243,7 +261,7 @@ function setBotResponse(response) {
 
 				//check if the response contains "text"
 				if (response[i].hasOwnProperty("text")) {
-					var BotResponse = '<img class="botAvatar" src="http://inf.u-szeged.hu/algmi/chatbot/img/botAvatar.png"/><p class="botMsg">' + response[i].text + '</p><div class="clearfix"></div>';
+					var BotResponse = '<img class="botAvatar" src="https://inf.u-szeged.hu/algmi/chatbot/img/botAvatar.png"/><p class="botMsg">' + response[i].text + '</p><div class="clearfix"></div>';
 					$(BotResponse).appendTo(".chats").hide().fadeIn(1000);
 				}
 
@@ -329,6 +347,7 @@ function setBotResponse(response) {
 $("#profile_div").click(function () {
 	$(".profile_div").toggle();
 	$(".widget").toggle();
+    $(".usrInput").focus();
 });
 
 //====================================== DropDown ==================================================
@@ -568,7 +587,7 @@ function handleLocationAccessError(error) {
 //======================================bot typing animation ======================================
 function showBotTyping() {
 
-	var botTyping = '<img class="botAvatar" id="botAvatar" src="http://inf.u-szeged.hu/algmi/chatbot/img/botAvatar.png"/><div class="botTyping">' + '<div class="bounce1"></div>' + '<div class="bounce2"></div>' + '<div class="bounce3"></div>' + '</div>'
+	var botTyping = '<img class="botAvatar" id="botAvatar" src="https://inf.u-szeged.hu/algmi/chatbot/img/botAvatar.png"/><div class="botTyping">' + '<div class="bounce1"></div>' + '<div class="bounce2"></div>' + '<div class="bounce3"></div>' + '</div>'
 	$(botTyping).appendTo(".chats");
 	$('.botTyping').show();
 	scrollToBottomOfResults();

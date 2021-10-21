@@ -22,6 +22,7 @@ nlu:
     - esetleg pénteken találkozni?
     - konzultálni szeretnék
     - időpontot foglalnék
+    - időpont
 - intent: recommend_date_or_time
   examples: |
     - bármikor
@@ -109,6 +110,9 @@ nlu:
     - akkor ezt megbeszéltük
     - viszlát
     - rendben. szia!
+    - köszönöm
+    - remek
+    - szuper
 - intent: out_of_scope
   examples: |
     - elnök szeretnék lenni
