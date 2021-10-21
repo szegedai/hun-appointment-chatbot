@@ -29,6 +29,8 @@ nlu:
     - szabad vagyok, amikor a Főnök úrnak jó
     - amikor a Főnök úr ráér
     - amikor a Főnök úrnak jó
+    - amikor neki jó
+    - amikor ő ráér
     - rugalmas vagyok
     - a Főnök úrnak mikor lenne jó?
     - a Főnök úrnak bármikor jó.
@@ -40,6 +42,7 @@ nlu:
     - ráér valamikor?
     - mikor érne rá egy találkozóra?
     - mikor érne rá konzultálni?
+    - mikor tudnék vele találkozni?
     - szabad mostanában valamikor?
     - mikor szabad a Főnök úr?
 - intent: another_appointment
