@@ -26,14 +26,20 @@ mongoose.connection.on('error', (error) => {
 require('./feedback.model');
 const FeedbackModel = mongoose.model('feedback');
 
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json({}));
 app.use(cors())
 app.use(express.static(path.join(__dirname, 'static')));
 
 app.get('/', (req, res, next) => {
     res.sendFile(__dirname + '/index.html');
-}).post((req, res, next) => {
+}).post('/', (req, res, next) => {
+    console.log(req.body)
     if(req.body.user_id && req.body.description){
-        var feedback = new FeedbackModel(req.body.user_id, req.body.description);
+        var feedback = new FeedbackModel({
+            user_id: req.body.user_id,
+            description: req.body.description
+        });
         feedback.save((err, doc) => {
             if (err) res.status(500).send("Adatbazis hiba");
             if (doc) res.status(200).send("Sikeres visszajelzes!");
