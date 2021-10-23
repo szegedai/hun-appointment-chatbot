@@ -145,7 +145,7 @@ def rec_time(date, appointments):
         pos_times_s += f' és {pos_times[-1]}'
         response = f"{get_date_text(set_date)} ráér {pos_times_s}.".capitalize()
     elif len(pos_times) == 0:
-        response = f"A Főnök úrnak{get_date_text(set_date).capitalize()}sajnos nincs szabad időpontja."
+        response = f"A Főnök úrnak {get_date_text(set_date).capitalize()} sajnos nincs szabad időpontja."
     else:
         pos_times_s = f'{pos_times[0]}'
         response = f"A Főnök úr {get_date_text(set_date)} ráér {pos_times_s}.".capitalize()
@@ -347,7 +347,7 @@ class ActionIdopontForm(Action):
                 ending_string = "Mikor lenne jó?"
                 ending_string = ending_string if get_date_text(good_date) == "ma"\
                     else ending_string.rstrip("?") + " aznap?"
-                dispatcher.utter_message(text=f"Ráérek {get_date_text(good_date)}. {ending_string}")
+                dispatcher.utter_message(text=f"A Főnök úr ráér {get_date_text(good_date)}. {ending_string}")
 
             return list(slots.values())
         else:
