@@ -5,11 +5,13 @@ const server = require('http').createServer(app);
 var cors = require('cors')
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const fs = require('fs');
 
 const PORT = 3000;
 
-
-const dbUrl = 'mongodb+srv://<user>:<password>@<cluster>.s0pds.mongodb.net/test';
+let rawdata = fs.readFileSync('node_credentials.json');
+const credentials = JSON.parse(rawdata);
+const dbUrl = `mongodb+srv://${credentials.user}:${credentials.password}@${credentials.cluster}.s0pds.mongodb.net/test`;
 
 mongoose.connect(dbUrl);
 
