@@ -1,11 +1,22 @@
 from typing import List
-
 import pandas as pd
 import json
 import altair as alt
 from hun_date_parser import text2datetime
+from hun_date_parser.date_parser.interval_restriction import extract_datetime_within_interval
 from datetimerange import DateTimeRange
 from copy import deepcopy
+from enum import Enum
+
+
+class RequestFeedback(Enum):
+    REQUEST_OK = "REQUEST_OK"
+    REQUEST_SKIPPED = "REQUEST_SKIPPED"
+
+
+def has_date_mention(text):
+    res = text2datetime(text)
+    return bool(res)
 
 
 class TimeTable:
@@ -19,6 +30,8 @@ class TimeTable:
         """
         self.labels = labels
         self.sub_datetimes = {l: [] for l in labels}
+        self.current_dtrl = {'label': None, 'ladder': None}
+        self.has_currently_discussed_range = False
 
     def _house_keeping(self):
         for label in self.labels:
@@ -79,6 +92,32 @@ class TimeTable:
 
         return min_dtr
 
+    def set_current_discussed(self, top_range_dct, label):
+        top_range = DateTimeRange(top_range_dct['start_date'], top_range_dct['end_date'])
+        dtrl = DateRangeLadder(top_range)
+        self.current_dtrl = {'label': label, 'ladder': dtrl}
+        self.has_currently_discussed_range = True
+
+    def discuss_current(self, query_text):
+        if not self.current_dtrl['ladder'] or not has_date_mention(query_text):
+            return RequestFeedback.REQUEST_SKIPPED
+
+        self.current_dtrl['ladder'].step_in_ladder_with_text(query_text)
+        if not self.current_dtrl['ladder'].has_range():
+            self.has_currently_discussed_range = False
+
+        return RequestFeedback.REQUEST_OK
+
+    def get_currently_discussed_range(self):
+        if self.has_currently_discussed_range:
+            return self.current_dtrl['ladder'].get_bottom_step()
+        else:
+            return RequestFeedback.REQUEST_SKIPPED
+
+    def remove_currently_discussed(self):
+        self.current_dtrl = {'label': None, 'ladder': None}
+        self.has_currently_discussed_range = False
+
     def get_viz(self):
         res = []
 
@@ -111,6 +150,9 @@ class TimeTable:
 
         dct["sub_datetimes"] = serializable_sub_datetimes
 
+        ladder = self.current_dtrl["ladder"].toJSON()
+        dct["current_dtrl"] = [self.current_dtrl["label"], ladder]
+
         return json.dumps(dct)
 
     @staticmethod
@@ -125,4 +167,88 @@ class TimeTable:
 
         tt.sub_datetimes = parsed_sub_datetimes
 
+        tt.current_dtrl = {
+            "label": dct["current_dtrl"][0],
+            "ladder": dct["current_dtrl"][1]
+        }
+        tt.has_currently_discussed_range = dct["has_currently_discussed_range"]
+
         return tt
+
+
+class DateRangeLadder:
+
+    def __init__(self, top_range):
+        self.top_range = top_range
+        self.ladder = [top_range]  # [smaller --> greater]
+
+    def step_in_ladder(self, daterange):
+        inserted = False
+        for i in range(len(self.ladder)):
+            intersection = self.ladder[i].intersection(daterange)
+            if intersection.start_datetime and intersection.end_datetime:
+                self.ladder = [intersection, *self.ladder[i:]]
+                inserted = True
+
+        if not inserted:
+            self.ladder = []
+
+    def step_in_ladder_with_text(self, query):
+        if not has_date_mention(query):
+            return None
+
+        inserted = False
+        for i in range(len(self.ladder)):
+            current = self.ladder[i]
+            success_flag, user_date_mentions = extract_datetime_within_interval(current.start_datetime,
+                                                                                current.end_datetime,
+                                                                                query,
+                                                                                expect_future_day=True)
+            dt_mention = user_date_mentions[0]
+            mention_dtr = DateTimeRange(dt_mention['start_date'],
+                                        dt_mention['end_date'])
+            intersection = self.ladder[i].intersection(mention_dtr)
+
+            if intersection.start_datetime and intersection.end_datetime:
+                self.ladder = [intersection, *self.ladder[i:]]
+                inserted = True
+
+        if not inserted:
+            self.ladder = []
+
+    def get_bottom_step(self):
+        if self.has_range():
+            return self.ladder[0]
+        else:
+            return None
+
+    def has_range(self):
+        return bool(self.ladder)
+
+    def toJSON(self):
+        dct = {}
+        dct['top_range'] = (self.top_range.start_datetime.strftime('%Y-%m-%d %H:%M'),
+                            self.top_range.end_datetime.strftime('%Y-%m-%d %H:%M'))
+
+        ladder_s = []
+        for dtr in self.ladder:
+            ladder_s.append((dtr.start_datetime.strftime('%Y-%m-%d %H:%M'),
+                             dtr.end_datetime.strftime('%Y-%m-%d %H:%M')))
+
+        dct["ladder"] = ladder_s
+
+        return json.dumps(dct)
+
+    @staticmethod
+    def fromJSON(json_str):
+        dct = json.loads(json_str)
+        top_dtr_tup = dct['top_range']
+        drl = DateRangeLadder(DateTimeRange(top_dtr_tup[0], top_dtr_tup[1]))
+
+        ladder = []
+        for dtr_dct in dct['ladder']:
+            ladder.append(DateTimeRange(dtr_dct[0], dtr_dct[1]))
+
+        drl.ladder = ladder
+
+        return drl
