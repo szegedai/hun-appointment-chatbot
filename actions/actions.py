@@ -22,6 +22,7 @@ class ActionTimeTableFiller(Action):
         action_blocks = ActionBlocks(tracker, time_table, dispatcher)
 
         if not rule_blocks.if_text_has_datetime():
+            print("A")
             action_blocks.do_bot_suggest_next_range()
 
             return [SlotSet("time_table", time_table.toJSON())]
@@ -29,17 +30,28 @@ class ActionTimeTableFiller(Action):
         if rule_blocks.if_exists_currently_discussed_range():
 
             if rule_blocks.if_text_further_specifies_currently_discussed():
+                print("B1")
                 action_blocks.do_further_specify_currently_discussed()
-            else:
-                pass
 
-            return [SlotSet("time_table", time_table.toJSON())]
+                return [SlotSet("time_table", time_table.toJSON())]
+            elif rule_blocks.if_text_in_currently_discussed_top_range():
+                print("B2")
+                action_blocks.do_further_specify_currently_discussed()
+
+                return [SlotSet("time_table", time_table.toJSON())]
 
         if rule_blocks.if_bot_is_free_in_overlap_and_appointment_is_set():
+            print("C1")
             action_blocks.do_bot_set_terminal_appointment()
+
         elif rule_blocks.if_bot_is_free_in_overlap():
+            print("C2")
             action_blocks.do_bot_set_non_terminal_appointment()
+
+        else:
+            dispatcher.utter_message("Sajnos nem megfelelő a kért időpont...")
 
         time_table_modified = action_blocks.time_table
 
+        print("TERMINAL")
         return [SlotSet("time_table", time_table_modified.toJSON())]

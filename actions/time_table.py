@@ -110,6 +110,7 @@ class TimeTable:
 
     def get_currently_discussed_range(self):
         if self.has_currently_discussed_range:
+            print("LADDER", self.current_dtrl['ladder'])
             return self.current_dtrl['ladder'].get_bottom_step()
         else:
             return RequestFeedback.REQUEST_SKIPPED
@@ -150,7 +151,10 @@ class TimeTable:
 
         dct["sub_datetimes"] = serializable_sub_datetimes
 
-        ladder = self.current_dtrl["ladder"].toJSON()
+        if self.current_dtrl["ladder"]:
+            ladder = self.current_dtrl["ladder"].toJSON()
+        else:
+            ladder = None
         dct["current_dtrl"] = [self.current_dtrl["label"], ladder]
 
         return json.dumps(dct)
@@ -169,7 +173,7 @@ class TimeTable:
 
         tt.current_dtrl = {
             "label": dct["current_dtrl"][0],
-            "ladder": dct["current_dtrl"][1]
+            "ladder": DateRangeLadder.fromJSON(dct["current_dtrl"][1])
         }
         tt.has_currently_discussed_range = dct["has_currently_discussed_range"]
 

@@ -7,6 +7,7 @@ APPOINTMENT_MAX_LEN = 7200
 BOT_FREE_RANGE = "bot_free"
 USER_FREE_RANGE = "user_free"
 
+
 class RuleBlocks:
 
     def __init__(self, tracker, time_table: TimeTable, dispatcher):
@@ -25,7 +26,7 @@ class RuleBlocks:
         if self.time_table.has_currently_discussed_range:
             dtr = self.time_table.get_currently_discussed_range()
             start, end = dtr.start_datetime, dtr.end_datetime
-            return (start - end).seconds < APPOINTMENT_MAX_LEN
+            return (end - start).seconds < APPOINTMENT_MAX_LEN
 
         return False
 
@@ -34,6 +35,16 @@ class RuleBlocks:
             last_offered_range = self.time_table.get_currently_discussed_range()
             success_flag, user_date_mentions = extract_datetime_within_interval(last_offered_range.start_datetime,
                                                                                 last_offered_range.end_datetime,
+                                                                                self.text)
+            return success_flag == ExtractWithinRangeSuccess.VALID_IN_RANGE
+
+        return False
+
+    def if_text_in_currently_discussed_top_range(self):
+        if self.time_table.has_currently_discussed_range:
+            top_range = self.time_table.current_dtrl["ladder"].top_range
+            success_flag, user_date_mentions = extract_datetime_within_interval(top_range.start_datetime,
+                                                                                top_range.end_datetime,
                                                                                 self.text)
             return success_flag == ExtractWithinRangeSuccess.VALID_IN_RANGE
 
@@ -51,7 +62,7 @@ class RuleBlocks:
                 if overlaps:
                     overlap = overlaps[0]  # TODO: let's handle more overlaps...
                     start, end = overlap.start_datetime, overlap.end_datetime
-                    if (start - end).seconds < APPOINTMENT_MAX_LEN:
+                    if (end - start).seconds < APPOINTMENT_MAX_LEN:
                         return True
 
         return False
@@ -84,10 +95,24 @@ class ActionBlocks:
         hf_start, hf_end = get_human_friendly_range(next_free_bot_range)
         self.dispatcher.utter_message(text=f"Esetleg {hf_start} és {hf_end} között valamikor?")
 
-        self.time_table.set_current_discussed(next_free_bot_range, BOT_FREE_RANGE)
+        bot_free_dct = {"start_date": next_free_bot_range.start_datetime, "end_date": next_free_bot_range.end_datetime}
+        self.time_table.set_current_discussed(bot_free_dct, BOT_FREE_RANGE)
 
     def do_further_specify_currently_discussed(self):
         self.time_table.discuss_current(self.text)
+        currently_discussed = self.time_table.get_currently_discussed_range()
+        hf_start, hf_end = get_human_friendly_range(currently_discussed)
+
+        if (currently_discussed.end_datetime - currently_discussed.start_datetime).seconds > APPOINTMENT_MAX_LEN:
+            print("B1 1", (currently_discussed.end_datetime - currently_discussed.start_datetime).seconds)
+            self.dispatcher.utter_message(text=f"Ráérek az általad kért időszakon belül "
+                                               f"{hf_start} és {hf_end} között. "
+                                               f"Mit szólsz hozzá?")
+        else:
+            print("B1 2", (currently_discussed.end_datetime - currently_discussed.start_datetime).seconds)
+            self.dispatcher.utter_message(text=f"Ráérek az általad kért időszakon belül "
+                                               f"{hf_start} és {hf_end} között. "
+                                               f"Találkozzunk az irodámban.")
 
     def do_bot_set_non_terminal_appointment(self):
         user_date_mentions = text2datetime(self.text)
@@ -106,7 +131,8 @@ class ActionBlocks:
                     overlap = overlaps[0]  # TODO: let's handle more overlaps...
                     start, end = overlap.start_datetime, overlap.end_datetime
                     hf_start, hf_end = get_human_friendly_range(overlap)
-                    if (start - end).seconds > APPOINTMENT_MAX_LEN:
+                    if (end - start).seconds > APPOINTMENT_MAX_LEN:
+                        self.time_table.set_current_discussed({"start_date": start, "end_date": end}, USER_FREE_RANGE)
                         self.dispatcher.utter_message(text=f"Ráérek az általad kért időszakon belül "
                                                       f"{hf_start} és {hf_end} között. "
                                                       f"Mit szólsz hozzá?")
@@ -128,7 +154,7 @@ class ActionBlocks:
                     overlap = overlaps[0]  # TODO: let's handle more overlaps...
                     start, end = overlap.start_datetime, overlap.end_datetime
                     hf_start, hf_end = get_human_friendly_range(overlap)
-                    if (start - end).seconds <= APPOINTMENT_MAX_LEN:
+                    if (end - start).seconds <= APPOINTMENT_MAX_LEN:
                         self.dispatcher.utter_message(text=f"Ráérek az általad kért időszakon belül "
                                                           f"{hf_start} és {hf_end} között. "
                                                           f"Találkozzunk az irodámban.")
