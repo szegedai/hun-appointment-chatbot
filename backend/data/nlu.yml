@@ -113,6 +113,15 @@ nlu:
     - köszönöm
     - remek
     - szuper
+- intent: cancel_appointment
+  examples: |
+    - mégsem jó
+    - nem lesz jó
+    - nem jó
+    - meggondoltam magam
+    - mégsem lesz jó az időpont
+    - ne haragudj mégsem jó
+    - legyen másik időpont
 - intent: out_of_scope
   examples: |
     - elnök szeretnék lenni

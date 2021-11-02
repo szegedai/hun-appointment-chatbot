@@ -44,3 +44,9 @@ rules:
     - intent: vege
     - action: action_remove_appointment
     - action: utter_bye
+
+- rule: cancel appointment
+  steps:
+    - intent: cancel_appointment
+    - action: remove_current_appointment
+    - action: utter_ask_date

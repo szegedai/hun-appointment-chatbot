@@ -11,7 +11,7 @@ intents:
   - say_date_or_time
   - recommend_date_or_time
   - another_appointment
-
+  - cancel_appointment
 entities:
 - dates
 - times
@@ -51,5 +51,6 @@ actions:
 - action_recommend_date
 - action_remove_appointment
 - followup_action_recommend_date
+- remove_current_appointment
 forms: {}
 e2e_actions: []

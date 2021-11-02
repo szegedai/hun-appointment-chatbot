@@ -227,6 +227,22 @@ class FActionRecommendDate(Action):
         return []
 
 
+class ActionCancelCurrentAppointment(Action):
+    """
+    remove the current appointment from the slot
+    """
+
+    def name(self) -> Text:
+        return "remove_current_appointment"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+
+        dispatcher.utter_message(text="Rendben, akkor nézzünk másik időpontot!")
+        return [SlotSet('date', None), SlotSet('time', None)]
+
+
 class ActionIdopontForm(Action):
     def __init__(self):
         self.appointments = get_available_appointments()
@@ -345,7 +361,7 @@ class ActionIdopontForm(Action):
 
             elif 'date' in list(slots.keys()):
                 ending_string = "Mikor lenne jó?"
-                ending_string = ending_string if get_date_text(good_date) == "ma"\
+                ending_string = ending_string if get_date_text(good_date) == "ma" \
                     else ending_string.rstrip("?") + " aznap?"
                 dispatcher.utter_message(text=f"A Főnök úr ráér {get_date_text(good_date)}. {ending_string}")
 
