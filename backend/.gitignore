@@ -100,7 +100,7 @@ celerybeat-schedule
 .env
 .venv
 env/
-venv/
+../venv/
 ENV/
 env.bak/
 venv.bak/
@@ -127,4 +127,4 @@ dmypy.json
 .idea/
 
 # dont upload models
-models/
+backend/models/
