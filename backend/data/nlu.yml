@@ -23,3 +23,16 @@ nlu:
     - esetleg pénteken találkozni?
     - konzultálni szeretnék
     - időpontot foglalnék
+- intent: vege
+  examples: |
+    - oké
+    - oké, köszi
+    - köszi
+    - rendben
+    - ott leszek
+    - akkor ezt megbeszéltük
+    - viszlát
+    - rendben. szia!
+    - köszönöm
+    - remek
+    - szuper

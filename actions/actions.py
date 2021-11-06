@@ -8,6 +8,20 @@ from actions.utils import get_timetable_in_discussion
 from actions.action_blocks import ActionBlocks, RuleBlocks
 
 
+class ActionRemoveAppointment(Action):
+
+    def name(self) -> Text:
+        return "action_remove_appointment"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        """
+        Removes the appointment, clearing the slots
+        """
+        return [SlotSet('time_table', None)]
+
+
 class ActionTimeTableFiller(Action):
 
     def name(self) -> Text:

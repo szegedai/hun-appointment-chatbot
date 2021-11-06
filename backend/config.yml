@@ -15,4 +15,5 @@ pipeline:
     epochs: 50
 
 policies:
+  # add memorization policie after stories has been added.
    - name: RulePolicy

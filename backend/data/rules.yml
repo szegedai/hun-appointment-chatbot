@@ -10,3 +10,9 @@ rules:
     steps:
       - intent: idopontfoglalas
       - action: action_fill_table
+
+  - rule: viszlat
+    steps:
+      - intent: vege
+      - action: action_remove_appointment
+      - action: utter_bye

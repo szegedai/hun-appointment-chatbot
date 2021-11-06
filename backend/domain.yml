@@ -9,6 +9,7 @@ session_config:
 intents:
   - idopontfoglalas
   - udvozol
+  - vege
 
 slots:
   time_table:
@@ -17,9 +18,12 @@ slots:
 responses:
   utter_udvozol:
   - text: Szia! Miben segíthetek?
+  utter_bye:
+    - text: Viszlát!
 
 actions:
 - action_fill_table
+- action_remove_appointment
 
 forms: {}
 e2e_actions: []
