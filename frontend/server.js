@@ -32,7 +32,7 @@ app.use(cors())
 app.use(express.static(path.join(__dirname, 'static')));
 
 app.get('/', (req, res, next) => {
-    res.sendFile(__dirname + '/index.html');
+    res.sendFile(__dirname + '/index_tts.html');
 }).post('/', (req, res, next) => {
     console.log(req.body)
     if(req.body.user_id && req.body.description){

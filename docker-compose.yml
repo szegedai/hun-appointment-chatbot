@@ -10,21 +10,21 @@ services:
       ports:
         - 3005:3005
       depends_on: 
-        - rasa
+  #      - rasa
         - action_server
         - chatbot_ui
-    rasa:
-      container_name: "rasa_server"
-      build: 
-        context: backend
-      ports: 
-        - "5005:5005"
-    action_server:
-      container_name: "action_server"
-      build: 
-        context: action_server
-      ports:
-        - "5055:5055"
+  #  rasa:
+   #   container_name: "rasa_server"
+    #  build: 
+     #   context: backend
+      #ports: 
+       # - "5005:5005"
+  #  action_server:
+  #    container_name: "action_server"
+  #    build: 
+  #      context: action_server
+  #    ports:
+  #      - "5055:5055"
     chatbot_ui:
       container_name: "chatbot_ui"
       build: 
