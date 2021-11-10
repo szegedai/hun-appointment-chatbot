@@ -4,8 +4,8 @@ from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
 from rasa_sdk.events import SlotSet
 
-from actions.utils import get_timetable_in_discussion
-from actions.action_blocks import ActionBlocks, RuleBlocks
+from utils import get_timetable_in_discussion
+from action_blocks import ActionBlocks, RuleBlocks
 
 
 class ActionRemoveAppointment(Action):
@@ -54,13 +54,9 @@ class ActionTimeTableFiller(Action):
 
                 return [SlotSet("time_table", time_table.toJSON())]
 
-        if rule_blocks.if_bot_is_free_in_overlap_and_appointment_is_set():
-            print("C1")
-            action_blocks.do_bot_set_terminal_appointment()
-
         elif rule_blocks.if_bot_is_free_in_overlap():
             print("C2")
-            action_blocks.do_bot_set_non_terminal_appointment()
+            action_blocks.do_bot_set_appointment()
 
         else:
             dispatcher.utter_message("Sajnos nem megfelelő a kért időpont...")
