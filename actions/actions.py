@@ -16,10 +16,28 @@ class ActionRemoveAppointment(Action):
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        print("torles")
         """
-        Removes the appointment, clearing the slots
+        Removes the appointment, clearing the slot
         """
         return [SlotSet('time_table', None)]
+
+
+class ActionRecommendOtherDate(Action):
+    def name(self) -> Text:
+        return "recommend_other_date"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+
+        time_table = get_timetable_in_discussion(tracker)
+        rule_blocks = RuleBlocks(tracker, time_table, dispatcher)
+        action_blocks = ActionBlocks(tracker, time_table, dispatcher)
+
+        # print(tracker.current_slot_values())
+        action_blocks.do_bot_suggest_next_range()
+        return []
 
 
 class ActionTimeTableFiller(Action):
@@ -37,7 +55,8 @@ class ActionTimeTableFiller(Action):
 
         if not rule_blocks.if_text_has_datetime():
             print("A")
-            action_blocks.do_bot_suggest_next_range()
+            dispatcher.utter_message(text="Okés. Mikor lenne jó?")
+            action_blocks.do_bot_suggest_range()
 
             return [SlotSet("time_table", time_table.toJSON())]
 

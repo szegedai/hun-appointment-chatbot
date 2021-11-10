@@ -83,6 +83,7 @@ class RuleBlocks:
 
 
 class ActionBlocks:
+    # ToDo outsource dispatcher messages into domain.yml
 
     def __init__(self, tracker, time_table: TimeTable, dispatcher):
         self.tracker = tracker
@@ -90,10 +91,19 @@ class ActionBlocks:
         self.time_table = time_table
         self.dispatcher = dispatcher
 
-    def do_bot_suggest_next_range(self):
+    def do_bot_suggest_range(self):
         next_free_bot_range = self.time_table.get_first_range_for_label(BOT_FREE_RANGE)
         hf_start, hf_end = get_human_friendly_range(next_free_bot_range)
         self.dispatcher.utter_message(text=f"Esetleg {hf_start} és {hf_end} között valamikor?")
+
+        bot_free_dct = {"start_date": next_free_bot_range.start_datetime, "end_date": next_free_bot_range.end_datetime}
+        self.time_table.set_current_discussed(bot_free_dct, BOT_FREE_RANGE)
+        # self.time_table.get_next_available_timerange()
+
+    def do_bot_suggest_next_range(self):
+        next_free_bot_range = self.time_table.get_next_available_timerange(BOT_FREE_RANGE)
+        hf_start, hf_end = get_human_friendly_range(next_free_bot_range)
+        self.dispatcher.utter_message(text=f"Akkor {hf_start} és {hf_end} között valamikor?")
 
         bot_free_dct = {"start_date": next_free_bot_range.start_datetime, "end_date": next_free_bot_range.end_datetime}
         self.time_table.set_current_discussed(bot_free_dct, BOT_FREE_RANGE)
@@ -115,6 +125,10 @@ class ActionBlocks:
                                                f"Találkozzunk az irodámban.")
 
     def do_bot_set_non_terminal_appointment(self):
+        """
+        this function could be merged with do_bot_set_terminal_appointment function as the only difference is 1 if
+        branch which would be the else branch if merged
+        """
         user_date_mentions = text2datetime(self.text)
 
         for date_intv in user_date_mentions:
@@ -134,10 +148,11 @@ class ActionBlocks:
                     if (end - start).seconds > APPOINTMENT_MAX_LEN:
                         self.time_table.set_current_discussed({"start_date": start, "end_date": end}, USER_FREE_RANGE)
                         self.dispatcher.utter_message(text=f"Ráérek az általad kért időszakon belül "
-                                                      f"{hf_start} és {hf_end} között. "
-                                                      f"Mit szólsz hozzá?")
+                                                           f"{hf_start} és {hf_end} között. "
+                                                           f"Mit szólsz hozzá?")
 
     def do_bot_set_terminal_appointment(self):
+
         user_date_mentions = text2datetime(self.text)
 
         for date_intv in user_date_mentions:
@@ -156,5 +171,5 @@ class ActionBlocks:
                     hf_start, hf_end = get_human_friendly_range(overlap)
                     if (end - start).seconds <= APPOINTMENT_MAX_LEN:
                         self.dispatcher.utter_message(text=f"Ráérek az általad kért időszakon belül "
-                                                          f"{hf_start} és {hf_end} között. "
-                                                          f"Találkozzunk az irodámban.")
+                                                           f"{hf_start} és {hf_end} között. "
+                                                           f"Találkozzunk az irodámban.")

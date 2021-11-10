@@ -92,6 +92,17 @@ class TimeTable:
 
         return min_dtr
 
+    def get_next_available_timerange(self, label):
+        current = self.get_currently_discussed_range().start_datetime
+        # print(f'ezkell:{current}')
+        for dtrange in self.sub_datetimes[label]:
+            print(f'current:{current}, dtrange:{dtrange.start_datetime}')
+            if current < dtrange.start_datetime:
+                current = dtrange
+                break
+
+        return current
+
     def set_current_discussed(self, top_range_dct, label):
         top_range = DateTimeRange(top_range_dct['start_date'], top_range_dct['end_date'])
         dtrl = DateRangeLadder(top_range)

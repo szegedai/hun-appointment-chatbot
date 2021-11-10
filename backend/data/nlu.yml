@@ -23,6 +23,18 @@ nlu:
     - esetleg pénteken találkozni?
     - konzultálni szeretnék
     - időpontot foglalnék
+- intent: another_appointment
+  examples: |
+    - legyen másik nap akkor
+    - akkor egy másik nap esetleg?
+    - akkor legyen inkább a szerda
+    - tegyük egy másik napra
+    - legyen inkább a szerda
+    - tegyük inkább máskorra légyszi
+    - legyen inkább máskor kérlek
+    - mégse jó a hétfő
+    - nem érek rá akkor
+    - nem jó akkor
 - intent: vege
   examples: |
     - oké
