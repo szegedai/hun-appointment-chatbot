@@ -9,19 +9,19 @@ const fs = require('fs');
 
 const PORT = 3000;
 
-let rawdata = fs.readFileSync('node_credentials.json');
-const credentials = JSON.parse(rawdata);
-const dbUrl = `mongodb+srv://${credentials.user}:${credentials.password}@${credentials.cluster}.s0pds.mongodb.net/test`;
+//let rawdata = fs.readFileSync('node_credentials.json');
+//const credentials = JSON.parse(rawdata);
+//const dbUrl = `mongodb+srv://${credentials.user}:${credentials.password}@${credentials.cluster}.s0pds.mongodb.net/test`;
 
-mongoose.connect(dbUrl);
+//mongoose.connect(dbUrl);
 
-mongoose.connection.on('connected', () => {
+/*mongoose.connection.on('connected', () => {
     console.log('csatlakozva DB-hez');
 })
 
 mongoose.connection.on('error', (error) => {
     console.log('Hiba tortent', error);
-})
+})*/
 
 require('./feedback.model');
 const FeedbackModel = mongoose.model('feedback');

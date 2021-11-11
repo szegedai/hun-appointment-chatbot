@@ -731,3 +731,21 @@ function createChartinModal(title, labels, backgroundColor, chartsData, chartTyp
 
 }
 
+$( "#tts-btn" ).on("click", function(){
+    text = $("#tts").val();
+    $.ajax({
+		url: `http://cyrus.tmit.bme.hu/hmmtts2/synth_hmm_wav.php?speaker=NG&q=${text}`,
+		type: "GET",
+		success: function (respone, status) {
+			console.log(`Response: ${respone}`);
+			console.log(`Status: ${status}`);
+			$("#tts").val("");
+		},
+		error: function (xhr, status, error) {
+			console.log(`xhr: ${xhr}`);
+			console.log(`error: ${error}`);
+			console.log(`Status: ${status}`);
+			$("#feedback").val("");
+		}
+	});
+})
