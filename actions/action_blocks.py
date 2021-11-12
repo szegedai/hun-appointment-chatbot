@@ -102,6 +102,7 @@ class ActionBlocks:
 
     def do_bot_suggest_next_range(self):
         next_free_bot_range = self.time_table.get_next_available_timerange(BOT_FREE_RANGE)
+        print(f'kovi bot range:{next_free_bot_range}')
         hf_start, hf_end = get_human_friendly_range(next_free_bot_range)
         self.dispatcher.utter_message(text=f"Akkor {hf_start} és {hf_end} között valamikor?")
 
