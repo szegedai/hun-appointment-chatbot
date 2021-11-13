@@ -1,6 +1,7 @@
-language: en
+language: hu
 
 pipeline:
+  - name: services.delete_special_chars.DeleteSpecialChars
   - name: SpacyNLP
   - name: SpacyTokenizer
   - name: SpacyFeaturizer
@@ -8,8 +9,11 @@ pipeline:
   - name: DIETClassifier
     epochs: 50
     entity_recognition: False
+  - name: FallbackClassifier
+    threshold: 0.35
   - name: ResponseSelector
     epochs: 50
 
 policies:
+  # ToDo add memorization policie after stories has been added.
    - name: RulePolicy

@@ -92,6 +92,15 @@ class TimeTable:
 
         return min_dtr
 
+    def get_next_available_timerange(self, label):
+        current = self.get_currently_discussed_range()
+        for dtrange in self.sub_datetimes[label]:
+            if current.start_datetime < dtrange.start_datetime:
+                current = dtrange
+                break
+
+        return current
+
     def set_current_discussed(self, top_range_dct, label):
         top_range = DateTimeRange(top_range_dct['start_date'], top_range_dct['end_date'])
         dtrl = DateRangeLadder(top_range)
@@ -222,6 +231,7 @@ class DateRangeLadder:
 
     def get_bottom_step(self):
         if self.has_range():
+            print(f'bottom step{self.ladder[0]}')
             return self.ladder[0]
         else:
             return None

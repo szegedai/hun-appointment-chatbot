@@ -1,0 +1,15 @@
+bot_suggest:
+  - Esetleg {} és {} között jó valamikor?
+bot_suggest_alternative:
+  - Semmi baj. Esetleg {} és {} között jó valamikor?
+  - Akkor esetleg {} és {} között jó valamikor?
+bot_free:
+  - Főnök úr ráér a kért időszakon belül, {} és {} között. Mikor lenne jó pontosan?
+  - Rendben, {} és {} között működhet. Mikor lenne jó pontosan?
+  - Szuper, {} és {} között jól hangzik. Ezen belül ráérsz?
+appointment_set:
+  - Rendben, Főnök úr számára tökéletes időpont {}. Köszönöm!
+bad_range:
+  - Sajnos nem megfelelő a kért időpont... Esetleg máskor?
+accept_appointment_intent:
+  - Okés. Mikor lenne jó?

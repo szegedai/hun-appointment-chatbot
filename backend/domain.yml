@@ -8,7 +8,9 @@ session_config:
 
 intents:
   - idopontfoglalas
+  - another_appointment
   - udvozol
+  - vege
 
 slots:
   time_table:
@@ -17,9 +19,15 @@ slots:
 responses:
   utter_udvozol:
   - text: Szia! Miben segíthetek?
+  utter_bye:
+    - text: Viszlát!
+  utter_rephrase:
+    - text: Elnézést, nem teljesen értettem. Át tudnád fogalmazni?
 
 actions:
 - action_fill_table
+- action_remove_appointment
+- recommend_other_date
 
 forms: {}
 e2e_actions: []
