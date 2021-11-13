@@ -35,9 +35,10 @@ class ActionRecommendOtherDate(Action):
         rule_blocks = RuleBlocks(tracker, time_table, dispatcher)
         action_blocks = ActionBlocks(tracker, time_table, dispatcher)
 
-        # print(tracker.current_slot_values())
         action_blocks.do_bot_suggest_next_range()
-        return []
+
+        time_table_modified = action_blocks.time_table
+        return [SlotSet("time_table", time_table_modified.toJSON())]
 
 
 class ActionTimeTableFiller(Action):
