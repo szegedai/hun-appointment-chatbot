@@ -95,7 +95,7 @@ class ActionBlocks:
 
     def do_bot_suggest_range(self):
         next_free_bot_range = self.time_table.get_first_range_for_label(BOT_FREE_RANGE)
-        hf_start, hf_end = get_human_friendly_range(next_free_bot_range)
+        hf_start, hf_end = get_human_friendly_range(next_free_bot_range, include_date=True)
         response_template = get_random_response(RESPONSES, "bot_suggest")
         self.dispatcher.utter_message(text=response_template.format(hf_start, hf_end))
 
@@ -104,7 +104,7 @@ class ActionBlocks:
 
     def do_bot_suggest_alternative_range(self):
         next_free_bot_range = self.time_table.get_next_available_timerange(BOT_FREE_RANGE)
-        hf_start, hf_end = get_human_friendly_range(next_free_bot_range)
+        hf_start, hf_end = get_human_friendly_range(next_free_bot_range, include_date=True)
         response_template = get_random_response(RESPONSES, "bot_suggest_alternative")
         self.dispatcher.utter_message(text=response_template.format(hf_start, hf_end))
 
@@ -114,7 +114,7 @@ class ActionBlocks:
     def do_further_specify_currently_discussed(self):
         self.time_table.discuss_current(self.text)
         currently_discussed = self.time_table.get_currently_discussed_range()
-        hf_start, hf_end = get_human_friendly_range(currently_discussed)
+        hf_start, hf_end = get_human_friendly_range(currently_discussed, include_date=False)
 
         if (currently_discussed.end_datetime - currently_discussed.start_datetime).seconds > APPOINTMENT_MAX_LEN:
             print("B1 1", (currently_discussed.end_datetime - currently_discussed.start_datetime).seconds)
@@ -123,7 +123,7 @@ class ActionBlocks:
         else:
             print("B1 2", (currently_discussed.end_datetime - currently_discussed.start_datetime).seconds)
             response_template = get_random_response(RESPONSES, "appointment_set")
-            self.dispatcher.utter_message(text=response_template.format(hf_start, hf_end))
+            self.dispatcher.utter_message(text=response_template.format(hf_start))
 
     def do_bot_set_appointment(self):
         user_date_mentions = text2datetime(self.text)
@@ -141,10 +141,10 @@ class ActionBlocks:
                 if overlaps:
                     overlap = overlaps[0]  # TODO: let's handle more overlaps...
                     start, end = overlap.start_datetime, overlap.end_datetime
-                    hf_start, hf_end = get_human_friendly_range(overlap)
+                    hf_start, hf_end = get_human_friendly_range(overlap, include_date=False)
                     if (end - start).seconds <= APPOINTMENT_MAX_LEN:
                         response_template = get_random_response(RESPONSES, "appointment_set")
-                        self.dispatcher.utter_message(text=response_template.format(hf_start, hf_end))
+                        self.dispatcher.utter_message(text=response_template.format(hf_start))
                     else:
                         self.time_table.set_current_discussed({"start_date": start, "end_date": end}, USER_FREE_RANGE)
                         response_template = get_random_response(RESPONSES, "bot_free")

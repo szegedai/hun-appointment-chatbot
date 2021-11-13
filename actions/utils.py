@@ -1,16 +1,31 @@
 import json
 import yaml
-from random import choice
+from random import choice, randint
 from hun_date_parser import datetime2text
 from datetime import datetime
 from time_table import TimeTable
 
 
-def get_human_friendly_range(daterange):
-    human_friendly_start = f"{datetime2text(daterange.start_datetime, 1)['dates'][-1]} " \
-                           f"{datetime2text(daterange.start_datetime, 1)['times'][-1]}"
-    human_friendly_end = f"{datetime2text(daterange.end_datetime, 1)['dates'][-1]} " \
-                         f"{datetime2text(daterange.end_datetime, 1)['times'][-1]}"
+def get_human_friendly_range(daterange, include_date=True):
+    include_secondary_date = False
+    if daterange.start_datetime.date() != daterange.end_datetime.date():
+        include_secondary_date = True
+
+    date_ind = randint(0, 1)
+    # time_ind = randint(0, 3)
+    time_ind = -1
+
+    if include_date:
+        human_friendly_start = f"{datetime2text(daterange.start_datetime, 1)['dates'][date_ind]} " \
+                               f"{datetime2text(daterange.start_datetime, 1)['times'][time_ind]}"
+    else:
+        human_friendly_start = f"{datetime2text(daterange.start_datetime, 1)['times'][time_ind]}"
+
+    if not include_secondary_date:
+        human_friendly_end = f"{datetime2text(daterange.end_datetime, 1)['times'][time_ind]}"
+    else:
+        human_friendly_end = f"{datetime2text(daterange.end_datetime, 1)['dates'][date_ind]} " \
+                             f"{datetime2text(daterange.end_datetime, 1)['times'][time_ind]}"
 
     return human_friendly_start, human_friendly_end
 

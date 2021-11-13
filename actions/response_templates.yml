@@ -8,7 +8,7 @@ bot_free:
   - Rendben, {} és {} között működhet. Mikor lenne jó pontosan?
   - Szuper, {} és {} között jól hangzik. Ezen belül ráérsz?
 appointment_set:
-  - Rendben, Főnök úr számára tökéletes időpont {} és {} között. Köszönöm!
+  - Rendben, Főnök úr számára tökéletes időpont {}. Köszönöm!
 bad_range:
   - Sajnos nem megfelelő a kért időpont... Esetleg máskor?
 accept_appointment_intent:
