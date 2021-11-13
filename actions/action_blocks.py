@@ -1,9 +1,9 @@
-from actions.time_table import TimeTable, has_date_mention
-from actions.utils import get_human_friendly_range
+from time_table import TimeTable, has_date_mention
+from utils import get_human_friendly_range
 from hun_date_parser.date_parser.interval_restriction import extract_datetime_within_interval, ExtractWithinRangeSuccess
 from hun_date_parser import text2datetime
 
-APPOINTMENT_MAX_LEN = 7200
+APPOINTMENT_MAX_LEN = 3700
 BOT_FREE_RANGE = "bot_free"
 USER_FREE_RANGE = "user_free"
 
@@ -50,8 +50,10 @@ class RuleBlocks:
 
         return False
 
-    def if_bot_is_free_in_overlap_and_appointment_is_set(self):
+    def _get_user_bot_overlaps(self):
         user_date_mentions = text2datetime(self.text)
+
+        all_overlaps = []
 
         for date_intv in user_date_mentions:
             if date_intv['start_date'] and date_intv['end_date']:
@@ -61,25 +63,24 @@ class RuleBlocks:
 
                 if overlaps:
                     overlap = overlaps[0]  # TODO: let's handle more overlaps...
-                    start, end = overlap.start_datetime, overlap.end_datetime
-                    if (end - start).seconds < APPOINTMENT_MAX_LEN:
-                        return True
+                    all_overlaps.append(overlap)
+
+        return all_overlaps
+
+    def if_bot_is_free_in_overlap_and_appointment_is_set(self):
+        overlaps = self._get_user_bot_overlaps()
+
+        for overlap in overlaps:
+            start, end = overlap.start_datetime, overlap.end_datetime
+            if (end - start).seconds < APPOINTMENT_MAX_LEN:
+                return True
 
         return False
 
     def if_bot_is_free_in_overlap(self):
-        user_date_mentions = text2datetime(self.text)
+        overlaps = self._get_user_bot_overlaps()
 
-        for date_intv in user_date_mentions:
-            if date_intv['start_date'] and date_intv['end_date']:
-                overlaps = self.time_table.query_timerange(date_intv['start_date'],
-                                                           date_intv['end_date'],
-                                                           BOT_FREE_RANGE)
-
-                if overlaps:
-                    return True
-
-        return False
+        return bool(overlaps)
 
 
 class ActionBlocks:
@@ -125,35 +126,7 @@ class ActionBlocks:
                                                f"{hf_start} és {hf_end} között. "
                                                f"Találkozzunk az irodámban.")
 
-    def do_bot_set_non_terminal_appointment(self):
-        """
-        this function could be merged with do_bot_set_terminal_appointment function as the only difference is 1 if
-        branch which would be the else branch if merged
-        """
-        user_date_mentions = text2datetime(self.text)
-
-        for date_intv in user_date_mentions:
-            if date_intv['start_date'] and date_intv['end_date']:
-                self.time_table.label_timerange(date_intv['start_date'],
-                                                date_intv['end_date'],
-                                                USER_FREE_RANGE)
-
-                overlaps = self.time_table.query_timerange(date_intv['start_date'],
-                                                           date_intv['end_date'],
-                                                           BOT_FREE_RANGE)
-
-                if overlaps:
-                    overlap = overlaps[0]  # TODO: let's handle more overlaps...
-                    start, end = overlap.start_datetime, overlap.end_datetime
-                    hf_start, hf_end = get_human_friendly_range(overlap)
-                    if (end - start).seconds > APPOINTMENT_MAX_LEN:
-                        self.time_table.set_current_discussed({"start_date": start, "end_date": end}, USER_FREE_RANGE)
-                        self.dispatcher.utter_message(text=f"Ráérek az általad kért időszakon belül "
-                                                           f"{hf_start} és {hf_end} között. "
-                                                           f"Mit szólsz hozzá?")
-
-    def do_bot_set_terminal_appointment(self):
-
+    def do_bot_set_appointment(self):
         user_date_mentions = text2datetime(self.text)
 
         for date_intv in user_date_mentions:
@@ -172,5 +145,12 @@ class ActionBlocks:
                     hf_start, hf_end = get_human_friendly_range(overlap)
                     if (end - start).seconds <= APPOINTMENT_MAX_LEN:
                         self.dispatcher.utter_message(text=f"Ráérek az általad kért időszakon belül "
+                                                          f"{hf_start} és {hf_end} között. "
+                                                          f"Találkozzunk az irodámban.")
+                    else:
+                        self.time_table.set_current_discussed({"start_date": start, "end_date": end}, USER_FREE_RANGE)
+                        self.dispatcher.utter_message(text=f"Ráérek az általad kért időszakon belül "
                                                            f"{hf_start} és {hf_end} között. "
-                                                           f"Találkozzunk az irodámban.")
+                                                           f"Mit szólsz hozzá?")
+
+                    return None
