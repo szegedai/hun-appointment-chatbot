@@ -94,10 +94,7 @@ class TimeTable:
 
     def get_next_available_timerange(self, label):
         current = self.get_currently_discussed_range()
-        # print(f'ezkell:{current}')
         for dtrange in self.sub_datetimes[label]:
-            print(f'current:{current}, dtrange:{dtrange.start_datetime}')
-            # current doesnt get set
             if current.start_datetime < dtrange.start_datetime:
                 current = dtrange
                 break

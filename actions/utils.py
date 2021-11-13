@@ -1,4 +1,6 @@
 import json
+import yaml
+from random import choice
 from hun_date_parser import datetime2text
 from datetime import datetime
 from time_table import TimeTable
@@ -11,6 +13,18 @@ def get_human_friendly_range(daterange):
                          f"{datetime2text(daterange.end_datetime, 1)['times'][-1]}"
 
     return human_friendly_start, human_friendly_end
+
+
+def load_responses():
+    with open("response_templates.yml") as f:
+        d = yaml.load(f, yaml.FullLoader)
+
+    return d
+
+
+def get_random_response(responses, label):
+    resp = choice(responses[label])
+    return resp
 
 
 def get_available_appointments():

@@ -1,11 +1,12 @@
 from time_table import TimeTable, has_date_mention
-from utils import get_human_friendly_range
+from utils import get_human_friendly_range, load_responses, get_random_response
 from hun_date_parser.date_parser.interval_restriction import extract_datetime_within_interval, ExtractWithinRangeSuccess
 from hun_date_parser import text2datetime
 
 APPOINTMENT_MAX_LEN = 3700
 BOT_FREE_RANGE = "bot_free"
 USER_FREE_RANGE = "user_free"
+RESPONSES = load_responses()
 
 
 class RuleBlocks:
@@ -95,17 +96,17 @@ class ActionBlocks:
     def do_bot_suggest_range(self):
         next_free_bot_range = self.time_table.get_first_range_for_label(BOT_FREE_RANGE)
         hf_start, hf_end = get_human_friendly_range(next_free_bot_range)
-        self.dispatcher.utter_message(text=f"Esetleg {hf_start} és {hf_end} között valamikor?")
+        response_template = get_random_response(RESPONSES, "bot_suggest")
+        self.dispatcher.utter_message(text=response_template.format(hf_start, hf_end))
 
         bot_free_dct = {"start_date": next_free_bot_range.start_datetime, "end_date": next_free_bot_range.end_datetime}
         self.time_table.set_current_discussed(bot_free_dct, BOT_FREE_RANGE)
-        # self.time_table.get_next_available_timerange()
 
-    def do_bot_suggest_next_range(self):
+    def do_bot_suggest_alternative_range(self):
         next_free_bot_range = self.time_table.get_next_available_timerange(BOT_FREE_RANGE)
-        print(f'kovi bot range:{next_free_bot_range}')
         hf_start, hf_end = get_human_friendly_range(next_free_bot_range)
-        self.dispatcher.utter_message(text=f"Akkor {hf_start} és {hf_end} között valamikor?")
+        response_template = get_random_response(RESPONSES, "bot_suggest_alternative")
+        self.dispatcher.utter_message(text=response_template.format(hf_start, hf_end))
 
         bot_free_dct = {"start_date": next_free_bot_range.start_datetime, "end_date": next_free_bot_range.end_datetime}
         self.time_table.set_current_discussed(bot_free_dct, BOT_FREE_RANGE)
@@ -117,14 +118,12 @@ class ActionBlocks:
 
         if (currently_discussed.end_datetime - currently_discussed.start_datetime).seconds > APPOINTMENT_MAX_LEN:
             print("B1 1", (currently_discussed.end_datetime - currently_discussed.start_datetime).seconds)
-            self.dispatcher.utter_message(text=f"Ráérek az általad kért időszakon belül "
-                                               f"{hf_start} és {hf_end} között. "
-                                               f"Mit szólsz hozzá?")
+            response_template = get_random_response(RESPONSES, "bot_free")
+            self.dispatcher.utter_message(text=response_template.format(hf_start, hf_end))
         else:
             print("B1 2", (currently_discussed.end_datetime - currently_discussed.start_datetime).seconds)
-            self.dispatcher.utter_message(text=f"Ráérek az általad kért időszakon belül "
-                                               f"{hf_start} és {hf_end} között. "
-                                               f"Találkozzunk az irodámban.")
+            response_template = get_random_response(RESPONSES, "appointment_set")
+            self.dispatcher.utter_message(text=response_template.format(hf_start, hf_end))
 
     def do_bot_set_appointment(self):
         user_date_mentions = text2datetime(self.text)
@@ -144,13 +143,11 @@ class ActionBlocks:
                     start, end = overlap.start_datetime, overlap.end_datetime
                     hf_start, hf_end = get_human_friendly_range(overlap)
                     if (end - start).seconds <= APPOINTMENT_MAX_LEN:
-                        self.dispatcher.utter_message(text=f"Ráérek az általad kért időszakon belül "
-                                                          f"{hf_start} és {hf_end} között. "
-                                                          f"Találkozzunk az irodámban.")
+                        response_template = get_random_response(RESPONSES, "appointment_set")
+                        self.dispatcher.utter_message(text=response_template.format(hf_start, hf_end))
                     else:
                         self.time_table.set_current_discussed({"start_date": start, "end_date": end}, USER_FREE_RANGE)
-                        self.dispatcher.utter_message(text=f"Ráérek az általad kért időszakon belül "
-                                                           f"{hf_start} és {hf_end} között. "
-                                                           f"Mit szólsz hozzá?")
+                        response_template = get_random_response(RESPONSES, "bot_free")
+                        self.dispatcher.utter_message(text=response_template.format(hf_start, hf_end))
 
                     return None

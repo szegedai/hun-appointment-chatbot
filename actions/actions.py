@@ -4,8 +4,10 @@ from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
 from rasa_sdk.events import SlotSet
 
-from utils import get_timetable_in_discussion
+from utils import get_timetable_in_discussion, load_responses, get_random_response
 from action_blocks import ActionBlocks, RuleBlocks
+
+RESPONSES = load_responses()
 
 
 class ActionRemoveAppointment(Action):
@@ -35,7 +37,7 @@ class ActionRecommendOtherDate(Action):
         rule_blocks = RuleBlocks(tracker, time_table, dispatcher)
         action_blocks = ActionBlocks(tracker, time_table, dispatcher)
 
-        action_blocks.do_bot_suggest_next_range()
+        action_blocks.do_bot_suggest_alternative_range()
 
         time_table_modified = action_blocks.time_table
         return [SlotSet("time_table", time_table_modified.toJSON())]
@@ -56,7 +58,7 @@ class ActionTimeTableFiller(Action):
 
         if not rule_blocks.if_text_has_datetime():
             print("A")
-            dispatcher.utter_message(text="Okés. Mikor lenne jó?")
+            dispatcher.utter_message(get_random_response(RESPONSES, "accept_appointment_intent"))
             action_blocks.do_bot_suggest_range()
 
             return [SlotSet("time_table", time_table.toJSON())]
@@ -79,7 +81,7 @@ class ActionTimeTableFiller(Action):
             action_blocks.do_bot_set_appointment()
 
         else:
-            dispatcher.utter_message("Sajnos nem megfelelő a kért időpont...")
+            dispatcher.utter_message(get_random_response(RESPONSES, "bad_range"))
 
         time_table_modified = action_blocks.time_table
 
