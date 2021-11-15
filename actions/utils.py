@@ -5,6 +5,9 @@ from hun_date_parser import datetime2text
 from datetime import datetime
 from time_table import TimeTable
 
+BOT_FREE_RANGE = "bot_free"
+USER_FREE_RANGE = "user_free"
+
 
 def get_human_friendly_range(daterange, include_date=True):
     include_secondary_date = False
@@ -71,7 +74,7 @@ def get_timetable_in_discussion(tracker):
     time_table_repr = tracker.get_slot('time_table')
 
     if not time_table_repr:
-        time_table = TimeTable(['user_free', 'bot_free', 'last_offered'])
+        time_table = TimeTable([BOT_FREE_RANGE, USER_FREE_RANGE])
         for rec in get_available_appointments():
             time_table.label_timerange(rec['start_date'], rec['end_date'], 'bot_free')
     else:

@@ -1,11 +1,9 @@
 from time_table import TimeTable, has_date_mention
-from utils import get_human_friendly_range, load_responses, get_random_response
+from utils import get_human_friendly_range, load_responses, get_random_response, BOT_FREE_RANGE, USER_FREE_RANGE
 from hun_date_parser.date_parser.interval_restriction import extract_datetime_within_interval, ExtractWithinRangeSuccess
 from hun_date_parser import text2datetime
 
 APPOINTMENT_MAX_LEN = 3700
-BOT_FREE_RANGE = "bot_free"
-USER_FREE_RANGE = "user_free"
 RESPONSES = load_responses()
 
 
@@ -146,6 +144,7 @@ class ActionBlocks:
                         response_template = get_random_response(RESPONSES, "appointment_set")
                         self.dispatcher.utter_message(text=response_template.format(hf_start))
                     else:
+                        self.time_table.label_timerange(start, end, USER_FREE_RANGE)
                         self.time_table.set_current_discussed({"start_date": start, "end_date": end}, USER_FREE_RANGE)
                         response_template = get_random_response(RESPONSES, "bot_free")
                         self.dispatcher.utter_message(text=response_template.format(hf_start, hf_end))
