@@ -88,3 +88,46 @@ class ActionTimeTableFiller(Action):
 
         print("TERMINAL")
         return [SlotSet("time_table", time_table_modified.toJSON())]
+
+
+class ActionUserAffirmed(Action):
+
+    def name(self) -> Text:
+        return "action_user_affirmed"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+
+        time_table = get_timetable_in_discussion(tracker)
+        rule_blocks = RuleBlocks(tracker, time_table, dispatcher)
+        action_blocks = ActionBlocks(tracker, time_table, dispatcher)
+
+        if rule_blocks.if_exists_currently_discussed_range():
+
+            if not rule_blocks.if_text_has_datetime():
+                if rule_blocks.if_currently_discussed_already_an_appointment():
+                    action_blocks.do_confirm_currently_discussed_is_already_an_appointment()
+                else:
+                    action_blocks.do_bot_suggest_from_currently_discussed_range()
+
+                return [SlotSet("time_table", time_table.toJSON())]
+            elif rule_blocks.if_text_further_specifies_currently_discussed():
+                print("B1")
+                action_blocks.do_further_specify_currently_discussed()
+
+                return [SlotSet("time_table", time_table.toJSON())]
+            elif rule_blocks.if_text_in_currently_discussed_top_range():
+                print("B2")
+                action_blocks.do_further_specify_currently_discussed()
+
+                return [SlotSet("time_table", time_table.toJSON())]
+
+        else:
+            dispatcher.utter_message(get_random_response(RESPONSES, "not_understood"))
+
+        time_table_modified = action_blocks.time_table
+        time_table_modified.get_viz()
+
+        print("TERMINAL")
+        return [SlotSet("time_table", time_table_modified.toJSON())]

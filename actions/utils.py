@@ -2,7 +2,8 @@ import json
 import yaml
 from random import choice, randint
 from hun_date_parser import datetime2text
-from datetime import datetime
+from datetime import datetime, timedelta
+from datetimerange import DateTimeRange
 from time_table import TimeTable
 
 BOT_FREE_RANGE = "bot_free"
@@ -81,3 +82,14 @@ def get_timetable_in_discussion(tracker):
         time_table = TimeTable.fromJSON(time_table_repr)
 
     return time_table
+
+
+def get_random_hour_from_timerange(a):
+    n_hours = (a.end_datetime - a.start_datetime).seconds // 3600
+    hour_lst = [a.start_datetime + timedelta(seconds=3600 * i) for i in range(n_hours)]
+
+    if len(hour_lst) > 2:
+        hour_ind = randint(0, len(hour_lst) - 2)
+        return DateTimeRange(hour_lst[hour_ind], hour_lst[hour_ind + 1])
+    else:
+        return a

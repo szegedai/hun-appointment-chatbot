@@ -11,6 +11,10 @@ intents:
   - another_appointment
   - udvozol
   - vege
+  - say_date_or_time
+  - affirm
+  - refute
+  - recommend_date_or_time
 
 slots:
   time_table:
@@ -28,6 +32,7 @@ actions:
 - action_fill_table
 - action_remove_appointment
 - recommend_other_date
+- action_user_affirmed
 
 forms: {}
 e2e_actions: []

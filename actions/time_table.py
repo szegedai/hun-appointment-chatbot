@@ -138,7 +138,7 @@ class TimeTable:
         df_timetable = pd.DataFrame(res, columns=['label', 'from', 'to'])
 
         alt.renderers.enable('default')
-        alt.Chart(df_timetable).mark_bar().encode(
+        timeline_chart = alt.Chart(df_timetable).mark_bar().encode(
             x='from',
             x2='to',
             y='label',
@@ -147,7 +147,24 @@ class TimeTable:
         ).properties(
             width=1200,
             height=200
-        ).save('chart_from_chatbot.html')
+        )
+
+        ladder_res = []
+        if self.current_dtrl["ladder"]:
+            for i, dtr in enumerate(self.current_dtrl["ladder"].ladder):
+                    res.append([i, dtr.start_datetime, dtr.end_datetime])
+
+        df_ladder_timetable = pd.DataFrame(ladder_res, columns=['label', 'from', 'to'])
+
+        ladder_chart = alt.Chart(df_ladder_timetable).mark_bar().encode(
+            x='from',
+            x2='to',
+            y='label'
+        ).properties(
+            width=1200,
+            height=200
+        )
+        alt.vconcat(timeline_chart, ladder_chart).save('chart_from_chatbot.html')
 
     def toJSON(self):
         dct = deepcopy(self.__dict__)
