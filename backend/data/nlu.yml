@@ -12,6 +12,10 @@ nlu:
     - jó reggel
     - üdv
     - jó napot kívánok
+    - hello!
+    - Halika
+    - hi
+    - halló
 - intent: idopontfoglalas
   examples: |
     - szeretnék időpontot foglalni.
@@ -23,8 +27,6 @@ nlu:
     - esetleg pénteken találkozni?
     - konzultálni szeretnék
     - időpontot foglalnék
-- intent: say_date_or_time
-  examples: |
     - kedden
     - vasárnap
     - holnap
@@ -66,6 +68,11 @@ nlu:
     - délután fél 2 után 5 perccel
     - 15:23-kor ott vagyok
     - 17 óra 34-kor ott leszek
+    - hétfőnként
+    - hétfő
+    - holnap délután
+    - holnapután este
+    - reggel 6 körül
 - intent: another_appointment
   examples: |
     - legyen másik nap akkor
@@ -76,6 +83,10 @@ nlu:
     - tegyük inkább máskorra légyszi
     - legyen inkább máskor kérlek
     - mégse jó a hétfő
+    - nem jön össze, kedden esetleg?
+    - rákövetkező héten ugyanekkor esetleg?
+    - javasolj mást
+    - Javasolnál kérlek másik napot?
 - intent: recommend_date_or_time
   examples: |
     - bármikor
@@ -99,6 +110,8 @@ nlu:
     - mikor tudnék vele találkozni?
     - szabad mostanában valamikor?
     - mikor szabad a Főnök úr?
+    - Leghamarabb mikor?
+    - Legközelebb mikor jó neki?
 - intent: affirm
   examples: |
     - oké
@@ -117,6 +130,9 @@ nlu:
     - jó
     - igen
     - igen, megfelel
+    - ok
+    - megfelel
+    - királyság
 - intent: refute
   examples: |
     - az nem lesz jó sajnos
@@ -124,6 +140,10 @@ nlu:
     - nem jó akkor
     - nem jó
     - nem
+    - akkor a gyereket viszem edzésre
+    - akkor nem érek rá
+    - nem tudom megoldani
+    - mondj másikat
 - intent: vege
   examples: |
     - rendben. szia!
