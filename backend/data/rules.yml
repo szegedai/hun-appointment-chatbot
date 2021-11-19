@@ -17,11 +17,6 @@ rules:
       - intent: idopontfoglalas
       - action: action_fill_table
 
-  - rule: Single rule 2 # this could be refined
-    steps:
-      - intent: say_date_or_time
-      - action: action_fill_table
-
   - rule: user_affirmed
     steps:
       - intent: affirm
