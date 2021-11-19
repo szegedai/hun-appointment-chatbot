@@ -18,6 +18,9 @@ nlu:
     - halló
 - intent: idopontfoglalas
   examples: |
+    - Szeretnék időpontot foglalni Főnök úrhoz.
+    - Konzultációra szeretnék időpontot.
+    - Megbeszélésre akarok találkozni a Főnök úrral.
     - szeretnék időpontot foglalni.
     - időpontot akarok foglalni.
     - szeretnék időpontot foglalni keddre.
@@ -73,6 +76,9 @@ nlu:
     - holnap délután
     - holnapután este
     - reggel 6 körül
+    - ezen a héten csütörtök délelőtt.
+    - MOST AZONNAL
+    - legyen ma, 16:35 perc
 - intent: another_appointment
   examples: |
     - legyen másik nap akkor
@@ -112,6 +118,9 @@ nlu:
     - mikor szabad a Főnök úr?
     - Leghamarabb mikor?
     - Legközelebb mikor jó neki?
+    - szabad vagyok egész nap
+    - amikor a Főnök úr ráér
+    - nekem mindegy
 - intent: affirm
   examples: |
     - oké
@@ -144,6 +153,9 @@ nlu:
     - akkor nem érek rá
     - nem tudom megoldani
     - mondj másikat
+    - az nem lesz jó sajnos
+    - nem, az nem lesz jó
+    - más dolgom van akkor
 - intent: vege
   examples: |
     - rendben. szia!
