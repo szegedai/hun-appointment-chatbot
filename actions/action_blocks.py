@@ -1,11 +1,10 @@
 from time_table import TimeTable, has_date_mention
-from utils import get_human_friendly_range, load_responses, get_random_response
+from utils import get_human_friendly_range, load_responses, get_random_response, BOT_FREE_RANGE, USER_FREE_RANGE,\
+    get_random_hour_from_timerange
 from hun_date_parser.date_parser.interval_restriction import extract_datetime_within_interval, ExtractWithinRangeSuccess
 from hun_date_parser import text2datetime
 
 APPOINTMENT_MAX_LEN = 3700
-BOT_FREE_RANGE = "bot_free"
-USER_FREE_RANGE = "user_free"
 RESPONSES = load_responses()
 
 
@@ -78,6 +77,15 @@ class RuleBlocks:
 
         return False
 
+    def if_currently_discussed_already_an_appointment(self):
+        overlap = self.time_table.get_currently_discussed_range()
+
+        start, end = overlap.start_datetime, overlap.end_datetime
+        if (end - start).seconds < APPOINTMENT_MAX_LEN:
+            return True
+
+        return False
+
     def if_bot_is_free_in_overlap(self):
         overlaps = self._get_user_bot_overlaps()
 
@@ -100,6 +108,16 @@ class ActionBlocks:
         self.dispatcher.utter_message(text=response_template.format(hf_start, hf_end))
 
         bot_free_dct = {"start_date": next_free_bot_range.start_datetime, "end_date": next_free_bot_range.end_datetime}
+        self.time_table.set_current_discussed(bot_free_dct, BOT_FREE_RANGE)
+
+    def do_bot_suggest_from_currently_discussed_range(self):
+        currently_discussed = self.time_table.get_currently_discussed_range()
+        random_hour = get_random_hour_from_timerange(currently_discussed)
+        hf_start, hf_end = get_human_friendly_range(random_hour, include_date=True)
+        response_template = get_random_response(RESPONSES, "bot_suggests_final")
+        self.dispatcher.utter_message(text=response_template.format(hf_start))
+
+        bot_free_dct = {"start_date": random_hour.start_datetime, "end_date": random_hour.end_datetime}
         self.time_table.set_current_discussed(bot_free_dct, BOT_FREE_RANGE)
 
     def do_bot_suggest_alternative_range(self):
@@ -125,6 +143,14 @@ class ActionBlocks:
             response_template = get_random_response(RESPONSES, "appointment_set")
             self.dispatcher.utter_message(text=response_template.format(hf_start))
 
+    def do_confirm_currently_discussed_is_already_an_appointment(self):
+        overlap = self.time_table.get_currently_discussed_range()
+        start, end = overlap.start_datetime, overlap.end_datetime
+        hf_start, hf_end = get_human_friendly_range(overlap, include_date=False)
+        if (end - start).seconds <= APPOINTMENT_MAX_LEN:
+            response_template = get_random_response(RESPONSES, "appointment_set")
+            self.dispatcher.utter_message(text=response_template.format(hf_start))
+
     def do_bot_set_appointment(self):
         user_date_mentions = text2datetime(self.text)
 
@@ -146,6 +172,7 @@ class ActionBlocks:
                         response_template = get_random_response(RESPONSES, "appointment_set")
                         self.dispatcher.utter_message(text=response_template.format(hf_start))
                     else:
+                        self.time_table.label_timerange(start, end, USER_FREE_RANGE)
                         self.time_table.set_current_discussed({"start_date": start, "end_date": end}, USER_FREE_RANGE)
                         response_template = get_random_response(RESPONSES, "bot_free")
                         self.dispatcher.utter_message(text=response_template.format(hf_start, hf_end))

@@ -17,6 +17,21 @@ rules:
       - intent: idopontfoglalas
       - action: action_fill_table
 
+  - rule: user_affirmed
+    steps:
+      - intent: affirm
+      - action: action_user_affirmed
+
+  - rule: user_is_flexible
+    steps:
+      - intent: recommend_date_or_time
+      - action: action_user_affirmed
+
+  - rule: user_refuted # this could be refined
+    steps:
+      - intent: refute
+      - action: recommend_other_date
+
   - rule: mas idopont
     steps:
       - intent: another_appointment
