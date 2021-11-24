@@ -16,7 +16,7 @@ services:
     rasa:
       container_name: "rasa_server"
       build: 
-        context: backend
+        context: rasa_server
       ports: 
         - "5005:5005"
     action_server:
@@ -28,7 +28,7 @@ services:
     chatbot_ui:
       container_name: "chatbot_ui"
       build: 
-        context: frontend
+        context: nodejs
       ports: 
         - "3000:3000"
 
