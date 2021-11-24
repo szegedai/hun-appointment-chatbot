@@ -127,7 +127,8 @@ dmypy.json
 .idea/
 
 # dont upload models
-backend/models/
+rasa_server/models/
 # dont upload node_modules
-frontend/node_modules/
-frontend/package-lock.json
+nodejs/node_modules/
+nodejs/package-lock.json
+nodejs/credentials.json
