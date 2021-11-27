@@ -50,7 +50,7 @@ $( "#feedback-btn" ).on("click", function(){
     date = new Date().toLocaleString();
 
     $.ajax({
-		url: "https://www.inf.u-szeged.hu/algmi/chatbot/",
+		url: "https://www.inf.u-szeged.hu/algmi/chatbot/mongo",
 		type: "POST",
 		contentType: "application/json",
 		data: JSON.stringify({ "user_id": user_id, "description": text, "createdAt": date}),
@@ -67,31 +67,6 @@ $( "#feedback-btn" ).on("click", function(){
 	});
 })
 
-// ========================== let the bot start the conversation ========================
-/*function action_trigger() {
-	// send an event to the bot, so that bot can start the conversation by greeting the user
-	$.ajax({
-		url: `http://127.0.0.1/rasa/conversations/${user_id}/execute`,
-		type: "POST",
-		contentType: "application/json",
-		data: JSON.stringify({ "name": action_name, "policy": "MappingPolicy", "confidence": "0.98" }),
-		success: function (botResponse, status) {
-			console.log("Response from Rasa: ", botResponse, "\nStatus: ", status);
-
-			if (botResponse.hasOwnProperty("messages")) {
-				setBotResponse(botResponse.messages);
-			}
-			$("#userInput").prop('disabled', false);
-		},
-		error: function (xhr, textStatus, errorThrown) {
-
-			// if there is no response from rasa server
-			setBotResponse("");
-			console.log("Error from bot end: ", textStatus);
-			$("#userInput").prop('disabled', false);
-		}
-	});
-}*/
 // Not actually triggering action as it would always create a new mongodb instance
 function action_trigger(){
 	setTimeout(function () {
@@ -200,11 +175,9 @@ function scrollToBottomOfResults() {
 
 //============== send the user message to rasa server =============================================
 function send(message) {
-	
-	//var url = //document.location.protocol + "//" + document.location.hostname + ":" + PORT;
-	var url = "https://inf.u-szeged.hu/algmi/chatbot/";
+
 	$.ajax({
-		url: url + "/rasa/webhooks/rest/webhook",
+		url: "https://inf.u-szeged.hu/algmi/chatbot/rasa/webhook",
 		type: "POST",
 		contentType: "application/json",
 		data: JSON.stringify({ message: message, sender: user_id }),

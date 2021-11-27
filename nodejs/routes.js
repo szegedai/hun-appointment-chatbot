@@ -30,9 +30,9 @@ router.post('/mongo', (req, res, next) => {
 router.post("/rasa/webhook", (req, res) => {
     if(req.body.message && req.body.sender){
         //doesnt work because of https
-        axios.post('https://inf.u-szeged.hu/algmi/chatbot/rasa/webhooks/rest/webhook', {
+        //axios.post('https://inf.u-szeged.hu/algmi/chatbot/rasa/webhooks/rest/webhook', {
         //can test this only with docker
-        //axios.post('http://rasa_server:5005/rasa/webhooks/rest/webhook', {
+        axios.post('http://rasa_server:5005/rasa/webhooks/rest/webhook', {
         message: req.body.message,
         sender: req.body.sender
         })
@@ -55,7 +55,7 @@ router.get('/tts/:text', (req, res) => {
         res.status(200).send(response);
     })
     .catch(error => {
-        res.status(500).send("Sikertelen tts hívás");
+        res.status(500).send(`Sikertelen tts hívás: ${error}`);
     })
 })
 
