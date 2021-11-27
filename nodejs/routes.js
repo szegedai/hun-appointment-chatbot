@@ -27,7 +27,7 @@ router.post("/mongo", (req, res, next) => {
   }
 });
 
-router.post("/dod", (req, res) => {
+router.post("/rasa/webhook", (req, res) => {
   if (req.body.message && req.body.sender) {
     //doesnt work because of https
     data = {
@@ -46,6 +46,7 @@ router.post("/dod", (req, res) => {
         }
       )
       .then((response) => {
+        //might cause a bug when a followup action is triggered
         res.status(200).send(response.data[0].text);
         console.log(response.data[0].text);
       })
