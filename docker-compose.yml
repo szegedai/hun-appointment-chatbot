@@ -10,7 +10,7 @@ services:
     ports:
       - 3005:3005
     depends_on:
-      - rasa
+      - rasa_server
       - action_server
       - chatbot_ui
   rasa_server:
