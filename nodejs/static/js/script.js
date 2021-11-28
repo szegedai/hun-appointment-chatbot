@@ -82,7 +82,7 @@ function action_trigger() {
     var msg =
       "Jó napot! Főnök Úr virtuális személyi asszisztense vagyok, én kezelem a naptárában az időpont foglalásokat. Mikorra szeretne hozzá időpontot?";
     var BotResponse =
-      '<img class="botAvatar" src="/img/botAvatar.png"/><p class="botMsg">' +
+      '<img class="botAvatar" src="https://inf.u-szeged.hu/algmi/chatbot/img/botAvatar.png"/><p class="botMsg">' +
       msg +
       '</p><div class="clearfix"></div>';
     $(BotResponse).appendTo(".chats").hide().fadeIn(1000);
@@ -174,7 +174,7 @@ $.fn.selectRange = function (start, end) {
 function setUserResponse(message) {
   var UserResponse =
     '<img class="userAvatar" src=' +
-    "/img/userAvatar.jpg" +
+    "https://inf.u-szeged.hu/algmi/chatbot/img/userAvatar.jpg" +
     '><p class="userMsg">' +
     message +
     ' </p><div class="clearfix"></div>';
@@ -237,7 +237,7 @@ function setBotResponse(response) {
       var fallbackMsg = "I am facing some issues, please try again later!!!";
 
       var BotResponse =
-        '<img class="botAvatar" src="/img/botAvatar.png"/><p class="botMsg">' +
+        '<img class="botAvatar" src="https://inf.u-szeged.hu/algmi/chatbot/img/botAvatar.png"/><p class="botMsg">' +
         fallbackMsg +
         '</p><div class="clearfix"></div>';
 
@@ -249,7 +249,7 @@ function setBotResponse(response) {
         //check if the response contains "text"
         if (response[i].hasOwnProperty("text")) {
           var BotResponse =
-            '<img class="botAvatar" src="/img/botAvatar.png"/><p class="botMsg">' +
+            '<img class="botAvatar" src="https://inf.u-szeged.hu/algmi/chatbot/img/botAvatar.png"/><p class="botMsg">' +
             response[i].text +
             '</p><div class="clearfix"></div>';
           $(BotResponse).appendTo(".chats").hide().fadeIn(1000);
@@ -630,7 +630,7 @@ function handleLocationAccessError(error) {
 //======================================bot typing animation ======================================
 function showBotTyping() {
   var botTyping =
-    '<img class="botAvatar" id="botAvatar" src="/img/botAvatar.png"/><div class="botTyping">' +
+    '<img class="botAvatar" id="botAvatar" src="https://inf.u-szeged.hu/algmi/chatbot/img/botAvatar.png"/><div class="botTyping">' +
     '<div class="bounce1"></div>' +
     '<div class="bounce2"></div>' +
     '<div class="bounce3"></div>' +
