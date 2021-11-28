@@ -48,8 +48,8 @@ router.post("/rasa/webhook", (req, res) => {
       )
       .then((response) => {
         //might cause a bug when a followup action is triggered
-        res.status(200).send(response.data[0].text);
-        console.log(response.data[0].text);
+        res.status(200).send(response.data);
+        console.log(response.data);
       })
       .catch((error) => {
         res.status(500).send(error);
