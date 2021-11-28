@@ -37,7 +37,8 @@ router.post("/rasa/webhook", (req, res) => {
     console.log(data);
     axios
       .post(
-        "http://inf.u-szeged.hu/algmi/chatbot/rasa/webhooks/rest/webhook",
+        //"http://inf.u-szeged.hu/algmi/chatbot/rasa/webhooks/rest/webhook",
+        "http://rasa_server:5005/webhooks/rest/webhook",
         data,
         {
           headers: {
