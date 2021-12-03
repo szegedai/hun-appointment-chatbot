@@ -66,7 +66,7 @@ router.get("/tts/:text", (req, res) => {
       `http://${credentials.tts_user}:${credentials.tts_pw}@cyrus.tmit.bme.hu/hmmtts2/synth_hmm_wav.php?speaker=NG&q=${req.params.text}`
     )
     .then((response) => {
-      res.status(200).send(response);
+      res.status(200).send(response.data);
     })
     .catch((error) => {
       res.status(500).send(`Sikertelen tts hívás: ${error}`);
