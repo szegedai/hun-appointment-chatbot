@@ -93,6 +93,8 @@ nlu:
     - rákövetkező héten ugyanekkor esetleg?
     - javasolj mást
     - Javasolnál kérlek másik napot?
+    - lehetne inkább
+    - legyen inkább
 - intent: recommend_date_or_time
   examples: |
     - bármikor

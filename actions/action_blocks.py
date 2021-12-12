@@ -167,7 +167,7 @@ class ActionBlocks:
                 if overlaps:
                     overlap = overlaps[0]  # TODO: let's handle more overlaps...
                     start, end = overlap.start_datetime, overlap.end_datetime
-                    hf_start, hf_end = get_human_friendly_range(overlap, include_date=False)
+                    hf_start, hf_end = get_human_friendly_range(overlap, include_date=True)
                     if (end - start).seconds <= APPOINTMENT_MAX_LEN:
                         response_template = get_random_response(RESPONSES, "appointment_set")
                         self.dispatcher.utter_message(text=response_template.format(hf_start))

@@ -180,7 +180,7 @@ class TimeTable:
         if self.current_dtrl["ladder"]:
             ladder = self.current_dtrl["ladder"].toJSON()
         else:
-            ladder = None
+            ladder = ''
         dct["current_dtrl"] = [self.current_dtrl["label"], ladder]
 
         return json.dumps(dct)
@@ -197,10 +197,14 @@ class TimeTable:
 
         tt.sub_datetimes = parsed_sub_datetimes
 
-        tt.current_dtrl = {
-            "label": dct["current_dtrl"][0],
-            "ladder": DateRangeLadder.fromJSON(dct["current_dtrl"][1])
-        }
+        ladder_r = dct["current_dtrl"][1]
+        if ladder_r:
+            tt.current_dtrl = {
+                "label": dct["current_dtrl"][0],
+                "ladder": DateRangeLadder.fromJSON(ladder_r)
+            }
+        else:
+            tt.current_dtrl = {'label': None, 'ladder': None}
         tt.has_currently_discussed_range = dct["has_currently_discussed_range"]
 
         return tt

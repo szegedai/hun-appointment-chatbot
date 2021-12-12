@@ -37,7 +37,12 @@ class ActionRecommendOtherDate(Action):
         rule_blocks = RuleBlocks(tracker, time_table, dispatcher)
         action_blocks = ActionBlocks(tracker, time_table, dispatcher)
 
-        action_blocks.do_bot_suggest_alternative_range()
+        if not rule_blocks.if_text_has_datetime():
+            action_blocks.do_bot_suggest_alternative_range()
+        elif rule_blocks.if_bot_is_free_in_overlap():
+            action_blocks.do_bot_set_appointment()
+        else:
+            dispatcher.utter_message(get_random_response(RESPONSES, "bad_range"))
 
         time_table_modified = action_blocks.time_table
         return [SlotSet("time_table", time_table_modified.toJSON())]
@@ -63,24 +68,27 @@ class ActionTimeTableFiller(Action):
 
             return [SlotSet("time_table", time_table.toJSON())]
 
+        currently_discussed_remains = False
         if rule_blocks.if_exists_currently_discussed_range():
 
             if rule_blocks.if_text_further_specifies_currently_discussed():
                 print("B1")
+                currently_discussed_remains = True
                 action_blocks.do_further_specify_currently_discussed()
 
                 return [SlotSet("time_table", time_table.toJSON())]
             elif rule_blocks.if_text_in_currently_discussed_top_range():
                 print("B2")
+                currently_discussed_remains = True
                 action_blocks.do_further_specify_currently_discussed()
 
                 return [SlotSet("time_table", time_table.toJSON())]
 
-        elif rule_blocks.if_bot_is_free_in_overlap():
+        if not currently_discussed_remains and rule_blocks.if_bot_is_free_in_overlap():
             print("C2")
             action_blocks.do_bot_set_appointment()
 
-        else:
+        if not currently_discussed_remains and not rule_blocks.if_bot_is_free_in_overlap():
             dispatcher.utter_message(get_random_response(RESPONSES, "bad_range"))
 
         time_table_modified = action_blocks.time_table
