@@ -25,7 +25,7 @@ rules:
   - rule: user_is_flexible
     steps:
       - intent: recommend_date_or_time
-      - action: action_user_affirmed
+      - action: action_recommend_appointment
 
   - rule: user_refuted # this could be refined
     steps:
