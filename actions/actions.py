@@ -156,11 +156,7 @@ class ActionRecommendAppointment(Action):
         action_blocks = ActionBlocks(tracker, time_table, dispatcher)
 
         if not rule_blocks.if_text_has_datetime():
-            print("A")
-            dispatcher.utter_message(get_random_response(RESPONSES, "accept_appointment_intent"))
             action_blocks.do_bot_suggest_range()
-
             return [SlotSet("time_table", time_table.toJSON())]
-
         else:
             return [SlotSet("time_table", time_table.toJSON()), FollowupAction("action_user_affirmed")]

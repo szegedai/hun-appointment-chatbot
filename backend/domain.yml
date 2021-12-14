@@ -32,6 +32,7 @@ actions:
 - action_remove_appointment
 - recommend_other_date
 - action_user_affirmed
+- action_recommend_appointment
 
 forms: {}
 e2e_actions: []
