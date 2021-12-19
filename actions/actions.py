@@ -136,7 +136,7 @@ class ActionUserAffirmed(Action):
             dispatcher.utter_message(get_random_response(RESPONSES, "not_understood"))
 
         time_table_modified = action_blocks.time_table
-        time_table_modified.get_viz()
+        # time_table_modified.get_viz()
 
         print("TERMINAL")
         return [SlotSet("time_table", time_table_modified.toJSON())]

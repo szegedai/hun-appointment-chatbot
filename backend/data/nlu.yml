@@ -79,6 +79,7 @@ nlu:
     - ezen a héten csütörtök délelőtt.
     - MOST AZONNAL
     - legyen ma, 16:35 perc
+    - 7-kor
 - intent: another_appointment
   examples: |
     - legyen másik nap akkor
