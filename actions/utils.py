@@ -50,7 +50,7 @@ def get_available_appointments():
     """
     Loads available appointment list.
     """
-    now = datetime.now()  # Get the current date
+    now = datetime.now().replace(microsecond=0, second=0, minute=0) + timedelta(hours=1)
 
     with open('test_data.json', 'r') as f:  # Opening test_data
         data = json.load(f)
