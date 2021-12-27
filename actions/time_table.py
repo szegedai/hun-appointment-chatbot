@@ -128,6 +128,28 @@ class TimeTable:
         self.current_dtrl = {'label': None, 'ladder': None}
         self.has_currently_discussed_range = False
 
+    def discard_currently_discussed_bottom_range(self):
+        success = False
+        currently_discussed = self.get_currently_discussed_range()
+
+        previously_discussed = None
+        if len(self.current_dtrl['ladder'].ladder) > 0:
+            previously_discussed = self.current_dtrl['ladder'].ladder[1]
+
+        if previously_discussed:
+            new_prev = previously_discussed.subtract(currently_discussed)
+            print('currently_discussed', currently_discussed)
+            print("previously_discussed", previously_discussed)
+            print('NEW_PREV', new_prev)
+            if len(new_prev) == 0:
+                # this shouldn't really happen...
+                pass
+            else:
+                self.current_dtrl['ladder'].ladder = [new_prev[0]] + self.current_dtrl['ladder'].ladder[1:]
+                success = True
+
+        return success
+
     def get_viz(self):
         res = []
 

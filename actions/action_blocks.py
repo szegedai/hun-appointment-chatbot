@@ -117,17 +117,27 @@ class ActionBlocks:
         response_template = get_random_response(RESPONSES, "bot_suggests_final")
         self.dispatcher.utter_message(text=response_template.format(hf_start))
 
-        bot_free_dct = {"start_date": random_hour.start_datetime, "end_date": random_hour.end_datetime}
-        self.time_table.set_current_discussed(bot_free_dct, BOT_FREE_RANGE)
+        # bot_free_dct = {"start_date": random_hour.start_datetime, "end_date": random_hour.end_datetime}
+        # self.time_table.set_current_discussed(bot_free_dct, BOT_FREE_RANGE)
+        self.time_table.current_dtrl['ladder'].step_in_ladder(random_hour)
 
     def do_bot_suggest_alternative_range(self):
-        next_free_bot_range = self.time_table.get_next_available_timerange(BOT_FREE_RANGE)
+        within_currently_discussed_success = False
+        if self.time_table.has_currently_discussed_range:
+            within_currently_discussed_success = self.time_table.discard_currently_discussed_bottom_range()
+
+        if not within_currently_discussed_success:
+            next_free_bot_range = self.time_table.get_next_available_timerange(BOT_FREE_RANGE)
+            bot_free_dct = {"start_date": next_free_bot_range.start_datetime,
+                            "end_date": next_free_bot_range.end_datetime}
+            self.time_table.set_current_discussed(bot_free_dct, BOT_FREE_RANGE)
+        else:
+            currently_discussed = self.time_table.get_currently_discussed_range()
+            next_free_bot_range = get_random_hour_from_timerange(currently_discussed)
+
         hf_start, hf_end = get_human_friendly_range(next_free_bot_range, include_date=True)
         response_template = get_random_response(RESPONSES, "bot_suggest_alternative")
         self.dispatcher.utter_message(text=response_template.format(hf_start, hf_end))
-
-        bot_free_dct = {"start_date": next_free_bot_range.start_datetime, "end_date": next_free_bot_range.end_datetime}
-        self.time_table.set_current_discussed(bot_free_dct, BOT_FREE_RANGE)
 
     def do_further_specify_currently_discussed(self):
         self.time_table.discuss_current(self.text)
