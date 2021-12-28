@@ -119,7 +119,6 @@ class TimeTable:
 
     def get_currently_discussed_range(self):
         if self.has_currently_discussed_range:
-            print("LADDER", self.current_dtrl['ladder'])
             return self.current_dtrl['ladder'].get_bottom_step()
         else:
             return RequestFeedback.REQUEST_SKIPPED
@@ -133,7 +132,7 @@ class TimeTable:
         currently_discussed = self.get_currently_discussed_range()
 
         previously_discussed = None
-        if len(self.current_dtrl['ladder'].ladder) > 0:
+        if len(self.current_dtrl['ladder'].ladder) > 1:
             previously_discussed = self.current_dtrl['ladder'].ladder[1]
 
         if previously_discussed:
@@ -263,9 +262,12 @@ class DateRangeLadder:
             dt_mention = user_date_mentions[0]
             mention_dtr = DateTimeRange(dt_mention['start_date'],
                                         dt_mention['end_date'])
-            intersection = self.ladder[i].intersection(mention_dtr)
+            try:
+                intersection = self.ladder[i].intersection(mention_dtr)
+            except ValueError:
+                intersection = None
 
-            if intersection.start_datetime and intersection.end_datetime:
+            if intersection and intersection.start_datetime and intersection.end_datetime:
                 self.ladder = [intersection, *self.ladder[i:]]
                 inserted = True
 
