@@ -71,6 +71,7 @@ class ActionTimeTableFiller(Action):
 
         currently_discussed_remains = False
         if rule_blocks.if_exists_currently_discussed_range():
+            print("B")
 
             if rule_blocks.if_text_further_specifies_currently_discussed():
                 print("B1")
@@ -93,7 +94,7 @@ class ActionTimeTableFiller(Action):
             dispatcher.utter_message(get_random_response(RESPONSES, "bad_range"))
 
         time_table_modified = action_blocks.time_table
-        time_table_modified.get_viz()
+        # time_table_modified.get_viz()
 
         print("TERMINAL")
         return [SlotSet("time_table", time_table_modified.toJSON())]
