@@ -1,5 +1,5 @@
 from time_table import TimeTable, has_date_mention
-from utils import get_human_friendly_range, load_responses, get_random_response, BOT_FREE_RANGE, USER_FREE_RANGE,\
+from utils import get_human_friendly_range, load_responses, get_random_response, BOT_FREE_RANGE, USER_FREE_RANGE, \
     get_random_hour_from_timerange
 from hun_date_parser.date_parser.interval_restriction import extract_datetime_within_interval, ExtractWithinRangeSuccess
 from hun_date_parser import text2datetime
@@ -53,9 +53,18 @@ class RuleBlocks:
     def _get_user_bot_overlaps(self):
         user_date_mentions = text2datetime(self.text)
 
+        print("user date mentions:")
+        for index in user_date_mentions:
+            print(index)
+
         all_overlaps = []
 
-        for date_intv in user_date_mentions:
+        print(f'length:{len(user_date_mentions)}')
+
+        for i, date_intv in enumerate(user_date_mentions):
+
+            print(f'index:{i}')
+
             if date_intv['start_date'] and date_intv['end_date']:
                 overlaps = self.time_table.query_timerange(date_intv['start_date'],
                                                            date_intv['end_date'],
@@ -63,6 +72,9 @@ class RuleBlocks:
 
                 if overlaps:
                     overlap = overlaps[0]  # TODO: let's handle more overlaps...
+                    for i, olap in enumerate(overlaps):
+                        print(f'No.{i}, overlap:{olap}')
+
                     all_overlaps.append(overlap)
 
         return all_overlaps
@@ -187,4 +199,4 @@ class ActionBlocks:
                         response_template = get_random_response(RESPONSES, "bot_free")
                         self.dispatcher.utter_message(text=response_template.format(hf_start, hf_end))
 
-                    return None
+        return None

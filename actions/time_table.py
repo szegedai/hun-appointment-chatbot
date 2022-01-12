@@ -238,6 +238,7 @@ class DateRangeLadder:
         self.ladder = [top_range]  # [smaller --> greater]
 
     def step_in_ladder(self, daterange):
+        print(f'daterange:{daterange}')
         inserted = False
         for i in range(len(self.ladder)):
             intersection = self.ladder[i].intersection(daterange)
@@ -249,6 +250,7 @@ class DateRangeLadder:
             self.ladder = []
 
     def step_in_ladder_with_text(self, query):
+        print(f'query:{query}')
         if not has_date_mention(query):
             return None
 
