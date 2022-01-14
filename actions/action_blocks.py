@@ -176,7 +176,8 @@ class ActionBlocks:
     def do_bot_set_appointment(self):
         user_date_mentions = text2datetime(self.text)
 
-        for date_intv in user_date_mentions:
+        for index, date_intv in enumerate(user_date_mentions):
+            print(f'userdatementions:{len(user_date_mentions)}')
             if date_intv['start_date'] and date_intv['end_date']:
                 self.time_table.label_timerange(date_intv['start_date'],
                                                 date_intv['end_date'],
@@ -196,7 +197,10 @@ class ActionBlocks:
                     else:
                         self.time_table.label_timerange(start, end, USER_FREE_RANGE)
                         self.time_table.set_current_discussed({"start_date": start, "end_date": end}, USER_FREE_RANGE)
-                        response_template = get_random_response(RESPONSES, "bot_free")
-                        self.dispatcher.utter_message(text=response_template.format(hf_start, hf_end))
-
+                        if index is 0:
+                            response_template = get_random_response(RESPONSES, "bot_free")
+                            self.dispatcher.utter_message(text=response_template.format(hf_start, hf_end))
+                        else:
+                            response_template = get_random_response(RESPONSES, "bot_multiple_appointments")
+                            self.dispatcher.utter_message(text=response_template.format(hf_start, hf_end))
         return None
