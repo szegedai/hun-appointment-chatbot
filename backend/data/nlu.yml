@@ -80,11 +80,25 @@ nlu:
     - MOST AZONNAL
     - legyen ma, 16:35 perc
     - 7-kor
+    - hétfőn
+    - hétfő
+    - kedden
+    - kedd
+    - szerdán
+    - szerda
+    - csütörtökön
+    - csütörtök
+    - pénteken
+    - péntek
+    - szombaton
+    - szombat
+    - vasárnap
 - intent: another_appointment
   examples: |
     - legyen másik nap akkor
     - akkor egy másik nap esetleg?
     - akkor legyen inkább a szerda
+    - akkor legyen inkább
     - tegyük egy másik napra
     - legyen inkább a szerda
     - tegyük inkább máskorra légyszi

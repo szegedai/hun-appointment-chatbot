@@ -12,7 +12,7 @@ bot_suggests_final:
 appointment_set:
   - Rendben, Főnök úr számára tökéletes időpont {}. Köszönöm!
 bad_range:
-  - Sajnos nem megfelelő a kért időpont... Esetleg máskor?
+  - Sajnos nem megfelelő a kért időpont...
 accept_appointment_intent:
   - Okés. Mikor lenne jó?
 not_understood:

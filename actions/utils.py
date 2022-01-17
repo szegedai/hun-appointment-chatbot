@@ -10,26 +10,33 @@ BOT_FREE_RANGE = "bot_free"
 USER_FREE_RANGE = "user_free"
 
 
-def get_human_friendly_range(daterange, include_date=True):
+def get_human_friendly_range(daterange, include_date=True, include_time=True):
+
+    assert include_date or include_time
+
     include_secondary_date = False
     if daterange.start_datetime.date() != daterange.end_datetime.date():
         include_secondary_date = True
 
-    date_ind = randint(0, 1)
+    date_ind = 0
     # time_ind = randint(0, 3)
     time_ind = -1
 
-    if include_date:
-        human_friendly_start = f"{datetime2text(daterange.start_datetime, 1)['dates'][date_ind]} " \
-                               f"{datetime2text(daterange.start_datetime, 1)['times'][time_ind]}"
-    else:
-        human_friendly_start = f"{datetime2text(daterange.start_datetime, 1)['times'][time_ind]}"
+    if include_time:
+        if include_date:
+            human_friendly_start = f"{datetime2text(daterange.start_datetime, 1)['dates'][date_ind]} " \
+                                   f"{datetime2text(daterange.start_datetime, 1)['times'][time_ind]}"
+        else:
+            human_friendly_start = f"{datetime2text(daterange.start_datetime, 1)['times'][time_ind]}"
 
-    if not include_secondary_date:
-        human_friendly_end = f"{datetime2text(daterange.end_datetime, 1)['times'][time_ind]}"
+        if not include_secondary_date:
+            human_friendly_end = f"{datetime2text(daterange.end_datetime, 1)['times'][time_ind]}"
+        else:
+            human_friendly_end = f"{datetime2text(daterange.end_datetime, 1)['dates'][date_ind]} " \
+                                 f"{datetime2text(daterange.end_datetime, 1)['times'][time_ind]}"
     else:
-        human_friendly_end = f"{datetime2text(daterange.end_datetime, 1)['dates'][date_ind]} " \
-                             f"{datetime2text(daterange.end_datetime, 1)['times'][time_ind]}"
+        human_friendly_start = f"{datetime2text(daterange.start_datetime, 1)['dates'][date_ind]}"
+        human_friendly_end = f"{datetime2text(daterange.end_datetime, 1)['dates'][date_ind]}"
 
     return human_friendly_start, human_friendly_end
 
