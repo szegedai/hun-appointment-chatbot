@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 import pandas as pd
 import json
 import altair as alt
@@ -30,7 +30,7 @@ class TimeTable:
         """
         self.labels = labels
         self.sub_datetimes = {l: [] for l in labels}
-        self.current_dtrl = {'label': None, 'ladder': None}
+        self.current_dtrl: Optional[DateRangeLadder] = None
         self.has_currently_discussed_range = False
 
     def _house_keeping(self):
@@ -69,7 +69,7 @@ class TimeTable:
         return result
 
     def label_timerange_by_text(self, text, label):
-        res_l = text2datetime(text)
+        res_l = text2datetime(text, expect_future_day=True)
 
         for tval in res_l:
             if tval['start_date'] and tval['end_date']:
@@ -101,30 +101,33 @@ class TimeTable:
 
         return current
 
-    def set_current_discussed(self, top_range_dct, label):
-        top_range = DateTimeRange(top_range_dct['start_date'], top_range_dct['end_date'])
+    def set_current_discussed(self, top_range_dct):
+        if not isinstance(top_range_dct, DateTimeRange):
+            top_range = DateTimeRange(top_range_dct['start_date'], top_range_dct['end_date'])
+        else:
+            top_range = top_range_dct
         dtrl = DateRangeLadder(top_range)
-        self.current_dtrl = {'label': label, 'ladder': dtrl}
+        self.current_dtrl = dtrl
         self.has_currently_discussed_range = True
 
     def discuss_current(self, query_text):
-        if not self.current_dtrl['ladder'] or not has_date_mention(query_text):
+        if not self.current_dtrl or not has_date_mention(query_text):
             return RequestFeedback.REQUEST_SKIPPED
 
-        self.current_dtrl['ladder'].step_in_ladder_with_text(query_text)
-        if not self.current_dtrl['ladder'].has_range():
+        self.current_dtrl.step_in_ladder_with_text(query_text)
+        if not self.current_dtrl.has_range():
             self.has_currently_discussed_range = False
 
         return RequestFeedback.REQUEST_OK
 
     def get_currently_discussed_range(self):
         if self.has_currently_discussed_range:
-            return self.current_dtrl['ladder'].get_bottom_step()
+            return self.current_dtrl.get_bottom_step()
         else:
             return RequestFeedback.REQUEST_SKIPPED
 
     def remove_currently_discussed(self):
-        self.current_dtrl = {'label': None, 'ladder': None}
+        self.current_dtrl = None
         self.has_currently_discussed_range = False
 
     def discard_currently_discussed_bottom_range(self):
@@ -132,8 +135,8 @@ class TimeTable:
         currently_discussed = self.get_currently_discussed_range()
 
         previously_discussed = None
-        if len(self.current_dtrl['ladder'].ladder) > 1:
-            previously_discussed = self.current_dtrl['ladder'].ladder[1]
+        if len(self.current_dtrl.ladder) > 1:
+            previously_discussed = self.current_dtrl.ladder[1]
 
         if previously_discussed:
             new_prev = previously_discussed.subtract(currently_discussed)
@@ -144,7 +147,7 @@ class TimeTable:
                 # this shouldn't really happen...
                 pass
             else:
-                self.current_dtrl['ladder'].ladder = [new_prev[0]] + self.current_dtrl['ladder'].ladder[1:]
+                self.current_dtrl.ladder = [new_prev[0]] + self.current_dtrl.ladder[1:]
                 success = True
 
         return success
@@ -171,8 +174,8 @@ class TimeTable:
         )
 
         ladder_res = []
-        if self.current_dtrl["ladder"]:
-            for i, dtr in enumerate(self.current_dtrl["ladder"].ladder):
+        if self.current_dtrl:
+            for i, dtr in enumerate(self.current_dtrl.ladder):
                     res.append([i, dtr.start_datetime, dtr.end_datetime])
 
         df_ladder_timetable = pd.DataFrame(ladder_res, columns=['label', 'from', 'to'])
@@ -198,11 +201,11 @@ class TimeTable:
 
         dct["sub_datetimes"] = serializable_sub_datetimes
 
-        if self.current_dtrl["ladder"]:
-            ladder = self.current_dtrl["ladder"].toJSON()
+        if self.current_dtrl:
+            ladder = self.current_dtrl.toJSON()
         else:
             ladder = ''
-        dct["current_dtrl"] = [self.current_dtrl["label"], ladder]
+        dct["current_dtrl"] = ladder
 
         return json.dumps(dct)
 
@@ -218,14 +221,11 @@ class TimeTable:
 
         tt.sub_datetimes = parsed_sub_datetimes
 
-        ladder_r = dct["current_dtrl"][1]
+        ladder_r = dct["current_dtrl"]
         if ladder_r:
-            tt.current_dtrl = {
-                "label": dct["current_dtrl"][0],
-                "ladder": DateRangeLadder.fromJSON(ladder_r)
-            }
+            tt.current_dtrl = DateRangeLadder.fromJSON(ladder_r)
         else:
-            tt.current_dtrl = {'label': None, 'ladder': None}
+            tt.current_dtrl = None
         tt.has_currently_discussed_range = dct["has_currently_discussed_range"]
 
         return tt
@@ -256,6 +256,7 @@ class DateRangeLadder:
 
         inserted = False
         for i in range(len(self.ladder)):
+            print(i, len(self.ladder), self.ladder)
             current = self.ladder[i]
             success_flag, user_date_mentions = extract_datetime_within_interval(current.start_datetime,
                                                                                 current.end_datetime,
@@ -272,6 +273,7 @@ class DateRangeLadder:
             if intersection and intersection.start_datetime and intersection.end_datetime:
                 self.ladder = [intersection, *self.ladder[i:]]
                 inserted = True
+                break
 
         if not inserted:
             self.ladder = []

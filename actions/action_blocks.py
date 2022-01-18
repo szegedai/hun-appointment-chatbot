@@ -273,4 +273,3 @@ class ActionBlocks:
 
                     self.time_table.set_current_discussed({"start_date": date_intv['start_date'],
                                                            "end_date": date_intv['end_date']})
-

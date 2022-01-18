@@ -42,8 +42,10 @@ class ActionRecommendOtherDate(Action):
             action_blocks.do_bot_suggest_alternative_range()
         elif rule_blocks.if_bot_is_free_in_overlap():
             action_blocks.do_bot_set_appointment()
+        elif rule_blocks.if_text_in_currently_discussed_top_range():
+            action_blocks.do_further_specify_currently_discussed()
         else:
-            dispatcher.utter_message(get_random_response(RESPONSES, "bad_range"))
+            action_blocks.do_bot_handle_bad_range()
 
         time_table_modified = action_blocks.time_table
         return [SlotSet("time_table", time_table_modified.toJSON())]
@@ -61,6 +63,9 @@ class ActionTimeTableFiller(Action):
         time_table = get_timetable_in_discussion(tracker)
         rule_blocks = RuleBlocks(tracker, time_table, dispatcher)
         action_blocks = ActionBlocks(tracker, time_table, dispatcher)
+
+        if time_table.current_dtrl:
+            print('ladder', time_table.current_dtrl.ladder)
 
         if not rule_blocks.if_text_has_datetime():
             print("A")
@@ -91,12 +96,16 @@ class ActionTimeTableFiller(Action):
             action_blocks.do_bot_set_appointment()
 
         if not currently_discussed_remains and not rule_blocks.if_bot_is_free_in_overlap():
-            dispatcher.utter_message(get_random_response(RESPONSES, "bad_range"))
+            action_blocks.do_bot_handle_bad_range()
 
         time_table_modified = action_blocks.time_table
         # time_table_modified.get_viz()
 
+        if time_table_modified.current_dtrl:
+            print(time_table_modified.get_currently_discussed_range())
+        print('ladder 2', time_table_modified.current_dtrl.ladder)
         print("TERMINAL")
+        print()
         return [SlotSet("time_table", time_table_modified.toJSON())]
 
 
