@@ -175,6 +175,7 @@ class ActionBlocks:
 
     def do_bot_set_appointment(self):
         user_date_mentions = text2datetime(self.text)
+        bot_has_already_mentioned_date = False
 
         for index, date_intv in enumerate(user_date_mentions):
             print(f'userdatementions:{len(user_date_mentions)}')
@@ -187,6 +188,7 @@ class ActionBlocks:
                                                            date_intv['end_date'],
                                                            BOT_FREE_RANGE)
 
+
                 if overlaps:
                     overlap = overlaps[0]  # TODO: let's handle more overlaps...
                     start, end = overlap.start_datetime, overlap.end_datetime
@@ -197,9 +199,10 @@ class ActionBlocks:
                     else:
                         self.time_table.label_timerange(start, end, USER_FREE_RANGE)
                         self.time_table.set_current_discussed({"start_date": start, "end_date": end}, USER_FREE_RANGE)
-                        if index is 0:
+                        if not bot_has_already_mentioned_date:
                             response_template = get_random_response(RESPONSES, "bot_free")
                             self.dispatcher.utter_message(text=response_template.format(hf_start, hf_end))
+                            bot_has_already_mentioned_date = True
                         else:
                             response_template = get_random_response(RESPONSES, "bot_multiple_appointments")
                             self.dispatcher.utter_message(text=response_template.format(hf_start, hf_end))
