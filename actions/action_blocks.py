@@ -231,6 +231,7 @@ class ActionBlocks:
     def do_bot_set_appointment(self):
         user_date_mentions = text2datetime(self.text, expect_future_day=True)
         bot_has_already_mentioned_date = False
+        dt_mention = 0
 
         for date_intv in user_date_mentions:
             if date_intv['start_date'] and date_intv['end_date']:
@@ -241,6 +242,9 @@ class ActionBlocks:
                 overlaps = self.time_table.query_timerange(date_intv['start_date'],
                                                            date_intv['end_date'],
                                                            BOT_FREE_RANGE)
+
+                if overlaps:
+                    dt_mention += 1
 
                 if len(overlaps) == 1:
                     overlap = overlaps[0]
@@ -273,3 +277,8 @@ class ActionBlocks:
 
                     self.time_table.set_current_discussed({"start_date": date_intv['start_date'],
                                                            "end_date": date_intv['end_date']})
+
+        if dt_mention > 1:
+            self.time_table.remove_currently_discussed()
+
+        print("curr discussed", self.time_table.get_currently_discussed_range())
