@@ -7,6 +7,8 @@ bot_free:
   - Főnök úr ráér a kért időszakon belül, {} és {} között. Mikor lenne jó pontosan?
   - Rendben, {} és {} között működhet. Mikor lenne jó pontosan?
   - Szuper, {} és {} között jól hangzik. Ezen belül ráérsz?
+bot_multiple_appointments:
+  - Vagy esetleg {} és {} között működhet. Valamelyik megfelel?
 bot_suggests_final:
   - Esetleg {} megfelel?
 appointment_set:
