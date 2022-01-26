@@ -1,46 +1,44 @@
 version: "2.0"
 
 rules:
+  - rule: fallback
+    steps:
+      - intent: nlu_fallback
+      - action: utter_rephrase
 
-- rule: fallback
-  steps:
-    - intent: nlu_fallback
-    - action: utter_rephrase
+  - rule: Hi rule
+    conversation_start: true
+    steps:
+        - intent: udvozol
+        - action: utter_udvozol
 
-- rule: out_of_scope
-  steps:
-    - intent: out_of_scope
-    - action: utter_out_of_scope
+  - rule: Single rule
+    steps:
+      - intent: idopontfoglalas
+      - action: action_fill_table
 
-- rule: udvozol
-  steps:
-  - intent: udvozol
-  - action: utter_udvozol
+  - rule: user_affirmed
+    steps:
+      - intent: affirm
+      - action: action_user_affirmed
 
-- rule: Activate form 1
-  steps:
-  - intent: idopontfoglalas
-  - action: validate_idopont_form
+  - rule: user_is_flexible
+    steps:
+      - intent: recommend_date_or_time
+      - action: action_recommend_appointment
 
-- rule: Activate form 2
-  steps:
-  - intent: say_date_or_time
-  - action: validate_idopont_form
+  - rule: user_refuted # this could be refined
+    steps:
+      - intent: refute
+      - action: recommend_other_date
 
+  - rule: mas idopont
+    steps:
+      - intent: another_appointment
+      - action: recommend_other_date
 
-- rule: Activate form 3
-  steps:
-  - intent: recommend_date_or_time
-  - action: action_recommend_date
-
-- rule: another appointment
-  steps:
-    - intent: another_appointment
-    - action: action_remove_appointment
-    - action: validate_idopont_form
-
-- rule: viszlat
-  steps:
-    - intent: vege
-    - action: action_remove_appointment
-    - action: utter_bye
+  - rule: viszlat
+    steps:
+      - intent: vege
+      - action: action_remove_appointment
+      - action: utter_bye

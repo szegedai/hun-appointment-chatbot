@@ -13,7 +13,8 @@ class DeleteSpecialChars(Component):
 
     def process(self, message, **kwargs):
         mt = message.get('text', '')
-        message.set('text', mt.translate(mt.maketrans('', '', "[$&+,:;=?@#_|'<>.^*()%!-]")))
+        to_replace = "[$&+,:;=?@#_|<>.^*()%!-]"
+        message.set('text', mt.translate(str.maketrans(to_replace, " " * len(to_replace))))
 
     def persist(self, file_name: Text, model_dir: Text) -> Optional[Dict[Text, Any]]:
         pass

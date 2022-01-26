@@ -1,55 +1,38 @@
 version: '2.0'
+
 config:
   store_entities_as_slots: true
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
-intents:
-  - udvozol
-  - idopontfoglalas
-  - vege
-  - say_date_or_time
-  - recommend_date_or_time
-  - another_appointment
 
-entities:
-- dates
-- times
+intents:
+  - idopontfoglalas
+  - another_appointment
+  - udvozol
+  - vege
+  - affirm
+  - refute
+  - recommend_date_or_time
+
 slots:
-  date:
-    type: rasa.shared.core.slots.TextSlot
-    initial_value: null
-    auto_fill: true
-    influence_conversation: true
-  time:
-    type: rasa.shared.core.slots.TextSlot
-    initial_value: null
-    auto_fill: true
-    influence_conversation: true
-  possible_dates:
-    type: rasa.shared.core.slots.ListSlot
-    initial_value: null
-    auto_fill: true
-    influence_conversation: true
+  time_table:
+    type: any
+
 responses:
   utter_udvozol:
   - text: Szia! Miben segíthetek?
-  utter_submit:
-  - text: Rendben, akkor {date} {time} vár a Főnök úr.
-  utter_ask_date:
-  - text: Melyik nap lenne jó neked?
-  utter_ask_time:
-  - text: Hány órakor?
   utter_bye:
-  - text: Viszlát!
+    - text: Viszlát!
   utter_rephrase:
-  - text: Elnézést, nem teljesen értettem. Át tudnád fogalmazni?
-  utter_out_of_scope:
-  - text: Sajnálom, ebben nem segíthetek.
+    - text: Elnézést, nem teljesen értettem. Át tudnád fogalmazni?
+
 actions:
-- validate_idopont_form
-- action_recommend_date
+- action_fill_table
 - action_remove_appointment
-- followup_action_recommend_date
+- recommend_other_date
+- action_user_affirmed
+- action_recommend_appointment
+
 forms: {}
 e2e_actions: []

@@ -1,4 +1,8 @@
-wheel
+rasa==2.2.7
+rasa_sdk==2.2
+spacy==2.0.0
 fuzzywuzzy
-hun-date-parser
+hun-date-parser==0.1.0
 datetimerange
+pandas
+altair

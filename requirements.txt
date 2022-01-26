@@ -1,5 +1,0 @@
-rasa==2.2.7
-spacy==2.2.1
-fuzzywuzzy
-hun-date-parser
-datetimerange

@@ -6,18 +6,14 @@ pipeline:
   - name: SpacyTokenizer
   - name: SpacyFeaturizer
   - name: CountVectorsFeaturizer
-  - name: services.hun_date_extractor.HunDateExtractor
   - name: DIETClassifier
     epochs: 50
     entity_recognition: False
   - name: FallbackClassifier
-    threshold: 0.35
+    threshold: 0.25
   - name: ResponseSelector
     epochs: 50
 
 policies:
-   - name: MemoizationPolicy
-   - name: TEDPolicy
-     max_history: 5
-     epochs: 100
+  # ToDo add memorization policie after stories has been added.
    - name: RulePolicy
