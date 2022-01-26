@@ -1,0 +1,123 @@
+version: "2.0"
+nlu:
+- intent: udvozol
+  examples: |
+    - Szia
+    - szia
+    - hali
+    - hello
+    - jó napot
+    - jó estét
+    - jó reggel
+    - üdv
+    - jó napot kívánok
+- intent: idopontfoglalas
+  examples: |
+    - szeretnék időpontot foglalni.
+    - időpontot akarok foglalni.
+    - szeretnék időpontot foglalni keddre.
+    - időpontot akarok foglalni holnapra.
+    - szeretnék időpontot kérni
+    - holnap tudnánk konzultálni a Főnök úrral?
+    - esetleg pénteken találkozni?
+    - konzultálni szeretnék
+    - időpontot foglalnék
+    - időpont
+- intent: recommend_date_or_time
+  examples: |
+    - bármikor
+    - ráérek egész nap
+    - szabad vagyok, amikor a Főnök úrnak jó
+    - amikor a Főnök úr ráér
+    - amikor a Főnök úrnak jó
+    - amikor neki jó
+    - amikor ő ráér
+    - rugalmas vagyok
+    - a Főnök úrnak mikor lenne jó?
+    - a Főnök úrnak bármikor jó.
+    - milyen opciók vannak?
+    - tudnál ajánlani egy időpontot?
+    - mikor tudnánk a Főnök úrral konzultálni?
+    - esetleg tudnánk valamikor a Főnök úrral találkozni?
+    - mikor érne rá?
+    - ráér valamikor?
+    - mikor érne rá egy találkozóra?
+    - mikor érne rá konzultálni?
+    - mikor tudnék vele találkozni?
+    - szabad mostanában valamikor?
+    - mikor szabad a Főnök úr?
+- intent: another_appointment
+  examples: |
+    - legyen másik nap akkor
+    - akkor egy másik nap esetleg?
+    - akkor legyen inkább a szerda
+    - tegyük egy másik napra
+    - legyen inkább a szerda
+    - tegyük inkább máskorra légyszi
+    - legyen inkább máskor kérlek
+    - mégse jó a hétfő
+    - nem érek rá akkor
+- intent: say_date_or_time
+  examples: |
+    - kedden
+    - vasárnap
+    - holnap
+    - szerdán
+    - december 5-én
+    - jövő kedden
+    - két hét múlva szerdán
+    - november 16-án jó lenne
+    - holnap megfelelne
+    - nekem jó a holnap
+    - kedden ráér?
+    - a szerda jó esetleg?
+    - egy találkozó csütörtökön?
+    - holnap ráérek
+    - most
+    - most ráérek
+    - most jó
+    - akár most is jó nekem
+    - nyolc órakor
+    - reggel
+    - délelőtt
+    - 6 órakor
+    - tíz órakor
+    - egész reggel jó
+    - legyen két órakor akkor
+    - ha jó neked is akkor legyen a két óra
+    - akkor legyen 3 órakor
+    - három órakor jó?
+    - két órakor ráér?
+    - reggel nyolckor megfelel?
+    - reggel ráér?
+    - délután jó?
+    - legyen 16:20-kor
+    - legyen délután négykor
+    - este 7
+    - legyen 12:00
+    - 20:00
+    - 14 óra 46 perckor
+    - délután fél 2 után 5 perccel
+    - 15:23-kor ott vagyok
+    - 17 óra 34-kor ott leszek
+- intent: vege
+  examples: |
+    - oké
+    - oké, köszi
+    - köszi
+    - rendben
+    - ott leszek
+    - akkor ezt megbeszéltük
+    - viszlát
+    - rendben. szia!
+    - köszönöm
+    - remek
+    - szuper
+- intent: out_of_scope
+  examples: |
+    - elnök szeretnék lenni
+    - programozni akarok
+    - meg szeretnék tanulni angolul
+    - egy bigmacet szeretnék
+    - megennék egy magyaros pizzát
+

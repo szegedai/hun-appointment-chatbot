@@ -1,0 +1,5 @@
+hun-date-parser==0.1.0
+datetimerange
+fuzzywuzzy
+pandas
+altair

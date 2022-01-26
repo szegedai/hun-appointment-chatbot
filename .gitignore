@@ -129,3 +129,7 @@ dmypy.json
 
 # dont upload models
 rasa_server/models/
+# dont upload node_modules
+nodejs/node_modules/
+nodejs/package-lock.json
+nodejs/node_credentials.json

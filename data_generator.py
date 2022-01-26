@@ -51,7 +51,7 @@ def generate_dates(dates):
 
 def main():
   weekdays = generate_dates(get_bdates(datetime.datetime.now()+datetime.timedelta(days=1), 13))
-  with open('./actions/test_data.json', 'w') as f:
+  with open('./action_server/test_data.json', 'w') as f:
     json.dump(weekdays, f, indent=4)
 
 
