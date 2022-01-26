@@ -128,4 +128,4 @@ dmypy.json
 .idea/
 
 # dont upload models
-backend/models/
+rasa_server/models/
