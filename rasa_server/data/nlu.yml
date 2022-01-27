@@ -93,6 +93,14 @@ nlu:
     - szombaton
     - szombat
     - vasárnap
+    - délben
+    - szerda dél
+    - igen, 12-kor
+    - jó lesz 12-kor
+    - jó aznap délben
+    - jó lesz a szombat
+    - jó a kedd
+    - kedden megfelel
 - intent: another_appointment
   examples: |
     - legyen másik nap akkor

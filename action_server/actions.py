@@ -64,9 +64,6 @@ class ActionTimeTableFiller(Action):
         rule_blocks = RuleBlocks(tracker, time_table, dispatcher)
         action_blocks = ActionBlocks(tracker, time_table, dispatcher)
 
-        if time_table.current_dtrl:
-            print('ladder', time_table.current_dtrl.ladder)
-
         if not rule_blocks.if_text_has_datetime():
             print("A")
             dispatcher.utter_message(get_random_response(RESPONSES, "accept_appointment_intent"))
@@ -101,11 +98,6 @@ class ActionTimeTableFiller(Action):
         time_table_modified = action_blocks.time_table
         # time_table_modified.get_viz()
 
-        if time_table_modified.current_dtrl:
-            print(time_table_modified.get_currently_discussed_range())
-        print('ladder 2', time_table_modified.current_dtrl.ladder)
-        print("TERMINAL")
-        print()
         return [SlotSet("time_table", time_table_modified.toJSON())]
 
 
