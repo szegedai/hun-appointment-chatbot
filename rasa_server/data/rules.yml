@@ -1,0 +1,44 @@
+version: "2.0"
+
+rules:
+  - rule: fallback
+    steps:
+      - intent: nlu_fallback
+      - action: utter_rephrase
+
+  - rule: Hi rule
+    conversation_start: true
+    steps:
+        - intent: udvozol
+        - action: utter_udvozol
+
+  - rule: Single rule
+    steps:
+      - intent: idopontfoglalas
+      - action: action_fill_table
+
+  - rule: user_affirmed
+    steps:
+      - intent: affirm
+      - action: action_user_affirmed
+
+  - rule: user_is_flexible
+    steps:
+      - intent: recommend_date_or_time
+      - action: action_recommend_appointment
+
+  - rule: user_refuted # this could be refined
+    steps:
+      - intent: refute
+      - action: recommend_other_date
+
+  - rule: mas idopont
+    steps:
+      - intent: another_appointment
+      - action: recommend_other_date
+
+  - rule: viszlat
+    steps:
+      - intent: vege
+      - action: action_remove_appointment
+      - action: utter_bye

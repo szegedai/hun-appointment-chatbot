@@ -1,0 +1,38 @@
+version: '2.0'
+
+config:
+  store_entities_as_slots: true
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true
+
+intents:
+  - idopontfoglalas
+  - another_appointment
+  - udvozol
+  - vege
+  - affirm
+  - refute
+  - recommend_date_or_time
+
+slots:
+  time_table:
+    type: any
+
+responses:
+  utter_udvozol:
+  - text: Szia! Miben segíthetek?
+  utter_bye:
+    - text: Viszlát!
+  utter_rephrase:
+    - text: Elnézést, nem teljesen értettem. Át tudnád fogalmazni?
+
+actions:
+- action_fill_table
+- action_remove_appointment
+- recommend_other_date
+- action_user_affirmed
+- action_recommend_appointment
+
+forms: {}
+e2e_actions: []
