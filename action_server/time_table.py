@@ -176,19 +176,23 @@ class TimeTable:
         ladder_res = []
         if self.current_dtrl:
             for i, dtr in enumerate(self.current_dtrl.ladder):
-                    res.append([i, dtr.start_datetime, dtr.end_datetime])
+                    ladder_res.append([str(i), dtr.start_datetime, dtr.end_datetime])
+
+            print('LADDER VIZ', self.current_dtrl.ladder, ladder_res)
 
         df_ladder_timetable = pd.DataFrame(ladder_res, columns=['label', 'from', 'to'])
 
-        ladder_chart = alt.Chart(df_ladder_timetable).mark_bar().encode(
+        ranked_text = alt.Chart(df_ladder_timetable).mark_bar().encode(
             x='from',
-            x2='to',
-            y='label'
+            x2="to",
+            y='label',
+            tooltip=[alt.Tooltip('from', format='%Y-%m-%d %H:%M'), alt.Tooltip('to', format='%Y-%m-%d %H:%M')],
         ).properties(
             width=1200,
             height=200
         )
-        alt.vconcat(timeline_chart, ladder_chart).save('chart_from_chatbot.html')
+
+        alt.vconcat(timeline_chart, ranked_text).save('chart_from_chatbot.html')
 
     def toJSON(self):
         dct = deepcopy(self.__dict__)

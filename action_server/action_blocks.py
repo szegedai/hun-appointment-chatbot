@@ -4,7 +4,6 @@ from utils import get_human_friendly_range, load_responses, get_random_response,
 from hun_date_parser.date_parser.interval_restriction import extract_datetime_within_interval, ExtractWithinRangeSuccess
 from hun_date_parser import text2datetime
 from datetime import datetime, timedelta
-from datetimerange import DateTimeRange
 
 APPOINTMENT_MAX_LEN = 3700
 RESPONSES = load_responses()
@@ -235,6 +234,7 @@ class ActionBlocks:
 
         for date_intv in user_date_mentions:
             if date_intv['start_date'] and date_intv['end_date']:
+
                 self.time_table.label_timerange(date_intv['start_date'],
                                                 date_intv['end_date'],
                                                 USER_FREE_RANGE)
@@ -254,7 +254,6 @@ class ActionBlocks:
                         response_template = get_random_response(RESPONSES, "appointment_set")
                         self.dispatcher.utter_message(text=response_template.format(hf_start))
                     else:
-                        self.time_table.label_timerange(start, end, USER_FREE_RANGE)
                         self.time_table.set_current_discussed({"start_date": date_intv['start_date'], "end_date": date_intv['end_date']})
                         self.time_table.current_dtrl.ladder = [overlap, *self.time_table.current_dtrl.ladder]
                         if not bot_has_already_mentioned_date:
@@ -280,5 +279,3 @@ class ActionBlocks:
 
         if dt_mention > 1:
             self.time_table.remove_currently_discussed()
-
-        print("curr discussed", self.time_table.get_currently_discussed_range())

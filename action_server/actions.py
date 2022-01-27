@@ -5,8 +5,15 @@ from rasa_sdk.events import FollowupAction
 from rasa_sdk.executor import CollectingDispatcher
 from rasa_sdk.events import SlotSet
 
-from utils import get_timetable_in_discussion, load_responses, get_random_response
+from utils import get_timetable_in_discussion, load_responses, get_random_response, USER_FREE_RANGE
 from action_blocks import ActionBlocks, RuleBlocks
+
+from hun_date_parser import text2datetime
+
+
+def label_user_free_mentions(tracker, rule_blocks):
+    rule_blocks.time_table.get_viz()
+
 
 RESPONSES = load_responses()
 
@@ -19,7 +26,6 @@ class ActionRemoveAppointment(Action):
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-        print("torles")
         """
         Removes the appointment, clearing the slot
         """
@@ -37,6 +43,8 @@ class ActionRecommendOtherDate(Action):
         time_table = get_timetable_in_discussion(tracker)
         rule_blocks = RuleBlocks(tracker, time_table, dispatcher)
         action_blocks = ActionBlocks(tracker, time_table, dispatcher)
+
+        label_user_free_mentions(tracker, rule_blocks)
 
         if not rule_blocks.if_text_has_datetime():
             action_blocks.do_bot_suggest_alternative_range()
@@ -63,6 +71,8 @@ class ActionTimeTableFiller(Action):
         time_table = get_timetable_in_discussion(tracker)
         rule_blocks = RuleBlocks(tracker, time_table, dispatcher)
         action_blocks = ActionBlocks(tracker, time_table, dispatcher)
+
+        label_user_free_mentions(tracker, rule_blocks)
 
         if not rule_blocks.if_text_has_datetime():
             print("A")
@@ -96,7 +106,6 @@ class ActionTimeTableFiller(Action):
             action_blocks.do_bot_handle_bad_range()
 
         time_table_modified = action_blocks.time_table
-        # time_table_modified.get_viz()
 
         return [SlotSet("time_table", time_table_modified.toJSON())]
 
@@ -113,6 +122,8 @@ class ActionUserAffirmed(Action):
         time_table = get_timetable_in_discussion(tracker)
         rule_blocks = RuleBlocks(tracker, time_table, dispatcher)
         action_blocks = ActionBlocks(tracker, time_table, dispatcher)
+
+        label_user_free_mentions(tracker, rule_blocks)
 
         if rule_blocks.if_exists_currently_discussed_range():
 
@@ -156,6 +167,8 @@ class ActionRecommendAppointment(Action):
         time_table = get_timetable_in_discussion(tracker)
         rule_blocks = RuleBlocks(tracker, time_table, dispatcher)
         action_blocks = ActionBlocks(tracker, time_table, dispatcher)
+
+        label_user_free_mentions(tracker, rule_blocks)
 
         if not rule_blocks.if_text_has_datetime():
             action_blocks.do_bot_suggest_range()
