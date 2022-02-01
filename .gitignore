@@ -128,8 +128,6 @@ dmypy.json
 # PyCharm
 .idea/
 
-# dont upload models
-rasa_server/models/
 # dont upload node_modules
 nodejs/node_modules/
 nodejs/package-lock.json
