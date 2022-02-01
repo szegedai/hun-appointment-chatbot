@@ -245,6 +245,7 @@ function setBotResponse(response) {
       // scrollToBottomOfResults();
     } else {
       //if we get response from Rasa
+      const res = [];
       for (i = 0; i < response.length; i++) {
         //check if the response contains "text"
         if (response[i].hasOwnProperty('text')) {
@@ -253,11 +254,11 @@ function setBotResponse(response) {
             response[i].text +
             '</p><div class="clearfix"></div>';
           $(BotResponse).appendTo('.chats').hide().fadeIn(1000);
-          if (i === 0) {
-            tts(response[i].text);
-          }
+
+          res.push(response[i].text);
         }
       }
+      tts(res.join(' '));
     }
     scrollToBottomOfResults();
   }, 1000);
