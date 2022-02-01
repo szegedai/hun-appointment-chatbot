@@ -1,5 +1,6 @@
-hun-date-parser==0.1.0
-datetimerange
+altair==4.1.0
+datetimerange==1.2.0
+pandas==1.3.5
+PyYAML==6.0
 fuzzywuzzy
-pandas
-altair
+hun-date-parser==0.1.0
