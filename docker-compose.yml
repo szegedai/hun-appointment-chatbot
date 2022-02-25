@@ -13,6 +13,7 @@ services:
       - rasa_server
       - action_server
       - chatbot_ui
+      - flask_tts
   rasa_server:
     container_name: 'rasa_server'
     build:
@@ -31,3 +32,9 @@ services:
       context: nodejs
     ports:
       - '3000:3000'
+  flask_tts:
+    container_name: 'flask_tts'
+    build:
+      context: flask_tts
+    ports:
+      - '3001:3001'

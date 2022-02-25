@@ -63,6 +63,7 @@ db.sqlite3-journal
 # Flask stuff:
 instance/
 .webassets-cache
+flask_tts/credentials.json
 
 # Scrapy stuff:
 .scrapy
@@ -127,8 +128,6 @@ dmypy.json
 # PyCharm
 .idea/
 
-# dont upload models
-rasa_server/models/
 # dont upload node_modules
 nodejs/node_modules/
 nodejs/package-lock.json

@@ -9,9 +9,11 @@ COPY ./services /app/services
 USER root
 
 RUN pip install -r requirements.txt
-    # installing from web
-	#RUN pip install https://github.com/oroszgy/spacy-hungarian-models/releases/download/hu_core_ud_lg-0.3.1/hu_core_ud_lg-0.3.1-py3-none-any.whl &&\
-	# installing from wheel file
+
+# installing from web
+#RUN pip install https://github.com/oroszgy/spacy-hungarian-models/releases/download/hu_core_ud_lg-0.3.1/hu_core_ud_lg-0.3.1-py3-none-any.whl
+
+# installing from wheel file
 RUN pip install hu_core_ud_lg-0.3.1-py3-none-any.whl
 RUN python -m spacy link hu_core_ud_lg hu
 
