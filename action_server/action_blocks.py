@@ -18,7 +18,7 @@ class RuleBlocks:
         self.time_table = time_table
         self.dispatcher = dispatcher
 
-    def if_text_has_datetime(self):
+    def text_has_datetime(self):
         return has_date_mention(self.text)
 
     def if_exists_currently_discussed_range(self):
@@ -42,7 +42,7 @@ class RuleBlocks:
 
         return False
 
-    def if_text_in_currently_discussed_top_range(self):
+    def text_in_currently_discussed_top_range(self):
         if self.time_table.has_currently_discussed_range:
             top_range = self.time_table.current_dtrl.top_range
             success_flag, user_date_mentions = extract_datetime_within_interval(top_range.start_datetime,
@@ -69,7 +69,7 @@ class RuleBlocks:
 
         return all_overlaps
 
-    def if_bot_is_free_in_overlap_and_appointment_is_set(self):
+    def bot_is_free_in_overlap_and_appointment_is_set(self):
         overlaps = self._get_user_bot_overlaps()
 
         for overlap in overlaps:
@@ -88,7 +88,7 @@ class RuleBlocks:
 
         return False
 
-    def if_bot_is_free_in_overlap(self):
+    def bot_is_free_in_overlap(self):
         overlaps = self._get_user_bot_overlaps()
 
         return bool(overlaps)
