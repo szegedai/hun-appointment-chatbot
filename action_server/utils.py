@@ -42,7 +42,7 @@ def get_human_friendly_range(daterange, include_date=True, include_time=True):
 
 
 def load_responses():
-    with open("response_templates.yml") as f:
+    with open("response_templates.yml", encoding="utf8") as f:
         d = yaml.load(f, yaml.FullLoader)
 
     return d
