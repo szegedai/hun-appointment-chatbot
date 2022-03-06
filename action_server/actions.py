@@ -162,3 +162,16 @@ class ActionRecommendAppointment(Action):
             return [SlotSet("time_table", time_table.toJSON())]
         else:
             return [SlotSet("time_table", time_table.toJSON()), FollowupAction("action_user_affirmed")]
+
+
+class ActionRemoveRange(Action):
+
+    def name(self) -> Text:
+        return "action_remove_range"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> None:
+
+        time_table = get_timetable_in_discussion(tracker)
+        time_table.discard_user_not_free_range()

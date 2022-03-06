@@ -32,6 +32,7 @@ class TimeTable:
         self.sub_datetimes = {l: [] for l in labels}
         self.current_dtrl: Optional[DateRangeLadder] = None
         self.has_currently_discussed_range = False
+        self.user_not_available = []
 
     def _house_keeping(self):
         for label in self.labels:
@@ -94,8 +95,11 @@ class TimeTable:
 
     def get_next_available_timerange(self, label):
         current = self.get_currently_discussed_range()
+        # itt megint ures a lista, tracker?
+        print(f'{self.user_not_available=}')
         for dtrange in self.sub_datetimes[label]:
-            if current.start_datetime < dtrange.start_datetime:
+            if current.start_datetime < dtrange.start_datetime\
+                    and dtrange not in self.user_not_available:
                 current = dtrange
                 break
 
@@ -151,6 +155,13 @@ class TimeTable:
                 success = True
 
         return success
+
+    def discard_user_not_free_range(self):
+        print('discard_user_not_free')
+        currently_discussed = self.get_currently_discussed_range()
+        self.user_not_available.append(currently_discussed)
+        # itt még megvan a not available
+        print(f'{currently_discussed=},\n {self.user_not_available=}')
 
     def get_viz(self):
         res = []
