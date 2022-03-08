@@ -160,6 +160,10 @@ class ActionBlocks:
             for dtr in same_week:
                 hf_days.append(hf_day_list[dtr.start_datetime.weekday()])
 
+            #ismétlődő elemek miatt (mert egy nap több időpont is lehetséges lehet)
+            hf_days=list(dict.fromkeys(hf_days))
+            #print(hf_days)        
+
             self.dispatcher.utter_message(f"Azon a héten több alkalom is megfelel, például {', '.join(hf_days[:-1])} és {hf_days[-1]}. "
                                           f"Megfelel esetleg valamikor ezek közül?")
 
@@ -270,6 +274,10 @@ class ActionBlocks:
                     for overlap in overlaps:
                         hf_start, _ = get_human_friendly_range(overlap, include_time=False)
                         hf_days.append(hf_start)
+
+                    #ismétlődő elemek miatt (mert egy nap több időpont is lehetséges lehet)
+                    hf_days=list(dict.fromkeys(hf_days))
+                    #print(hf_days)     
 
                     self.dispatcher.utter_message(
                         f"A kért időszakban több alkalom is megfelel, például {', '.join(hf_days[:-1])} és {hf_days[-1]}. "
