@@ -8,6 +8,7 @@ from time_table import TimeTable
 
 BOT_FREE_RANGE = "bot_free"
 USER_FREE_RANGE = "user_free"
+USER_NOT_FREE_RANGE = "user_not_free"
 
 
 def get_human_friendly_range(daterange, include_date=True, include_time=True):
@@ -82,7 +83,7 @@ def get_timetable_in_discussion(tracker):
     time_table_repr = tracker.get_slot('time_table')
 
     if not time_table_repr:
-        time_table = TimeTable([BOT_FREE_RANGE, USER_FREE_RANGE])
+        time_table = TimeTable([BOT_FREE_RANGE, USER_FREE_RANGE, USER_NOT_FREE_RANGE])
         for rec in get_available_appointments():
             time_table.label_timerange(rec['start_date'], rec['end_date'], 'bot_free')
     else:

@@ -171,7 +171,9 @@ class ActionRemoveRange(Action):
 
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
-            domain: Dict[Text, Any]) -> None:
+            domain: Dict[Text, Any]) -> List[Dict[str, Any]]:
 
         time_table = get_timetable_in_discussion(tracker)
-        time_table.discard_user_not_free_range()
+        print(time_table)
+        time_table.label_user_not_free_range()
+        return [SlotSet("time_table", time_table.toJSON())]

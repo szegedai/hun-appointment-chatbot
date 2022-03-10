@@ -32,7 +32,7 @@ class TimeTable:
         self.sub_datetimes = {l: [] for l in labels}
         self.current_dtrl: Optional[DateRangeLadder] = None
         self.has_currently_discussed_range = False
-        self.user_not_available = []
+        # self.user_not_available = []
 
     def _house_keeping(self):
         for label in self.labels:
@@ -95,11 +95,10 @@ class TimeTable:
 
     def get_next_available_timerange(self, label):
         current = self.get_currently_discussed_range()
-        # itt megint ures a lista, tracker?
-        print(f'{self.user_not_available=}')
+        self.discard_user_not_free_range()
         for dtrange in self.sub_datetimes[label]:
             if current.start_datetime < dtrange.start_datetime\
-                    and dtrange not in self.user_not_available:
+                    and dtrange:
                 current = dtrange
                 break
 
@@ -151,17 +150,24 @@ class TimeTable:
                 # this shouldn't really happen...
                 pass
             else:
-                self.current_dtrl.ladder = [new_prev[0]] + self.current_dtrl.ladder[1:]
+                self.current_dtrlbot_free.ladder = [new_prev[0]] + self.current_dtrl.ladder[1:]
                 success = True
 
         return success
 
-    def discard_user_not_free_range(self):
+    def label_user_not_free_range(self):
         print('discard_user_not_free')
         currently_discussed = self.get_currently_discussed_range()
-        self.user_not_available.append(currently_discussed)
-        # itt még megvan a not available
-        print(f'{currently_discussed=},\n {self.user_not_available=}')
+        self.label_timerange(currently_discussed.start_datetime,
+                             currently_discussed.end_datetime, 'user_not_free')
+
+    def discard_user_not_free_range(self):
+        # this could be improved
+        for index in self.sub_datetimes['user_not_free']:
+            for drange in self.sub_datetimes['bot_free']:
+                if index.intersection(drange):
+                    print(f'{index=},\n {drange=}\n intersects')
+
 
     def get_viz(self):
         res = []
@@ -203,6 +209,7 @@ class TimeTable:
 
     def toJSON(self):
         dct = deepcopy(self.__dict__)
+        print(dct)
 
         serializable_sub_datetimes = {lb: [] for lb in self.labels}
         for k, intv_list in self.sub_datetimes.items():
