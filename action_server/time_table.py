@@ -97,10 +97,12 @@ class TimeTable:
         current = self.get_currently_discussed_range()
         self.discard_user_not_free_range()
         for dtrange in self.sub_datetimes[label]:
-            if current.start_datetime < dtrange.start_datetime\
-                    and dtrange:
-                current = dtrange
-                break
+            if current.start_datetime < dtrange.start_datetime:
+                for not_available in self.sub_datetimes["user_not_free"]:
+                    if not dtrange.is_intersection(not_available):
+                        print("get:bext:av")
+                        current = dtrange
+                        break
 
         return current
 
