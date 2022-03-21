@@ -91,12 +91,15 @@ def get_timetable_in_discussion(tracker):
     return time_table
 
 
+#get  random one hour long period from given interval
 def get_random_hour_from_timerange(a):
     n_hours = (a.end_datetime - a.start_datetime).seconds // 3600
     hour_lst = [a.start_datetime + timedelta(seconds=3600 * i) for i in range(n_hours)]
 
-    if len(hour_lst) > 2:
-        hour_ind = randint(0, len(hour_lst) - 2)
-        return DateTimeRange(hour_lst[hour_ind], hour_lst[hour_ind + 1])
+    print(hour_lst)
+
+    if len(hour_lst) >= 2:
+        hour_ind = randint(0, len(hour_lst) - 1)
+        return DateTimeRange(hour_lst[hour_ind], hour_lst[hour_ind] + timedelta(hours=1))
     else:
         return a
