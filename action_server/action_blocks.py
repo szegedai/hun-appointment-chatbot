@@ -277,11 +277,15 @@ class ActionBlocks:
 
                     #ismétlődő elemek miatt (mert egy nap több időpont is lehetséges lehet)
                     hf_days=list(dict.fromkeys(hf_days))
-                    #print(hf_days)     
-
-                    self.dispatcher.utter_message(
-                        f"A kért időszakban több alkalom is megfelel, például {', '.join(hf_days[:-1])} és {hf_days[-1]}. "
-                        f"Megfelel esetleg valamikor ezek közül?")
+                        
+                    if len(hf_days) > 1:
+                        self.dispatcher.utter_message(
+                            f"A kért időszakban több alkalom is megfelel, például {', '.join(hf_days[:-1])} és {hf_days[-1]}. "
+                            f"Megfelel esetleg valamikor ezek közül?")
+                    else:
+                        self.dispatcher.utter_message(
+                            f"A kért időszakban több alkalom is megfelel, {hf_days[0]}. "
+                            f"Megfelel esetleg?")        
 
                     self.time_table.set_current_discussed({"start_date": date_intv['start_date'],
                                                            "end_date": date_intv['end_date']})
