@@ -33,7 +33,7 @@ class TimeTable:
         self.current_dtrl: Optional[DateRangeLadder] = None
         self.has_currently_discussed_range = False
 
-    #átfedő time rangek kezelése (átfedő elemek uniózása például)
+    #handling overlapping time frames (uniting tem into one) 
     def _house_keeping(self):
         for label in self.labels:
             for i, dtr_i in enumerate(self.sub_datetimes[label]):
