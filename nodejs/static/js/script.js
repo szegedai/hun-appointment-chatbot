@@ -54,7 +54,7 @@ $('#feedback-btn').on('click', function () {
   date = new Date().toLocaleString();
 
   $.ajax({
-    url: 'https://www.inf.u-szeged.hu/algmi/chatbot/mongo',
+    url: 'https://chatbot-rgai3.inf.u-szeged.hu/mongo',
     type: 'POST',
     contentType: 'application/json',
     data: JSON.stringify({
@@ -83,7 +83,7 @@ function action_trigger() {
     msg =
       'Jó napot! Főnök Úr virtuális személyi asszisztense vagyok, én kezelem a naptárában az időpont foglalásokat. Mikorra szeretne hozzá időpontot?';
     var BotResponse =
-      '<img class="botAvatar" src="https://inf.u-szeged.hu/algmi/chatbot/img/botAvatar.png"/><p class="botMsg">' +
+      '<img class="botAvatar" src="https://chatbot-rgai3.inf.u-szeged.hu/img/botAvatar.png"/><p class="botMsg">' +
       msg +
       '</p><div class="clearfix"></div>';
     $(BotResponse).appendTo('.chats').hide().fadeIn(1000);
@@ -176,7 +176,7 @@ $.fn.selectRange = function (start, end) {
 function setUserResponse(message) {
   var UserResponse =
     '<img class="userAvatar" src=' +
-    'https://inf.u-szeged.hu/algmi/chatbot/img/userAvatar.jpg' +
+    'https://chatbot-rgai3.inf.u-szeged.hu/img/userAvatar.jpg' +
     '><p class="userMsg">' +
     message.trim() +
     ' </p><div class="clearfix"></div>';
@@ -197,7 +197,7 @@ function scrollToBottomOfResults() {
 //============== send the user message to rasa server =============================================
 function send(message) {
   $.ajax({
-    url: 'https://inf.u-szeged.hu/algmi/chatbot/rasa/webhook',
+    url: 'https://chatbot-rgai3.inf.u-szeged.hu/rasa/webhook',
     type: 'POST',
     contentType: 'application/json',
     data: JSON.stringify({ message: message.trim(), sender: user_id }),
@@ -250,7 +250,7 @@ function setBotResponse(response) {
         //check if the response contains "text"
         if (response[i].hasOwnProperty('text')) {
           var BotResponse =
-            '<img class="botAvatar" src="https://inf.u-szeged.hu/algmi/chatbot/img/botAvatar.png"/><p class="botMsg">' +
+            '<img class="botAvatar" src="https://chatbot-rgai3.inf.u-szeged.hu/img/botAvatar.png"/><p class="botMsg">' +
             response[i].text +
             '</p><div class="clearfix"></div>';
           $(BotResponse).appendTo('.chats').hide().fadeIn(1000);
@@ -552,7 +552,7 @@ function handleLocationAccessError(error) {
 //======================================bot typing animation ======================================
 function showBotTyping() {
   var botTyping =
-    '<img class="botAvatar" id="botAvatar" src="https://inf.u-szeged.hu/algmi/chatbot/img/botAvatar.png"/><div class="botTyping">' +
+    '<img class="botAvatar" id="botAvatar" src="https://chatbot-rgai3.inf.u-szeged.hu/img/botAvatar.png"/><div class="botTyping">' +
     '<div class="bounce1"></div>' +
     '<div class="bounce2"></div>' +
     '<div class="bounce3"></div>' +
@@ -725,7 +725,9 @@ function createChartinModal(
     options: options
   });
 }
+
 //TTS stuff
+
 function concat(arrays) {
   // sum of individual array lengths
   let totalLength = arrays.reduce((acc, value) => acc + value.length, 0);
@@ -747,7 +749,7 @@ function concat(arrays) {
 
 const tts = (text) => {
   fetch(
-    'https://inf.u-szeged.hu/algmi/chatbot/flask/tts?' +
+    'https://chatbot-rgai3.inf.u-szeged.hu/flask/tts?' +
       new URLSearchParams({
         q: text
       })
@@ -765,6 +767,10 @@ const tts = (text) => {
     .then((data) => {
       let blob = new Blob([data], { type: 'audio/wav' });
       let blobUrl = window.URL.createObjectURL(blob);
+      if (window.audio !== undefined && !window.audio.paused){
+        window.audio.pause();
+	setTimeout(() => {}, 20);  
+      }	    
       window.audio = new Audio(blobUrl);
       window.audio.controls = false;
       window.audio.play().catch((err) => {
@@ -772,3 +778,316 @@ const tts = (text) => {
       });
     });
 };
+
+/*
+Speech2Text stuff
+*/
+const extract_text = (object) => {
+  let message = JSON.stringify(object);
+  return message.match('"(.*)"')[1];
+};
+
+function SpeechtexAsrHandler() {
+  this.controlReceived = function (msg) {
+    console.log('control');
+    console.log('MSG: [' + msg.type + '] ' + msg.msg + ' (' + msg.params + ')');
+  };
+  this.errorReceived = function (msg) {
+    console.log('error');
+    console.log('MSG: [' + msg.type + '] ' + msg.msg + ' (' + msg.params + ')');
+  };
+  this.resultReceived = function (msg) {
+    //Modify this
+    const extracted_text = extract_text(msg.params);
+    if (msg.msg === '0' && extracted_text.length < 2) {    
+      document.getElementById('userInput').value = extracted_text;
+    } else {
+      if (extracted_text === '' || extracted_text.length < 2) return;
+      setUserResponse(extracted_text);
+      send(extracted_text);
+    }
+  };
+}
+
+function SpeechtexMessage(raw_msg) {
+  this.type;
+  this.msg;
+  this.params = new Array();
+
+  if (raw_msg.indexOf('|') > -1) {
+    this.type = raw_msg.substring(0, raw_msg.indexOf('|'));
+    if (raw_msg.indexOf(';') > -1) {
+      this.msg = raw_msg.substring(
+        raw_msg.indexOf('|') + 1,
+
+        raw_msg.indexOf(';')
+      );
+
+      raw_msg = raw_msg.substring(raw_msg.indexOf(';') + 1);
+      this.params = raw_msg.split(';');
+    } else {
+      this.msg = raw_msg.substring(raw_msg.indexOf('|') + 1);
+    }
+  }
+}
+
+/*
+SpeechTex connection object
+*/
+function SpeechtexAsrConnection(wsProxyUrl) {
+  // Input uzenetek
+  const MSG_IN_GENERAL_CONTROL = 'control|';
+  const MSG_IN_BIND_OK = 'control|bind-ok';
+  const MSG_IN_BIND_FAILED = 'control|bind-failed';
+  const MSG_IN_BIND_CONNECT_FAILED = 'control|connect-failed';
+  const MSG_IN_LOOPBACK_ID = 'control|loopback-id';
+  const MSG_IN_LOOPBACK_STATUS = 'control|loopback-status';
+  // Output uzenetek
+  const MSG_OUT_RECOG_START = 'control|start';
+  const MSG_OUT_RECOG_STOP = 'control|stop';
+  const MSG_OUT_BIND_REQUEST = 'control|bind-request';
+  const MSG_OUT_DISCONNECT = 'control|disconnect';
+  const MSG_OUT_CREATE_LOOPBACK = 'control|create-loopback';
+  const MSG_OUT_GET_MODELS = 'control|get-models';
+
+  var ws;
+  var asrBindOk = false;
+  var recording = false;
+  var sampleRate = 48000;
+  var loopbackId = '';
+  var wsProxyUrl = wsProxyUrl;
+  var handler;
+
+  var statusInterval;
+  let fromWhere = '';
+  const lab = document.getElementById('stt-connect');
+  this.connect = function () {
+    ws = new WebSocket(wsProxyUrl);
+    ws.onopen = () => {
+      document.getElementById('proxy-connect').innerText =
+        ' Sikeres proxy kapcsolódás!';
+    };
+    ws.onerror = () => {
+      document.getElementById('proxy-connect').innerText = ' Websocket hiba!';
+    };
+
+    this.init();
+    ws.onmessage = function (e) {
+      var msg = e.data;
+      console.log(msg);
+      // Sikeres ASR kapcsolodas
+      if (msg == MSG_IN_BIND_OK) asrBindOk = true;
+      // loopback id beallitasa
+      else if (msg.indexOf(MSG_IN_LOOPBACK_ID) > -1) {
+        loopbackId = msg.substring(msg.indexOf(';') + 1);
+      }
+      // loopback status uzenetek
+      else if (msg.indexOf(MSG_IN_LOOPBACK_STATUS) > -1) {
+        var status = parseInt(msg.substring(msg.lastIndexOf(';') + 1));
+        if (status != 0) {
+          clearInterval(statusInterval);
+          statusInterval = undefined;
+        }
+      }
+      // getModels
+      else if (msg.startsWith('control|models')) {
+        const regexp = /control\|models;general_hu,(\d),/;
+        const available_models = msg.match(regexp);
+        if (parseInt(available_models[1]) === 0) {
+          lab.innerText =
+            ' Jelenleg nincs további elérhető Speech to text szál.';
+          lab.style.color = 'red';
+        } else {
+          lab.style.color = '9f9f9f';
+          console.log(fromWhere);
+          if (fromWhere === 'connect') {
+            lab.innerText = ` Sikeres Speech to Text csatlakozás!`;
+          } else {
+            lab.innerText = ` Jelenleg ${available_models[1]} szál elérhető.`;
+          }
+        }
+      }
+      propagate(msg);
+    };
+  };
+  this.setHandler = function (h) {
+    handler = h;
+  };
+  propagate = function (msg) {
+    var spMsg = new SpeechtexMessage(msg);
+    if (
+      !(handler == null) &&
+      spMsg.type === 'error' &&
+      typeof handler.errorReceived == 'function'
+    )
+      handler.errorReceived(spMsg);
+    else if (
+      !(handler == null) &&
+      spMsg.type === 'result' &&
+      typeof handler.resultReceived == 'function'
+    )
+      handler.resultReceived(spMsg);
+    else if (
+      !(handler == null) &&
+      spMsg.type === 'control' &&
+      typeof handler.controlReceived == 'function'
+    )
+      handler.controlReceived(spMsg);
+  };
+  this.init = function () {
+    if (hasGetUserMedia()) {
+      navigator.getUserMedia(
+        { video: false, audio: true },
+        function (localMediaStream) {
+          var audioContext = window.AudioContext;
+          var context = new audioContext();
+          var source = context.createMediaStreamSource(localMediaStream);
+          sampleRate = context.sampleRate;
+          if (!context.createScriptProcessor) {
+            node = context.createJavaScriptNode(0, 1, 1);
+          } else {
+            node = context.createScriptProcessor(0, 1, 1);
+          }
+          node.onaudioprocess = function (e) {
+            if (recording) {
+              sendAudioData(e.inputBuffer.getChannelData(0));
+            }
+          };
+          source.connect(node);
+          node.connect(context.destination);
+        },
+        this.getUserMediaError
+      );
+    }
+  };
+  this.getUserMediaError = function (e) {};
+  this.disconnect = function () {
+    if (!(ws == null)) {
+      ws.close();
+      document.getElementById('proxy-connect').innerText =
+        ' Sikeres proxy bontás!';
+    } else {
+      document.getElementById('proxy-connect').innerText =
+        ' Nem volt a proxyhoz kapcsolódva!';
+    }
+  };
+  const sendControl = function (control) {
+    if (!(ws == null)) ws.send(control);
+    else propagate('error|001;No connection to Speechtex ASR Proxy.');
+  };
+  const sendAudioData = function (data) {
+    if (!data) return -1;
+    var len = data.length,
+      i = 0;
+    var dataAsInt16Array = new Int16Array(len);
+    while (i < len) dataAsInt16Array[i] = convert(data[i++]);
+
+    if (!(ws == null)) ws.send(dataAsInt16Array);
+    return 1;
+  };
+  /*
+  Csatlakozas adott modellt futtato felismero csatornahoz
+  */
+  this.bindAsrChannel = function (model) {
+    fromWhere = 'connect';
+    sendControl(MSG_OUT_GET_MODELS);
+    sendControl(MSG_OUT_DISCONNECT);
+    sendControl(MSG_OUT_BIND_REQUEST + ';' + model);
+  };
+  /*
+  Felismeres inditasa
+  */
+  this.startRecognition = function () {
+    if (!asrBindOk) {
+      return;
+    }
+    console.log(MSG_OUT_RECOG_START + ';' + sampleRate + ';' + loopbackId);
+    sendControl(
+      MSG_OUT_RECOG_START + ';' + sampleRate + ';' + loopbackId + ';0;'
+    );
+    console.log('asd');
+    document.getElementById('recording').innerText =
+      ' Hangfelismerés folyamatban.';
+
+    recording = true;
+  };
+  this.stopRecognition = function () {
+    sendControl(MSG_OUT_RECOG_STOP + ';');
+    document.getElementById('recording').innerText =
+      ' Hangfelismerés leállítva.';
+    recording = false;
+  };
+  this.generateLoopback = function (dic) {
+    var params = '';
+    if (Array.isArray(dic)) {
+      for (i = 0; i < dic.length; i++) {
+        var dici = dic[i];
+        if (Array.isArray(dici) && dici.length >= 2) {
+          if (params !== '') params += ';';
+          params += dici[0] + '=' + dici[1];
+        }
+      }
+    }
+
+    sendControl(MSG_OUT_CREATE_LOOPBACK + ';' + params);
+  };
+  this.getModels = function () {
+    fromWhere = 'models';
+    sendControl(MSG_OUT_GET_MODELS);
+  };
+}
+
+/*
+Egyeb szukseges metodusok
+*/
+navigator.getUserMedia =
+  navigator.getUserMedia ||
+  navigator.webkitGetUserMedia ||
+  navigator.mozGetUserMedia;
+function hasGetUserMedia() {
+  return !!(
+    navigator.getUserMedia ||
+    navigator.webkitGetUserMedia ||
+    navigator.mediaDevices.getUserMedia ||
+    navigator.msGetUserMedia
+  );
+}
+function convert(n) {
+  var v = n * 32768;
+  return Math.max(-32767, Math.min(32767, v));
+}
+
+var spAsrConn;
+
+function connect(ws_addr) {
+  spAsrConn = new SpeechtexAsrConnection(ws_addr);
+  var handler = new SpeechtexAsrHandler();
+  spAsrConn.setHandler(handler);
+  spAsrConn.connect();
+}
+function disconnect() {
+  spAsrConn.disconnect();
+}
+function bindAsrChannel(model) {
+  spAsrConn.bindAsrChannel(model);
+}
+function startDictate() {
+  spAsrConn.startRecognition();
+}
+function stopDictate() {
+  spAsrConn.stopRecognition();
+}
+function uploadDic() {
+  var dic = [
+    ['Saab', 'száb'],
+    ['Toyota', 'tojota'],
+    ['Seat', 'szeát'],
+    ['Mitsubishi', 'micubisi'],
+    ['BMW', 'béemvé']
+  ];
+
+  spAsrConn.generateLoopback(dic);
+}
+function getModels() {
+  spAsrConn.getModels();
+}

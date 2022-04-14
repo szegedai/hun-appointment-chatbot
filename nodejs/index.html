@@ -26,14 +26,14 @@
     <link
       rel="stylesheet"
       type="text/css"
-      href="https://inf.u-szeged.hu/algmi/chatbot/css/materialize.min.css"
+      href="https://chatbot-rgai3.inf.u-szeged.hu/css/materialize.min.css"
     />
 
     <!--Main css-->
     <link
       rel="stylesheet"
       type="text/css"
-      href="https://inf.u-szeged.hu/algmi/chatbot/css/style.css"
+      href="https://chatbot-rgai3.inf.u-szeged.hu/css/style.css"
     />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
@@ -71,7 +71,7 @@
         <p>
           <a href="https://forms.gle/YhRh9M2wurN6qx67A"
             ><img
-              src="https://inf.u-szeged.hu/algmi/chatbot/img/outline_rate_review_black_24dp.png"
+              src="https://chatbot-rgai3.inf.u-szeged.hu/img/outline_rate_review_black_24dp.png"
           /></a>
           <br />Vagy ha a konkrét beszélgetéssel kapcsolatban van
           visszajelzésed, itt is megírhatod:
@@ -96,9 +96,27 @@
         <p>
           <a href="mailto:rfarkas@inf.u-szeged.hu"
             ><img
-              src="https://inf.u-szeged.hu/algmi/chatbot/img/outline_alternate_email_black_24dp.png"
+              src="https://chatbot-rgai3.inf.u-szeged.hu/img/outline_alternate_email_black_24dp.png"
           /></a>
         </p>
+          <h4>Hangalapú</h4>
+          <p>Proxy Kapcsolodas:</p>
+          <button
+            onclick="connect('wss:\/\/chatbot-rgai3.inf.u-szeged.hu/socket')"
+          >
+            Kapcsolodas
+          </button>
+          <button onclick="disconnect()">Bontas</button><label id="proxy-connect"></label><br /><br />
+          Elerhető modellek:
+          <button onclick="getModels()">Lekerdezes</button><br /><br />
+          Kapcsolodas felismerohoz:
+          <button onclick="bindAsrChannel('general_hu')">ASR Kapcsolodos</button
+          ><label id="stt-connect"></label><br /><br />
+          Diktalas:
+          <button onclick="startDictate()">Inditas</button>
+          <button onclick="stopDictate()">Megallitas</button><label id="recording"></label><br /><br />
+        
+        </div>
       </div>
 
       <!--chatbot widget -->
@@ -146,19 +164,16 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script
       type="text/javascript"
-      src="https://inf.u-szeged.hu/algmi/chatbot/js/materialize.min.js"
+      src="https://chatbot-rgai3.inf.u-szeged.hu/js/materialize.min.js"
     ></script>
 
     <!--Main Script -->
-    <script
-      type="text/javascript"
-      src="https://inf.u-szeged.hu/algmi/chatbot/js/script.js"
-    ></script>
+    <script type="text/javascript" src="https://chatbot-rgai3.inf.u-szeged.hu/js/script.js"></script>
 
     <!--Chart.js Script -->
     <script
       type="text/javascript"
-      src="https://inf.u-szeged.hu/algmi/chatbot/js/chart.min.js"
+      src="https://chatbot-rgai3.inf.u-szeged.hu/js/chart.min.js"
     ></script>
   </body>
 </html>
