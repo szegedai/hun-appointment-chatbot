@@ -14,6 +14,7 @@ services:
       - action_server
       - chatbot_ui
       - flask_tts
+      - stt_tunnel
   rasa_server:
     container_name: 'rasa_server'
     build:
@@ -38,3 +39,9 @@ services:
       context: flask_tts
     ports:
       - '3001:3001'
+  stt_tunnel:
+    container_name: 'stt_tunnel1'
+    build:
+      context: docker_tunnel
+    ports:
+      - '4117:8000'
