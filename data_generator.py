@@ -22,7 +22,7 @@ def get_bdates(start=datetime.datetime.now(), number_of_bdays=10):
 
 def generate_dates(dates):
     return [{"start_date": f"{date}T{choice(START_DATES)}",
-             "end_date": f"{date}T{choice(END_DATES)}"} for _, date in enumerate(dates)]
+             "end_date": f"{date}T{choice(END_DATES)}"} for date in dates]
 
 
 def main():
