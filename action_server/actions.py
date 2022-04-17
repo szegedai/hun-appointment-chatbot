@@ -79,11 +79,11 @@ class ActionTimeTableFiller(Action):
 
         currently_discussed_remains = False
         #a time frame is being discussed
-        if rule_blocks.if_exists_currently_discussed_range():
+        if rule_blocks.exists_currently_discussed_range():
             print("B")
 
             #the timeframe is getting smaller
-            if rule_blocks.if_text_further_specifies_currently_discussed():
+            if rule_blocks.text_further_specifies_currently_discussed():
                 print("B1")
                 currently_discussed_remains = True
                 action_blocks.do_further_specify_currently_discussed()
@@ -126,12 +126,12 @@ class ActionUserAffirmed(Action):
         action_blocks = ActionBlocks(tracker, time_table, dispatcher)
 
         #user agreed that the the appointment will be good within the currently discussed range
-        if rule_blocks.if_exists_currently_discussed_range():
+        if rule_blocks.exists_currently_discussed_range():
 
             #bat didn't specify further
             if not rule_blocks.text_has_datetime():
                 print("K0")
-                if rule_blocks.if_currently_discussed_already_an_appointment():
+                if rule_blocks.currently_discussed_already_an_appointment():
                     print("K0-1")
                     action_blocks.do_confirm_currently_discussed_is_already_an_appointment()
                 else:
@@ -140,7 +140,7 @@ class ActionUserAffirmed(Action):
                     action_blocks.do_bot_suggest_from_currently_discussed_range()
 
                 return [SlotSet("time_table", time_table.toJSON())]
-            elif rule_blocks.if_text_further_specifies_currently_discussed():
+            elif rule_blocks.text_further_specifies_currently_discussed():
                 print("K1")
                 action_blocks.do_further_specify_currently_discussed()
 

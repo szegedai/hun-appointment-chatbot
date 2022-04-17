@@ -21,7 +21,7 @@ class RuleBlocks:
     def text_has_datetime(self):
         return has_date_mention(self.text)
 
-    def if_exists_currently_discussed_range(self):
+    def exists_currently_discussed_range(self):
         return self.time_table.has_currently_discussed_range
 
     def if_current_range_appropriate_appointment(self):
@@ -32,7 +32,7 @@ class RuleBlocks:
 
         return False
 
-    def if_text_further_specifies_currently_discussed(self):
+    def text_further_specifies_currently_discussed(self):
         if self.time_table.has_currently_discussed_range:
             last_offered_range = self.time_table.get_currently_discussed_range()
             success_flag, user_date_mentions = extract_datetime_within_interval(last_offered_range.start_datetime,
@@ -79,7 +79,7 @@ class RuleBlocks:
 
         return False
 
-    def if_currently_discussed_already_an_appointment(self):
+    def currently_discussed_already_an_appointment(self):
         overlap = self.time_table.get_currently_discussed_range()
 
         start, end = overlap.start_datetime, overlap.end_datetime
@@ -160,9 +160,8 @@ class ActionBlocks:
             for dtr in same_week:
                 hf_days.append(hf_day_list[dtr.start_datetime.weekday()])
 
-            #ismétlődő elemek miatt (mert egy nap több időpont is lehetséges lehet)
-            hf_days=list(dict.fromkeys(hf_days))
-            #print(hf_days)        
+            #for filtering repeating elements (multiple appointments are possible for a days, which would result in weird sentences)
+            hf_days = list(set(hf_days))      
 
             self.dispatcher.utter_message(f"Azon a héten több alkalom is megfelel, például {', '.join(hf_days[:-1])} és {hf_days[-1]}. "
                                           f"Megfelel esetleg valamikor ezek közül?")
@@ -276,7 +275,7 @@ class ActionBlocks:
                         hf_days.append(hf_start)
 
                     #ismétlődő elemek miatt (mert egy nap több időpont is lehetséges lehet)
-                    hf_days=list(dict.fromkeys(hf_days))
+                    hf_days=list(set(hf_days))
                         
                     if len(hf_days) > 1:
                         self.dispatcher.utter_message(
