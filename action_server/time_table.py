@@ -49,16 +49,10 @@ class TimeTable:
         new_dtr = DateTimeRange(start, end)
 
         encompassed = False
-        # for i in range(len(self.sub_datetimes[label])):
-        #     if self.sub_datetimes[label][i].is_intersection(new_dtr):
-        #         encompassed = True
-        #         self.sub_datetimes[label][i] = self.sub_datetimes[label][i].encompass(new_dtr)
-
-        #print("self.sub_datetimes[label] -> ", self.sub_datetimes[label])
-        for dts in self.sub_datetimes[label]:
-            if dts.is_intersection(new_dtr):
+        for i, _ in enumerate(self.sub_datetimes[label]):
+            if self.sub_datetimes[label][i].is_intersection(new_dtr):
                 encompassed = True
-                dts = dts.encompass(new_dtr)        
+                self.sub_datetimes[label][i] = self.sub_datetimes[label][i].encompass(new_dtr)       
 
         if not encompassed:
             self.sub_datetimes[label].append(new_dtr)
@@ -249,17 +243,11 @@ class DateRangeLadder:
         inserted = False
         print("self.ladder", self.ladder )
 
-        # for i in range(len(self.ladder)):
-        #     intersection = self.ladder[i].intersection(daterange)
-        #     if intersection.start_datetime and intersection.end_datetime:
-        #         self.ladder = [intersection, *self.ladder[i:]]
-        #         inserted = True
-
         for i, ladder in enumerate(self.ladder):
             intersection = ladder.intersection(daterange)
             if intersection.start_datetime and intersection.end_datetime:
                 self.ladder = [intersection, *self.ladder[i:]]
-                inserted = True        
+                inserted = True 
 
         if not inserted:
             self.ladder = []
@@ -270,29 +258,11 @@ class DateRangeLadder:
             return None
 
         inserted = False
-        # for i in range(len(self.ladder)):
-        #     print(i, len(self.ladder), self.ladder)
-        #     current = self.ladder[i]
-        #     success_flag, user_date_mentions = extract_datetime_within_interval(current.start_datetime,
-        #                                                                         current.end_datetime,
-        #                                                                         query,
-        #                                                                         expect_future_day=True)
-        #     dt_mention = user_date_mentions[0]
-        #     mention_dtr = DateTimeRange(dt_mention['start_date'],
-        #                                 dt_mention['end_date'])
-        #     try:
-        #         intersection = self.ladder[i].intersection(mention_dtr)
-        #     except ValueError:
-        #         intersection = None
+        
 
-        #     if intersection and intersection.start_datetime and intersection.end_datetime:
-        #         self.ladder = [intersection, *self.ladder[i:]]
-        #         inserted = True
-        #         break
-
-        for i, ladder in enumerate(self.ladder):
+        for i, element in enumerate(self.ladder):
             print(i, len(self.ladder), self.ladder)
-            current = ladder
+            current = element
             success_flag, user_date_mentions = extract_datetime_within_interval(current.start_datetime,
                                                                                 current.end_datetime,
                                                                                 query,
@@ -301,14 +271,14 @@ class DateRangeLadder:
             mention_dtr = DateTimeRange(dt_mention['start_date'],
                                         dt_mention['end_date'])
             try:
-                intersection = ladder.intersection(mention_dtr)
+                intersection = element.intersection(mention_dtr)
             except ValueError:
                 intersection = None
 
             if intersection and intersection.start_datetime and intersection.end_datetime:
                 self.ladder = [intersection, *self.ladder[i:]]
                 inserted = True
-                break    
+                break
 
         if not inserted:
             self.ladder = []

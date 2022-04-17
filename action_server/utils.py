@@ -96,7 +96,6 @@ def get_random_hour_from_timerange(a):
     n_hours = (a.end_datetime - a.start_datetime).seconds // 3600
     hour_lst = [a.start_datetime + timedelta(seconds=3600 * i) for i in range(n_hours)]
 
-    print(hour_lst)
 
     if len(hour_lst) >= 2:
         hour_ind = randint(0, len(hour_lst) - 1)
