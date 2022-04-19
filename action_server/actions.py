@@ -37,14 +37,19 @@ class ActionRecommendOtherDate(Action):
         time_table = get_timetable_in_discussion(tracker)
         rule_blocks = RuleBlocks(tracker, time_table, dispatcher)
         action_blocks = ActionBlocks(tracker, time_table, dispatcher)
+        #the user wants another date (if doesnt mention specifically, the bot will recommend)
 
-        if not rule_blocks.if_text_has_datetime():
+        if not rule_blocks.text_has_datetime():
+            print("RO1")
             action_blocks.do_bot_suggest_alternative_range()
-        elif rule_blocks.if_bot_is_free_in_overlap():
+        elif rule_blocks.bot_is_free_in_overlap():
+            print("RO2")
             action_blocks.do_bot_set_appointment()
-        elif rule_blocks.if_text_in_currently_discussed_top_range():
+        elif rule_blocks.text_in_currently_discussed_top_range():
+            print("RO3")
             action_blocks.do_further_specify_currently_discussed()
         else:
+            print("RO4")
             action_blocks.do_bot_handle_bad_range()
 
         time_table_modified = action_blocks.time_table
@@ -64,7 +69,8 @@ class ActionTimeTableFiller(Action):
         rule_blocks = RuleBlocks(tracker, time_table, dispatcher)
         action_blocks = ActionBlocks(tracker, time_table, dispatcher)
 
-        if not rule_blocks.if_text_has_datetime():
+        #user did not request a specific time, so bot suggests 
+        if not rule_blocks.text_has_datetime():
             print("A")
             dispatcher.utter_message(get_random_response(RESPONSES, "accept_appointment_intent"))
             action_blocks.do_bot_suggest_range()
@@ -72,27 +78,32 @@ class ActionTimeTableFiller(Action):
             return [SlotSet("time_table", time_table.toJSON())]
 
         currently_discussed_remains = False
-        if rule_blocks.if_exists_currently_discussed_range():
+        #a time frame is being discussed
+        if rule_blocks.exists_currently_discussed_range():
             print("B")
 
-            if rule_blocks.if_text_further_specifies_currently_discussed():
+            #the timeframe is getting smaller
+            if rule_blocks.text_further_specifies_currently_discussed():
                 print("B1")
                 currently_discussed_remains = True
                 action_blocks.do_further_specify_currently_discussed()
 
                 return [SlotSet("time_table", time_table.toJSON())]
-            elif rule_blocks.if_text_in_currently_discussed_top_range():
+            elif rule_blocks.text_in_currently_discussed_top_range():
                 print("B2")
                 currently_discussed_remains = True
                 action_blocks.do_further_specify_currently_discussed()
 
                 return [SlotSet("time_table", time_table.toJSON())]
 
-        if not currently_discussed_remains and rule_blocks.if_bot_is_free_in_overlap():
+        #currently discussed range has changed, but it is good for the bot
+        if not currently_discussed_remains and rule_blocks.bot_is_free_in_overlap():
             print("C2")
             action_blocks.do_bot_set_appointment()
 
-        if not currently_discussed_remains and not rule_blocks.if_bot_is_free_in_overlap():
+        #currently discussed range has changed, but it is not good for the bot
+        if not currently_discussed_remains and not rule_blocks.bot_is_free_in_overlap():
+            print("C3")
             action_blocks.do_bot_handle_bad_range()
 
         time_table_modified = action_blocks.time_table
@@ -114,25 +125,31 @@ class ActionUserAffirmed(Action):
         rule_blocks = RuleBlocks(tracker, time_table, dispatcher)
         action_blocks = ActionBlocks(tracker, time_table, dispatcher)
 
-        if rule_blocks.if_exists_currently_discussed_range():
+        #user agreed that the the appointment will be good within the currently discussed range
+        if rule_blocks.exists_currently_discussed_range():
 
-            if not rule_blocks.if_text_has_datetime():
-                if rule_blocks.if_currently_discussed_already_an_appointment():
+            #bat didn't specify further
+            if not rule_blocks.text_has_datetime():
+                print("K0")
+                if rule_blocks.currently_discussed_already_an_appointment():
+                    print("K0-1")
                     action_blocks.do_confirm_currently_discussed_is_already_an_appointment()
                 else:
+                    #bot suggests an appointment from the already mentioned interval
+                    print("K0-2")
                     action_blocks.do_bot_suggest_from_currently_discussed_range()
 
                 return [SlotSet("time_table", time_table.toJSON())]
-            elif rule_blocks.if_text_further_specifies_currently_discussed():
-                print("B1")
+            elif rule_blocks.text_further_specifies_currently_discussed():
+                print("K1")
                 action_blocks.do_further_specify_currently_discussed()
 
                 return [SlotSet("time_table", time_table.toJSON())]
-            elif rule_blocks.if_text_in_currently_discussed_top_range():
-                print("B2")
+            elif rule_blocks.text_in_currently_discussed_top_range():
+                print("K2")
                 action_blocks.do_further_specify_currently_discussed()
 
-                return [SlotSet("time_table", time_table.toJSON())]
+                return [SlotSet("time_table", time_table.toJSON())]   
 
         else:
             dispatcher.utter_message(get_random_response(RESPONSES, "not_understood"))
@@ -157,8 +174,12 @@ class ActionRecommendAppointment(Action):
         rule_blocks = RuleBlocks(tracker, time_table, dispatcher)
         action_blocks = ActionBlocks(tracker, time_table, dispatcher)
 
-        if not rule_blocks.if_text_has_datetime():
+        #user is flexible, bot will recommend appointment
+
+        if not rule_blocks.text_has_datetime():
+            print("R1")
             action_blocks.do_bot_suggest_range()
             return [SlotSet("time_table", time_table.toJSON())]
         else:
+            print("R2")
             return [SlotSet("time_table", time_table.toJSON()), FollowupAction("action_user_affirmed")]
