@@ -157,7 +157,7 @@ class TimeTable:
                 # this shouldn't really happen...
                 pass
             else:
-                self.current_dtrlbot_free.ladder = [new_prev[0]] + self.current_dtrl.ladder[1:]
+                self.current_dtrl.ladder = [new_prev[0]] + self.current_dtrl.ladder[1:]
                 success = True
 
         return success
