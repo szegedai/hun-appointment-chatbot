@@ -41,7 +41,11 @@ class ActionRecommendOtherDate(Action):
 
         if not rule_blocks.text_has_datetime():
             print("RO1")
-            action_blocks.do_bot_suggest_alternative_range()
+            #if there are is initialised timetable, recommend date at random
+            if tracker.get_slot('time_table') == None:
+                action_blocks.do_bot_suggest_range()
+            else:    
+                action_blocks.do_bot_suggest_alternative_range()
         elif rule_blocks.bot_is_free_in_overlap():
             print("RO2")
             action_blocks.do_bot_set_appointment()
