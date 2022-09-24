@@ -31,7 +31,6 @@ rules:
     steps:
       - intent: refute
       - action: action_remove_range
-      - action: recommend_other_date
 
   - rule: mas idopont
     steps:

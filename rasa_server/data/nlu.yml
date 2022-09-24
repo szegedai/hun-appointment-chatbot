@@ -184,6 +184,14 @@ nlu:
     - a jövőhetem foglalt
     - a hétvégén nem érek rá
     - kedd nem jó
+    - nem jó a kedd
+    - nem fogok ráérni akkor
+    - az nem jó
+    - nem
+    - akkor ne
+    - ne aznap
+    - azt hagyjuk
+    - ne akkor
 - intent: vege
   examples: |
     - rendben. szia!
