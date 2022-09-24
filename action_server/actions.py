@@ -7,6 +7,7 @@ from rasa_sdk.events import SlotSet
 
 from utils import get_timetable_in_discussion, load_responses, get_random_response
 from action_blocks import ActionBlocks, RuleBlocks
+from hun_date_parser import text2datetime
 
 RESPONSES = load_responses()
 
@@ -199,6 +200,20 @@ class ActionRemoveRange(Action):
             domain: Dict[Text, Any]) -> List[Dict[str, Any]]:
 
         time_table = get_timetable_in_discussion(tracker)
-        #print(time_table)
-        time_table.label_user_not_free_range()
+        rule_blocks = RuleBlocks(tracker, time_table, dispatcher)
+        action_blocks = ActionBlocks(tracker, time_table, dispatcher)
+
+        if not rule_blocks.text_has_datetime() and rule_blocks.exists_currently_discussed_range():
+            action_blocks.do_bot_suggest_alternative_range()
+        elif rule_blocks.text_has_datetime():
+            user_date_mentions = text2datetime(tracker.latest_message['text'], expect_future_day=True)
+            for date_intv in user_date_mentions:
+                if date_intv['start_date'] and date_intv['end_date']:
+                    time_table.label_timerange(date_intv['start_date'],
+                                                    date_intv['end_date'],
+                                                    'user_not_free')
+
+            dispatcher.utter_message("Oké.")
+            action_blocks.do_bot_suggest_range()
+
         return [SlotSet("time_table", time_table.toJSON())]

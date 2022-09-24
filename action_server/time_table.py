@@ -87,10 +87,16 @@ class TimeTable:
         if not self.sub_datetimes[label]:
             return None
 
-        min_dtr = self.sub_datetimes[label][0]
-        for dtrange in self.sub_datetimes[label][1:]:
+        min_dtr = self.sub_datetimes[label][-1]
+        for dtrange in self.sub_datetimes[label]:
             if dtrange.start_datetime < min_dtr.start_datetime:
-                min_dtr = dtrange
+                good_candidate = True
+                for not_available in self.sub_datetimes["user_not_free"]:
+                    if dtrange.is_intersection(not_available):
+                        good_candidate = False
+
+                if good_candidate:
+                    min_dtr = dtrange
 
         return min_dtr
 
@@ -164,7 +170,6 @@ class TimeTable:
         return success
 
     def label_user_not_free_range(self):
-        print('discard_user_not_free')
         currently_discussed = self.get_currently_discussed_range()
         self.label_timerange(currently_discussed.start_datetime,
                              currently_discussed.end_datetime, 'user_not_free')
@@ -175,7 +180,6 @@ class TimeTable:
             for drange in self.sub_datetimes['bot_free']:
                 if index.intersection(drange):
                     print(f'{index=},\n {drange=}\n intersects')"""
-
 
     def get_viz(self):
         res = []
