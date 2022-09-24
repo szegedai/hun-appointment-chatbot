@@ -33,12 +33,12 @@ def generate_dates(dates):
     {"start_date": f"{dates[5]}T09:00", "end_date": f"{dates[5]}T12:00"},
     {"start_date": f"{dates[5]}T14:00", "end_date": f"{dates[5]}T17:00"},
 
-    {"start_date": f"{dates[6]}T12:45", "end_date": f"{dates[6]}T17:30"},
+    {"start_date": f"{dates[6]}T12:00", "end_date": f"{dates[6]}T17:00"},
 
     {"start_date": f"{dates[7]}T12:00", "end_date": f"{dates[7]}T18:00"},
 
-    {"start_date": f"{dates[8]}T07:45", "end_date": f"{dates[8]}T12:15"},
-    {"start_date": f"{dates[8]}T13:15", "end_date": f"{dates[8]}T16:15"},
+    {"start_date": f"{dates[8]}T07:00", "end_date": f"{dates[8]}T12:00"},
+    {"start_date": f"{dates[8]}T13:00", "end_date": f"{dates[8]}T16:00"},
 
     {"start_date": f"{dates[9]}T12:00", "end_date": f"{dates[9]}T18:00"},
 
@@ -46,7 +46,7 @@ def generate_dates(dates):
 
     {"start_date": f"{dates[11]}T14:00", "end_date": f"{dates[11]}T17:00"},
 
-    {"start_date": f"{dates[12]}T09:25", "end_date": f"{dates[12]}T15:45"}
+    {"start_date": f"{dates[12]}T09:00", "end_date": f"{dates[12]}T15:00"}
   ]
 
 def main():
