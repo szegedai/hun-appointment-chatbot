@@ -34,6 +34,7 @@ class TimeTable:
         self.has_currently_discussed_range = False
         # self.user_not_available = []
 
+    #handling overlapping time frames (uniting tem into one) 
     def _house_keeping(self):
         for label in self.labels:
             for i, dtr_i in enumerate(self.sub_datetimes[label]):
@@ -49,10 +50,10 @@ class TimeTable:
         new_dtr = DateTimeRange(start, end)
 
         encompassed = False
-        for i in range(len(self.sub_datetimes[label])):
+        for i, _ in enumerate(self.sub_datetimes[label]):
             if self.sub_datetimes[label][i].is_intersection(new_dtr):
                 encompassed = True
-                self.sub_datetimes[label][i] = self.sub_datetimes[label][i].encompass(new_dtr)
+                self.sub_datetimes[label][i] = self.sub_datetimes[label][i].encompass(new_dtr)       
 
         if not encompassed:
             self.sub_datetimes[label].append(new_dtr)
@@ -265,11 +266,13 @@ class DateRangeLadder:
     def step_in_ladder(self, daterange):
         print(f'daterange:{daterange}')
         inserted = False
-        for i in range(len(self.ladder)):
-            intersection = self.ladder[i].intersection(daterange)
+        print("self.ladder", self.ladder )
+
+        for i, ladder in enumerate(self.ladder):
+            intersection = ladder.intersection(daterange)
             if intersection.start_datetime and intersection.end_datetime:
                 self.ladder = [intersection, *self.ladder[i:]]
-                inserted = True
+                inserted = True 
 
         if not inserted:
             self.ladder = []
@@ -280,9 +283,11 @@ class DateRangeLadder:
             return None
 
         inserted = False
-        for i in range(len(self.ladder)):
+        
+
+        for i, element in enumerate(self.ladder):
             print(i, len(self.ladder), self.ladder)
-            current = self.ladder[i]
+            current = element
             success_flag, user_date_mentions = extract_datetime_within_interval(current.start_datetime,
                                                                                 current.end_datetime,
                                                                                 query,
@@ -291,7 +296,7 @@ class DateRangeLadder:
             mention_dtr = DateTimeRange(dt_mention['start_date'],
                                         dt_mention['end_date'])
             try:
-                intersection = self.ladder[i].intersection(mention_dtr)
+                intersection = element.intersection(mention_dtr)
             except ValueError:
                 intersection = None
 

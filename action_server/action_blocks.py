@@ -18,10 +18,10 @@ class RuleBlocks:
         self.time_table = time_table
         self.dispatcher = dispatcher
 
-    def if_text_has_datetime(self):
+    def text_has_datetime(self):
         return has_date_mention(self.text)
 
-    def if_exists_currently_discussed_range(self):
+    def exists_currently_discussed_range(self):
         return self.time_table.has_currently_discussed_range
 
     def if_current_range_appropriate_appointment(self):
@@ -32,7 +32,7 @@ class RuleBlocks:
 
         return False
 
-    def if_text_further_specifies_currently_discussed(self):
+    def text_further_specifies_currently_discussed(self):
         if self.time_table.has_currently_discussed_range:
             last_offered_range = self.time_table.get_currently_discussed_range()
             success_flag, user_date_mentions = extract_datetime_within_interval(last_offered_range.start_datetime,
@@ -42,7 +42,7 @@ class RuleBlocks:
 
         return False
 
-    def if_text_in_currently_discussed_top_range(self):
+    def text_in_currently_discussed_top_range(self):
         if self.time_table.has_currently_discussed_range:
             top_range = self.time_table.current_dtrl.top_range
             success_flag, user_date_mentions = extract_datetime_within_interval(top_range.start_datetime,
@@ -69,7 +69,7 @@ class RuleBlocks:
 
         return all_overlaps
 
-    def if_bot_is_free_in_overlap_and_appointment_is_set(self):
+    def bot_is_free_in_overlap_and_appointment_is_set(self):
         overlaps = self._get_user_bot_overlaps()
 
         for overlap in overlaps:
@@ -79,7 +79,7 @@ class RuleBlocks:
 
         return False
 
-    def if_currently_discussed_already_an_appointment(self):
+    def currently_discussed_already_an_appointment(self):
         overlap = self.time_table.get_currently_discussed_range()
 
         start, end = overlap.start_datetime, overlap.end_datetime
@@ -88,7 +88,7 @@ class RuleBlocks:
 
         return False
 
-    def if_bot_is_free_in_overlap(self):
+    def bot_is_free_in_overlap(self):
         overlaps = self._get_user_bot_overlaps()
 
         return bool(overlaps)
@@ -159,6 +159,9 @@ class ActionBlocks:
 
             for dtr in same_week:
                 hf_days.append(hf_day_list[dtr.start_datetime.weekday()])
+
+            #for filtering repeating elements (multiple appointments are possible for a days, which would result in weird sentences)
+            hf_days = list(set(hf_days))      
 
             self.dispatcher.utter_message(f"Azon a héten több alkalom is megfelel, például {', '.join(hf_days[:-1])} és {hf_days[-1]}. "
                                           f"Megfelel esetleg valamikor ezek közül?")
@@ -271,9 +274,17 @@ class ActionBlocks:
                         hf_start, _ = get_human_friendly_range(overlap, include_time=False)
                         hf_days.append(hf_start)
 
-                    self.dispatcher.utter_message(
-                        f"A kért időszakban több alkalom is megfelel, például {', '.join(hf_days[:-1])} és {hf_days[-1]}. "
-                        f"Megfelel esetleg valamikor ezek közül?")
+                    #ismétlődő elemek miatt (mert egy nap több időpont is lehetséges lehet)
+                    hf_days=list(set(hf_days))
+                        
+                    if len(hf_days) > 1:
+                        self.dispatcher.utter_message(
+                            f"A kért időszakban több alkalom is megfelel, például {', '.join(hf_days[:-1])} és {hf_days[-1]}. "
+                            f"Megfelel esetleg valamikor ezek közül?")
+                    else:
+                        self.dispatcher.utter_message(
+                            f"A kért időszakban több alkalom is megfelel, {hf_days[0]}. "
+                            f"Megfelel esetleg?")        
 
                     self.time_table.set_current_discussed({"start_date": date_intv['start_date'],
                                                            "end_date": date_intv['end_date']})
