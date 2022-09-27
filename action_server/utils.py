@@ -103,3 +103,44 @@ def get_random_hour_from_timerange(a):
         return DateTimeRange(hour_lst[hour_ind], hour_lst[hour_ind] + timedelta(hours=1))
     else:
         return a
+
+
+def remove_common_prefix(lst):
+    """
+    lst = [
+        "jövő hét pénteken",
+        "jövő hét szerdán",
+        "jövő hét csütörtökön",
+        "két hét múlva kedden reggel",
+        "két hét múlva kedden este"
+    ]
+
+    remove_common_prefix(lst)
+    >>> ['jövő hét pénteken', 'szerdán', 'csütörtökön', 'két hét múlva kedden reggel', 'este']
+    """
+
+    res = []
+    for i, e in enumerate(lst):
+        if i == 0:
+            res.append(e)
+            continue
+
+        e_words = e.split(" ")
+        max_first_to_include_index = 0
+        for before_e in res:
+            before_e_words = before_e.split(" ")
+            first_to_include_index = 0
+            for j, (e1, e2) in enumerate(zip(before_e_words, e_words)):
+                if e1 != e2:
+                    first_to_include_index = j
+                    break
+
+            if first_to_include_index > max_first_to_include_index:
+                max_first_to_include_index = first_to_include_index
+
+        res_w = " ".join(e_words[max_first_to_include_index:])
+
+        if res_w not in res:
+            res.append(res_w)
+
+    return res
