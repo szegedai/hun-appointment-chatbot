@@ -11,8 +11,8 @@ pipeline:
     entity_recognition: False
   - name: FallbackClassifier
     threshold: 0.25
-  - name: ResponseSelector
-    epochs: 50
+  #- name: ResponseSelector
+  #  epochs: 50
 
 policies:
   # ToDo add memorization policie after stories has been added.

@@ -1,6 +1,6 @@
 from time_table import TimeTable, has_date_mention
 from utils import get_human_friendly_range, load_responses, get_random_response, BOT_FREE_RANGE, USER_FREE_RANGE,\
-    get_random_hour_from_timerange
+    get_random_hour_from_timerange, remove_common_prefix
 from hun_date_parser.date_parser.interval_restriction import extract_datetime_within_interval, ExtractWithinRangeSuccess
 from hun_date_parser import text2datetime
 from datetime import datetime, timedelta
@@ -160,8 +160,9 @@ class ActionBlocks:
             for dtr in same_week:
                 hf_days.append(hf_day_list[dtr.start_datetime.weekday()])
 
-            #for filtering repeating elements (multiple appointments are possible for a days, which would result in weird sentences)
-            hf_days = list(set(hf_days))      
+            if len(hf_days) > 3:
+                hf_days = hf_days[:3]
+            hf_days = remove_common_prefix(hf_days)
 
             self.dispatcher.utter_message(f"Azon a héten több alkalom is megfelel, például {', '.join(hf_days[:-1])} és {hf_days[-1]}. "
                                           f"Megfelel esetleg valamikor ezek közül?")
@@ -219,8 +220,11 @@ class ActionBlocks:
                 hf_start, hf_end = get_human_friendly_range(overlap)
                 hf_ranges.append(f"{hf_start}-tól {hf_end}-ig")
 
+            if len(hf_ranges) > 3:
+                hf_ranges = hf_ranges[:3]
+
             self.dispatcher.utter_message(
-                f"A kért időszakban több alkalom is megfelel, például {', '.join(hf_ranges[:-1])} és {hf_ranges[-1]}. "
+                f"Ekkor több alkalom is jó lehet, például {', '.join(hf_ranges[:-1])} és {hf_ranges[-1]}. "
                 f"Megfelel esetleg valamikor ezek közül?")
 
     def do_confirm_currently_discussed_is_already_an_appointment(self):
@@ -274,17 +278,18 @@ class ActionBlocks:
                         hf_start, _ = get_human_friendly_range(overlap, include_time=False)
                         hf_days.append(hf_start)
 
-                    #ismétlődő elemek miatt (mert egy nap több időpont is lehetséges lehet)
-                    hf_days=list(set(hf_days))
+                    if len(hf_days) > 3:
+                        hf_days = hf_days[:3]
+                    hf_days = remove_common_prefix(hf_days)
                         
                     if len(hf_days) > 1:
                         self.dispatcher.utter_message(
-                            f"A kért időszakban több alkalom is megfelel, például {', '.join(hf_days[:-1])} és {hf_days[-1]}. "
+                            f"Ekkor több alkalom is jó lehet, például {', '.join(hf_days[:-1])} és {hf_days[-1]}. "
                             f"Megfelel esetleg valamikor ezek közül?")
                     else:
                         self.dispatcher.utter_message(
-                            f"A kért időszakban több alkalom is megfelel, {hf_days[0]}. "
-                            f"Megfelel esetleg?")        
+                            f"Megfelel a kért időszakban, {hf_days[0]}. "
+                            f"Jó lesz?")
 
                     self.time_table.set_current_discussed({"start_date": date_intv['start_date'],
                                                            "end_date": date_intv['end_date']})

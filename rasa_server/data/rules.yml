@@ -30,7 +30,7 @@ rules:
   - rule: user_refuted # this could be refined
     steps:
       - intent: refute
-      - action: recommend_other_date
+      - action: action_remove_range
 
   - rule: mas idopont
     steps:
