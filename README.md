@@ -49,8 +49,24 @@ To be able to interact with the bot, you'll need to get both the action and rasa
 
 For the action server, run `rasa run actions` in the `action_server` submodule. This will start a local server that receives data from the quasi frontend of the bot (the rasa server).
 
-Now, run `rasa shell` in the `rasa_server` directory. 
+Now, run `rasa shell` in the `rasa_server` directory.
 
+Make sure, that in case of a local environment that in `rasa_server/endpoints.yml` you disable the tracker store tracking (by commenting out irrelevant sections) and set the action server endpoint to your local host, like this:
+
+```yaml
+action_endpoint:
+ url: "http://localhost:5055/webhook"
+ # url: "http://action_server:5055/webhook" --> this is the action server endpoint used when deployed to a server
+
+# tracker_store:
+#  type: mongod
+#  url: "mongodb+srv://${RASA_MONGODB_USER}:${RASA_MONGODB_PW}@${RASA_MONGODB_CLUSTER}.iagzc.mongodb.net"
+#  db: $RASA_MONGODB_CLUSTER
+#  username: $RASA_MONGODB_USER
+#  password: $RASA_MONGODB_PW
+#  auth_source: admin
+```
+        
 The program might take a few seconds to load, after which you can initiate a conversation with the chatbot.
 
 The following is an example conversation, that shows the chatbot's capabilities.
