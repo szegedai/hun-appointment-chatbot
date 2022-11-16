@@ -15,8 +15,10 @@ def hw():
 
 @app.route('/tts', methods=['GET'])
 def tts():
+    print(request.args.get('speaker'))
+    speaker = request.args.get('speaker')
     print(f"TTS request a következő szövegre: {request.args.get('q')}")
-    payload = {'speaker': 'NG', 'q': request.args.get('q')}
+    payload = {'speaker': speaker if speaker is not None and speaker in ['NG', 'MK'] else 'NG', 'q': request.args.get('q')}
     result = requests.get(f"http://{data.get('user')}:{data.get('pw')}@cyrus.tmit.bme.hu/hmmtts2/synth_hmm_wav.php", params=payload)
     response = make_response(result.content)
     response.headers.set('Content-Type', 'audio/wav')

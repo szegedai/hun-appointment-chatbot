@@ -6,7 +6,11 @@ var ID = function () {
   return '_' + Math.random().toString(36).substr(2, 9);
 };
 
+let clicked;
+let isSttWorking;
 $(document).ready(function () {
+  clicked = false;
+  isSttWorking = false;
   $('.profile_div').toggle();
   $('.widget').toggle();
   //drop down menu for close, restart conversation & clear the chats.
@@ -257,6 +261,10 @@ function setBotResponse(response) {
 
           res.push(response[i].text);
         }
+      }
+      if (clicked === true) {
+        clicked = false;
+        spAsrConn.stopRecognition();
       }
       tts(res.join(' '));
     }
@@ -767,21 +775,29 @@ const tts = (text) => {
     .then((data) => {
       let blob = new Blob([data], { type: 'audio/wav' });
       let blobUrl = window.URL.createObjectURL(blob);
-      if (window.audio !== undefined && !window.audio.paused){
+      if (window.audio !== undefined && !window.audio.paused) {
         window.audio.pause();
-	setTimeout(() => {}, 20);  
-      }	    
+        setTimeout(() => {}, 20);
+      }
       window.audio = new Audio(blobUrl);
       window.audio.controls = false;
       window.audio.play().catch((err) => {
         console.log(err);
       });
+      window.audio.onended = () => {
+        if (isSttWorking) {
+          startDictate();
+        }
+      };
     });
 };
 
 /*
 Speech2Text stuff
 */
+
+const rec = document.getElementById('recording');
+
 const extract_text = (object) => {
   let message = JSON.stringify(object);
   return message.match('"(.*)"')[1];
@@ -799,10 +815,9 @@ function SpeechtexAsrHandler() {
   this.resultReceived = function (msg) {
     //Modify this
     const extracted_text = extract_text(msg.params);
-    if (msg.msg === '0' && extracted_text.length < 2) {    
+    if (msg.msg === '0') {
       document.getElementById('userInput').value = extracted_text;
-    } else {
-      if (extracted_text === '' || extracted_text.length < 2) return;
+    } else if (msg.msg === '1' && extracted_text.length >= 2) {
       setUserResponse(extracted_text);
       send(extracted_text);
     }
@@ -1005,7 +1020,7 @@ function SpeechtexAsrConnection(wsProxyUrl) {
     sendControl(
       MSG_OUT_RECOG_START + ';' + sampleRate + ';' + loopbackId + ';0;'
     );
-    console.log('asd');
+
     document.getElementById('recording').innerText =
       ' Hangfelismerés folyamatban.';
 
@@ -1058,7 +1073,6 @@ function convert(n) {
 }
 
 var spAsrConn;
-
 function connect(ws_addr) {
   spAsrConn = new SpeechtexAsrConnection(ws_addr);
   var handler = new SpeechtexAsrHandler();
@@ -1073,9 +1087,12 @@ function bindAsrChannel(model) {
 }
 function startDictate() {
   spAsrConn.startRecognition();
+  isSttWorking = true;
+  clicked = true;
 }
 function stopDictate() {
   spAsrConn.stopRecognition();
+  clicked = false;
 }
 function uploadDic() {
   var dic = [
