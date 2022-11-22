@@ -171,8 +171,8 @@ nlu:
     - az nem lesz jó sajnos
     - nem érek rá akkor
     - nem jó akkor
-    - nem jó
-    - nem
+    - nem jó pénteken
+    - nem érek rá kedden
     - akkor a gyereket viszem edzésre
     - akkor nem érek rá
     - nem tudom megoldani
@@ -180,6 +180,18 @@ nlu:
     - az nem lesz jó sajnos
     - nem, az nem lesz jó
     - más dolgom van akkor
+    - csütörtökön nem jó
+    - a jövőhetem foglalt
+    - a hétvégén nem érek rá
+    - kedd nem jó
+    - nem jó a kedd
+    - nem fogok ráérni akkor
+    - az nem jó
+    - nem
+    - akkor ne
+    - ne aznap
+    - azt hagyjuk
+    - ne akkor
 - intent: vege
   examples: |
     - rendben. szia!

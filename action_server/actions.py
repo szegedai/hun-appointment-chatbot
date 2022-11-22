@@ -7,6 +7,7 @@ from rasa_sdk.events import SlotSet
 
 from utils import get_timetable_in_discussion, load_responses, get_random_response
 from action_blocks import ActionBlocks, RuleBlocks
+from hun_date_parser import text2datetime
 
 RESPONSES = load_responses()
 
@@ -41,7 +42,11 @@ class ActionRecommendOtherDate(Action):
 
         if not rule_blocks.text_has_datetime():
             print("RO1")
-            action_blocks.do_bot_suggest_alternative_range()
+            #if there are is initialised timetable, recommend date at random
+            if tracker.get_slot('time_table') == None:
+                action_blocks.do_bot_suggest_range()
+            else:
+                action_blocks.do_bot_suggest_alternative_range()
         elif rule_blocks.bot_is_free_in_overlap():
             print("RO2")
             action_blocks.do_bot_set_appointment()
@@ -69,7 +74,7 @@ class ActionTimeTableFiller(Action):
         rule_blocks = RuleBlocks(tracker, time_table, dispatcher)
         action_blocks = ActionBlocks(tracker, time_table, dispatcher)
 
-        #user did not request a specific time, so bot suggests 
+        #user did not request a specific time, so bot suggests
         if not rule_blocks.text_has_datetime():
             print("A")
             dispatcher.utter_message(get_random_response(RESPONSES, "accept_appointment_intent"))
@@ -149,7 +154,7 @@ class ActionUserAffirmed(Action):
                 print("K2")
                 action_blocks.do_further_specify_currently_discussed()
 
-                return [SlotSet("time_table", time_table.toJSON())]   
+                return [SlotSet("time_table", time_table.toJSON())]
 
         else:
             dispatcher.utter_message(get_random_response(RESPONSES, "not_understood"))
@@ -183,3 +188,32 @@ class ActionRecommendAppointment(Action):
         else:
             print("R2")
             return [SlotSet("time_table", time_table.toJSON()), FollowupAction("action_user_affirmed")]
+
+
+class ActionRemoveRange(Action):
+
+    def name(self) -> Text:
+        return "action_remove_range"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[str, Any]]:
+
+        time_table = get_timetable_in_discussion(tracker)
+        rule_blocks = RuleBlocks(tracker, time_table, dispatcher)
+        action_blocks = ActionBlocks(tracker, time_table, dispatcher)
+
+        if not rule_blocks.text_has_datetime() and rule_blocks.exists_currently_discussed_range():
+            action_blocks.do_bot_suggest_alternative_range()
+        elif rule_blocks.text_has_datetime():
+            user_date_mentions = text2datetime(tracker.latest_message['text'], expect_future_day=True)
+            for date_intv in user_date_mentions:
+                if date_intv['start_date'] and date_intv['end_date']:
+                    time_table.label_timerange(date_intv['start_date'],
+                                                    date_intv['end_date'],
+                                                    'user_not_free')
+
+            dispatcher.utter_message("Oké.")
+            action_blocks.do_bot_suggest_range()
+
+        return [SlotSet("time_table", time_table.toJSON())]

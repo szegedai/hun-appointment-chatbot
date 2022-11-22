@@ -32,6 +32,7 @@ class TimeTable:
         self.sub_datetimes = {l: [] for l in labels}
         self.current_dtrl: Optional[DateRangeLadder] = None
         self.has_currently_discussed_range = False
+        # self.user_not_available = []
 
     #handling overlapping time frames (uniting tem into one) 
     def _house_keeping(self):
@@ -86,19 +87,34 @@ class TimeTable:
         if not self.sub_datetimes[label]:
             return None
 
-        min_dtr = self.sub_datetimes[label][0]
-        for dtrange in self.sub_datetimes[label][1:]:
+        min_dtr = self.sub_datetimes[label][-1]
+        for dtrange in self.sub_datetimes[label]:
             if dtrange.start_datetime < min_dtr.start_datetime:
-                min_dtr = dtrange
+                good_candidate = True
+                for not_available in self.sub_datetimes["user_not_free"]:
+                    if dtrange.is_intersection(not_available):
+                        good_candidate = False
+
+                if good_candidate:
+                    min_dtr = dtrange
 
         return min_dtr
 
     def get_next_available_timerange(self, label):
+        print("getnexttimerange")
         current = self.get_currently_discussed_range()
+        # self.discard_user_not_free_range()
         for dtrange in self.sub_datetimes[label]:
+            flag = False
             if current.start_datetime < dtrange.start_datetime:
-                current = dtrange
-                break
+                for not_available in self.sub_datetimes["user_not_free"]:
+                    #print(current.start_datetime, dtrange.start_datetime, not_available)
+                    if not dtrange.is_intersection(not_available):
+                        current = dtrange
+                        flag = True
+                        break
+                if flag:
+                    break
 
         return current
 
@@ -153,6 +169,18 @@ class TimeTable:
 
         return success
 
+    def label_user_not_free_range(self):
+        currently_discussed = self.get_currently_discussed_range()
+        self.label_timerange(currently_discussed.start_datetime,
+                             currently_discussed.end_datetime, 'user_not_free')
+
+    """def discard_user_not_free_range(self):
+        # this could be improved
+        for index in self.sub_datetimes['user_not_free']:
+            for drange in self.sub_datetimes['bot_free']:
+                if index.intersection(drange):
+                    print(f'{index=},\n {drange=}\n intersects')"""
+
     def get_viz(self):
         res = []
 
@@ -193,6 +221,7 @@ class TimeTable:
 
     def toJSON(self):
         dct = deepcopy(self.__dict__)
+        #print(dct)
 
         serializable_sub_datetimes = {lb: [] for lb in self.labels}
         for k, intv_list in self.sub_datetimes.items():
